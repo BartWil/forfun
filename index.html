@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Motion Lab — Interactive Biomechanics Explorer</title>
+<meta name="description" content="Explore the forces, joint angles, and muscle activity behind walking, running, jumping, landing, and squatting — interactive visualizations grounded in real biomechanics research." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">Motion<span>Lab</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#explorer">Explore</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#compare">Compare</a></li>
+      <li><a href="#sources">Sources</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Interactive biomechanics</div>
+    <h1 class="hero-title">
+      See the forces<br>
+      <span class="hero-title-accent">behind every movement</span>
+    </h1>
+    <p class="hero-description">
+      Walking, running, jumping, landing, squatting — every step loads your joints and fires your muscles in a
+      precise, predictable sequence. Scrub through the cycle, change the parameters, and watch ground reaction
+      force, joint angles, and muscle activity respond in real time.
+    </p>
+    <div class="hero-cta">
+      <a href="#explorer" class="btn-primary">Start exploring</a>
+      <a href="#how" class="btn-secondary">
+        How it works
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <svg width="16" height="24" viewBox="0 0 16 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="14" height="22" rx="7"/><circle cx="8" cy="8" r="2" fill="currentColor" stroke="none"><animate attributeName="cy" values="8;14;8" dur="1.8s" repeatCount="indefinite"/></circle></svg>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-label">The idea</div>
+    <h2 class="section-title">One cycle, three signals</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-icon">↕</div>
+        <h4>Ground reaction force</h4>
+        <p>The force the ground pushes back on your body with, in multiples of body weight (BW). Every push you make, the ground makes right back.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">⟲</div>
+        <h4>Joint angles</h4>
+        <p>How much the hip, knee, and ankle flex and extend through the movement cycle — the kinematic signature of each task.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">⚡</div>
+        <h4>Muscle activation</h4>
+        <p>Which muscle groups switch on and off, and how hard, to control and power the movement — based on classic EMG findings.</p>
+      </div>
+    </div>
+    <p class="how-note">
+      Curves are illustrative reconstructions based on well-established biomechanics literature (see
+      <a href="#sources">Sources</a>), not raw patient data — built to teach the pattern, not to diagnose an individual.
+    </p>
+  </div>
+</section>
+
+<!-- EXPLORER -->
+<section id="explorer">
+  <div class="container">
+    <div class="section-label">Explorer</div>
+    <h2 class="section-title">Pick a movement</h2>
+
+    <div class="movement-tabs" id="movementTabs">
+      <button class="movement-tab active" data-movement="walk">
+        <span class="mt-icon">🚶</span><span>Walking</span>
+      </button>
+      <button class="movement-tab" data-movement="run">
+        <span class="mt-icon">🏃</span><span>Running</span>
+      </button>
+      <button class="movement-tab" data-movement="jump">
+        <span class="mt-icon">🦘</span><span>Jumping</span>
+      </button>
+      <button class="movement-tab" data-movement="land">
+        <span class="mt-icon">⬇️</span><span>Landing</span>
+      </button>
+      <button class="movement-tab" data-movement="squat">
+        <span class="mt-icon">🏋️</span><span>Squatting</span>
+      </button>
+    </div>
+
+    <div class="explorer-grid">
+
+      <!-- STAGE: stick figure + transport + sliders -->
+      <div class="stage-panel">
+        <canvas id="figureCanvas" width="360" height="420"></canvas>
+        <div class="phase-readout">
+          <span id="phaseLabel">Weight acceptance</span>
+          <span id="phasePercent">0%</span>
+        </div>
+        <div class="transport">
+          <button id="playBtn" class="transport-btn" aria-label="Play">▶</button>
+          <input type="range" id="scrubber" min="0" max="1000" value="0" />
+        </div>
+        <div class="speed-control">
+          <label for="playbackSpeed">Playback speed</label>
+          <input type="range" id="playbackSpeed" min="0.25" max="2" step="0.25" value="1" />
+        </div>
+        <div class="param-sliders" id="paramSliders"></div>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="charts-panel">
+        <div class="chart-card">
+          <h4>Vertical ground reaction force</h4>
+          <div class="chart-wrap"><canvas id="grfChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h4>Joint angles</h4>
+          <div class="chart-wrap"><canvas id="angleChart"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <h4>Muscle activation</h4>
+          <div id="muscleRows" class="muscle-rows"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="movement-blurb" id="movementBlurb"></div>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section id="compare">
+  <div class="container">
+    <div class="section-label">Compare</div>
+    <h2 class="section-title">Put two movements side by side</h2>
+    <p class="lead" style="max-width:640px;">
+      Overlay any two movement/parameter combinations to see how, say, running loads the joints
+      differently from walking, or how a deep squat compares to a shallow one.
+    </p>
+
+    <div class="compare-controls">
+      <div class="compare-select-group">
+        <label>Trace A</label>
+        <select id="compareA-movement" class="compare-select"></select>
+        <input type="range" id="compareA-param" min="0" max="100" value="50" />
+      </div>
+      <div class="compare-vs">vs</div>
+      <div class="compare-select-group">
+        <label>Trace B</label>
+        <select id="compareB-movement" class="compare-select"></select>
+        <input type="range" id="compareB-param" min="0" max="100" value="50" />
+      </div>
+    </div>
+
+    <div class="compare-charts">
+      <div class="chart-card">
+        <h4>Vertical ground reaction force</h4>
+        <div class="chart-wrap"><canvas id="compareGrfChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h4>Knee angle</h4>
+        <div class="chart-wrap"><canvas id="compareAngleChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section id="sources">
+  <div class="container">
+    <div class="section-label">Grounded in research</div>
+    <h2 class="section-title">Sources</h2>
+    <p class="lead" style="max-width:680px;">
+      Curve shapes, magnitudes, and timing are illustrative reconstructions informed by these widely cited
+      biomechanics references — not digitized datasets, and not a substitute for individual assessment.
+    </p>
+    <ul class="source-list">
+      <li>Perry J, Burnfield JM. <em>Gait Analysis: Normal and Pathological Function</em>, 2nd ed. SLACK Incorporated, 2010.</li>
+      <li>Novacheck TF. The biomechanics of running. <em>Gait &amp; Posture</em>, 1998.</li>
+      <li>Winter DA. <em>Biomechanics and Motor Control of Human Movement</em>, 4th ed. Wiley, 2009.</li>
+      <li>Bobbert MF, van Ingen Schenau GJ. Coordination in vertical jumping. <em>J Biomech</em>, 1988.</li>
+      <li>Escamilla RF. Knee biomechanics of the dynamic squat exercise. <em>Med Sci Sports Exerc</em>, 2001.</li>
+      <li>Decker MJ, Torry MR, Wyland DJ, Sterett WI, Steadman JR. Gender differences in lower extremity kinematics, kinetics and energy absorption during landing. <em>Clin Biomech</em>, 2003.</li>
+      <li>McErlain-Naylor S, King M, Pain MTG. Determinants of countermovement jump performance: a kinetic and kinematic analysis. <em>J Sports Sci</em>, 2014.</li>
+    </ul>
+  </div>
+</section>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="spline.js"></script>
+<script src="data.js"></script>
+<script src="figure.js"></script>
+<script src="charts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
