@@ -14,6 +14,7 @@ const MOVEMENTS = {
   walk: {
     label: "Walking",
     cycleLabel: "gait cycle — heel strike to heel strike",
+    contralateralShift: 50,
     phases: [
       [0, 10, "Loading response"],
       [10, 30, "Mid stance"],
@@ -51,6 +52,7 @@ const MOVEMENTS = {
   run: {
     label: "Running",
     cycleLabel: "stride cycle — foot strike to next foot strike (single limb)",
+    contralateralShift: 50,
     phases: [
       [0, 5, "Initial contact"],
       [5, 30, "Stance / propulsion"],
@@ -87,6 +89,7 @@ const MOVEMENTS = {
   jump: {
     label: "Jumping (countermovement)",
     cycleLabel: "countermovement jump — quiet stance to landing",
+    contralateralShift: 0,
     phases: [
       [0, 15, "Quiet stance"],
       [15, 45, "Countermovement (braking)"],
@@ -122,6 +125,7 @@ const MOVEMENTS = {
   land: {
     label: "Landing",
     cycleLabel: "drop landing — descent to stabilization (loops for demonstration)",
+    contralateralShift: 0,
     phases: [
       [0, 25, "Falling / descent"],
       [25, 45, "Impact absorption"],
@@ -156,6 +160,7 @@ const MOVEMENTS = {
   squat: {
     label: "Squatting",
     cycleLabel: "bodyweight squat — standing to bottom and back",
+    contralateralShift: 0,
     phases: [
       [0, 50, "Descent (eccentric)"],
       [50, 52, "Bottom position"],

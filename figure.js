@@ -25,7 +25,44 @@ function setupCanvasDPR(canvas) {
   return { ctx, w: cssW, h: cssH };
 }
 
-function computeSkeleton(W, H, state) {
+// One leg's forward-kinematics chain from a given hip anchor + joint angles.
+function legChain(hip, scale, trunkLean, hipAngle, kneeAngle, ankleAngle) {
+  const thighTilt = trunkLean + hipAngle;
+  const knee = {
+    x: hip.x + SEG.thigh * scale * Math.sin(toRad(thighTilt)),
+    y: hip.y + SEG.thigh * scale * Math.cos(toRad(thighTilt)),
+  };
+  const shankTilt = thighTilt - kneeAngle;
+  const ankle = {
+    x: knee.x + SEG.shank * scale * Math.sin(toRad(shankTilt)),
+    y: knee.y + SEG.shank * scale * Math.cos(toRad(shankTilt)),
+  };
+  const footTilt = shankTilt + (90 - ankleAngle);
+  const footTip = {
+    x: ankle.x + SEG.foot * scale * Math.sin(toRad(footTilt)),
+    y: ankle.y + SEG.foot * scale * Math.cos(toRad(footTilt)),
+  };
+  const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+  return {
+    hip, knee, ankle, footTip,
+    muscleBellies: {
+      "Gluteus Maximus": mid(hip, { x: hip.x, y: hip.y - SEG.thigh * scale * 0.3 }),
+      "Quadriceps": mid(hip, knee),
+      "Hamstrings": mid(hip, knee),
+      "Gastroc / Soleus": mid(knee, ankle),
+      "Tibialis Anterior": mid(knee, ankle),
+    },
+  };
+}
+
+// state  = joint angles for the primary (near) leg — this is the one GRF + muscles are tied to.
+// state2 = optional joint angles for the contralateral (far) leg — visual only. For gait it's the
+//          same movement sampled half a cycle later; for bilateral moves it equals state. Either
+//          way the far leg is anchored at the same hip, nudged sideways so both read clearly in
+//          the sagittal view.
+const FAR_LEG_DX = 16; // px sideways offset for the contralateral leg
+
+function computeSkeleton(W, H, state, state2 = null) {
   const groundY = H - 34;
   const scale = (H - 90) / (LEG_LEN + SEG.trunk + SEG.headR * 2);
   const cx = W / 2;
@@ -33,57 +70,42 @@ function computeSkeleton(W, H, state) {
   const { hipAngle, kneeAngle, ankleAngle, trunkLean, hipDrop } = state;
 
   const hip = { x: cx, y: groundY - LEG_LEN * scale + hipDrop * scale };
+  const primary = legChain(hip, scale, trunkLean, hipAngle, kneeAngle, ankleAngle);
 
-  const thighTilt = trunkLean + hipAngle;
-  const knee = {
-    x: hip.x + SEG.thigh * scale * Math.sin(toRad(thighTilt)),
-    y: hip.y + SEG.thigh * scale * Math.cos(toRad(thighTilt)),
-  };
-
-  const shankTilt = thighTilt - kneeAngle;
-  const ankle = {
-    x: knee.x + SEG.shank * scale * Math.sin(toRad(shankTilt)),
-    y: knee.y + SEG.shank * scale * Math.cos(toRad(shankTilt)),
-  };
-
-  const footTilt = shankTilt + (90 - ankleAngle);
-  const footTip = {
-    x: ankle.x + SEG.foot * scale * Math.sin(toRad(footTilt)),
-    y: ankle.y + SEG.foot * scale * Math.cos(toRad(footTilt)),
-  };
+  let far = null;
+  if (state2) {
+    const hip2 = { x: hip.x + FAR_LEG_DX, y: hip.y };
+    far = legChain(hip2, scale, state2.trunkLean, state2.hipAngle, state2.kneeAngle, state2.ankleAngle);
+  }
 
   const shoulder = {
     x: hip.x - SEG.trunk * scale * Math.sin(toRad(trunkLean)),
     y: hip.y - SEG.trunk * scale * Math.cos(toRad(trunkLean)),
   };
-
   const headCenter = {
     x: shoulder.x - SEG.headR * 0.85 * scale * Math.sin(toRad(trunkLean)),
     y: shoulder.y - SEG.headR * 0.85 * scale * Math.cos(toRad(trunkLean)),
   };
-
   const armTilt = trunkLean - hipAngle * 0.45;
   const hand = {
     x: shoulder.x + SEG.arm * scale * Math.sin(toRad(armTilt)),
     y: shoulder.y + SEG.arm * scale * Math.cos(toRad(armTilt)),
   };
-
   const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
 
   return {
-    groundY, scale, hip, knee, ankle, footTip, shoulder, headCenter, hand,
+    groundY, scale, hip,
+    knee: primary.knee, ankle: primary.ankle, footTip: primary.footTip,
+    shoulder, headCenter, hand,
+    far,
     muscleBellies: {
-      "Gluteus Maximus": mid(hip, { x: hip.x, y: hip.y - SEG.thigh * scale * 0.3 }),
-      "Quadriceps": mid(hip, knee),
-      "Hamstrings": mid(hip, knee),
-      "Gastroc / Soleus": mid(knee, ankle),
-      "Tibialis Anterior": mid(knee, ankle),
+      ...primary.muscleBellies,
       "Erector Spinae": mid(hip, shoulder),
     },
   };
 }
 
-function drawStickFigure(canvas, state) {
+function drawStickFigure(canvas, state, state2 = null) {
   const { ctx, w: W, h: H } = setupCanvasDPR(canvas);
   ctx.clearRect(0, 0, W, H);
 
@@ -95,8 +117,22 @@ function drawStickFigure(canvas, state) {
   ctx.lineTo(W - 24, groundY);
   ctx.stroke();
 
-  const { hip, knee, ankle, footTip, shoulder, headCenter, hand, scale } = computeSkeleton(W, H, state);
+  const skel = computeSkeleton(W, H, state, state2);
+  const { hip, knee, ankle, footTip, shoulder, headCenter, hand, scale, far } = skel;
   const { grf } = state;
+
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+
+  // Contralateral (far) leg first, so the near leg + body draw over it.
+  if (far) {
+    ctx.strokeStyle = "rgba(232,237,247,0.32)";
+    ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(far.hip.x, far.hip.y); ctx.lineTo(far.knee.x, far.knee.y);
+    ctx.lineTo(far.ankle.x, far.ankle.y); ctx.lineTo(far.footTip.x, far.footTip.y); ctx.stroke();
+    ctx.fillStyle = "rgba(232,237,247,0.32)";
+    [far.knee, far.ankle].forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 3, 0, Math.PI * 2); ctx.fill(); });
+  }
 
   // GRF arrow (ground reaction force), rooted at the foot, scaled in body-weights.
   if (grf > 0.03) {

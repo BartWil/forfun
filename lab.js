@@ -68,23 +68,26 @@ const forceParticles = [];
 const MAX_FORCE_PARTICLES = 220;
 
 function spawnForceParticles(xPx, groundYpx, grf) {
-  const count = Math.min(6, Math.round(grf * 1.7));
+  // Fewer, clearer arrows: spawn at most ~3/frame so each dart reads individually
+  // instead of merging into a glow cloud.
+  const count = Math.min(3, Math.round(grf * 0.9));
   if (count <= 0) return;
   const color = grfColor(grf);
   for (let i = 0; i < count; i++) {
-    const speed = 1.3 + grf * 1.35;
-    const angle = (Math.random() - 0.5) * 0.55; // spray cone around straight-up
-    const jitterSpeed = speed * (0.75 + Math.random() * 0.5);
+    const speed = 1.4 + grf * 1.4;
+    const angle = (Math.random() - 0.5) * 0.5; // spray cone around straight-up
+    const jitterSpeed = speed * (0.8 + Math.random() * 0.4);
     const vx = Math.sin(angle) * jitterSpeed;
     const vy = -Math.cos(angle) * jitterSpeed;
-    const life = 1200 + Math.random() * 700;
+    // Shorter life so arrows fade near the apex rather than raining down and piling up.
+    const life = 750 + Math.random() * 400;
 
     if (useRapier) {
       const rb = world.createRigidBody(
         RAPIER.RigidBodyDesc.dynamic()
           .setTranslation(xPx / PPM, groundYpx / PPM)
           .setLinvel(vx, vy)
-          .setLinearDamping(0.5)
+          .setLinearDamping(0.35)
       );
       world.createCollider(
         RAPIER.ColliderDesc.ball(0.045)
@@ -129,27 +132,61 @@ function stepForceParticles(dt) {
   }
 }
 
+// Each GRF particle is drawn as a tiny arrowhead pointing along its real velocity vector
+// (so you literally see the force's direction), sitting on a soft additive glow.
 function drawForceParticles(ctx) {
-  ctx.globalCompositeOperation = "lighter";
   const now = performance.now();
   for (const p of forceParticles) {
-    let x, y;
+    let x, y, vx, vy;
     if (p.mode === "rapier") {
       const t = p.body.translation();
-      x = t.x * PPM; y = t.y * PPM;
+      const v = p.body.linvel();
+      x = t.x * PPM; y = t.y * PPM; vx = v.x; vy = v.y;
     } else {
-      x = p.x; y = p.y;
+      x = p.x; y = p.y; vx = p.vx; vy = p.vy;
     }
     const age = (now - p.born) / p.life;
     const alpha = Math.max(0, 1 - age);
-    const r = 2.2 + alpha * 2.2;
-    const grad = ctx.createRadialGradient(x, y, 0, x, y, r * 3.2);
-    grad.addColorStop(0, p.color.replace("rgb", "rgba").replace(")", `, ${alpha})`));
+    const speed = Math.hypot(vx, vy);
+    const rgba0 = p.color.replace("rgb", "rgba").replace(")", `, ${alpha})`);
+
+    // small glow halo (kept subtle so the arrow shape reads on top)
+    ctx.globalCompositeOperation = "lighter";
+    const r = 1.4 + alpha * 1.2;
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, r * 2.2);
+    grad.addColorStop(0, rgba0);
     grad.addColorStop(1, p.color.replace("rgb", "rgba").replace(")", ", 0)"));
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(x, y, r * 3.2, 0, Math.PI * 2);
+    ctx.arc(x, y, r * 2.2, 0, Math.PI * 2);
     ctx.fill();
+
+    // arrowhead + short stem along the velocity vector — this is the force direction made visible.
+    if (speed > 0.3) {
+      const ang = Math.atan2(vy, vx);
+      const len = 9 + alpha * 6;
+      const wing = 4 + alpha * 2.5;
+      const tipX = x + Math.cos(ang) * len, tipY = y + Math.sin(ang) * len;
+      const tailX = x - Math.cos(ang) * len, tailY = y - Math.sin(ang) * len;
+      // stem
+      ctx.strokeStyle = rgba0;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(tipX, tipY);
+      ctx.stroke();
+      // head
+      const backX = tipX - Math.cos(ang) * wing * 1.4, backY = tipY - Math.sin(ang) * wing * 1.4;
+      const leftX = backX + Math.cos(ang + 2.5) * wing, leftY = backY + Math.sin(ang + 2.5) * wing;
+      const rightX = backX + Math.cos(ang - 2.5) * wing, rightY = backY + Math.sin(ang - 2.5) * wing;
+      ctx.beginPath();
+      ctx.moveTo(tipX, tipY);
+      ctx.lineTo(leftX, leftY);
+      ctx.lineTo(rightX, rightY);
+      ctx.closePath();
+      ctx.fillStyle = rgba0;
+      ctx.fill();
+    }
   }
   ctx.globalCompositeOperation = "source-over";
 }
@@ -216,6 +253,13 @@ function drawGuideSkeleton(ctx, W, H, skel) {
   ctx.lineWidth = 3;
   ctx.lineCap = "round";
   function seg(a, b) { ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+  if (skel.far) {
+    ctx.strokeStyle = "rgba(232,237,247,0.15)";
+    seg(skel.far.hip, skel.far.knee);
+    seg(skel.far.knee, skel.far.ankle);
+    seg(skel.far.ankle, skel.far.footTip);
+    ctx.strokeStyle = "rgba(232,237,247,0.28)";
+  }
   seg(skel.ankle, skel.footTip);
   seg(skel.ankle, skel.knee);
   seg(skel.knee, skel.hip);
@@ -377,10 +421,12 @@ function frameInner(timestamp) {
 
   const tPercent = fraction * 100;
   const st = liveState(movement, scales, tPercent);
+  const shift = movement.contralateralShift || 0;
+  const st2 = liveState(movement, scales, tPercent + shift);
   updatePhaseLabel(tPercent);
 
   const ctx = cachedCtx, W = cachedW, H = cachedH;
-  const skel = computeSkeleton(W, H, st);
+  const skel = computeSkeleton(W, H, st, st2);
 
   if (st.grf > 0.05) {
     spawnForceParticles(skel.ankle.x, skel.groundY, st.grf);

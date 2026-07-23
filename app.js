@@ -116,8 +116,11 @@ scrubber.addEventListener("input", () => {
 
 function renderFrame() {
   const tPercent = fraction * 100;
-  const st = liveState(MOVEMENTS[currentMovementId], scales, tPercent);
-  drawStickFigure(figureCanvas, st);
+  const movement = MOVEMENTS[currentMovementId];
+  const st = liveState(movement, scales, tPercent);
+  const shift = movement.contralateralShift || 0;
+  const st2 = liveState(movement, scales, tPercent + shift);
+  drawStickFigure(figureCanvas, st, st2);
   updatePhaseLabel(tPercent);
   Playback.fraction = fraction;
   grfChart.update("none");
