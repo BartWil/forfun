@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The Forge — Motion Lab</title>
-<meta name="description" content="Ground reaction force and muscle activation rendered as real particle physics (Rapier2D / Rust / WASM) instead of chart axes." />
+<title>The Anatomy — Motion Lab</title>
+<meta name="description" content="A 3D articulated figure with bones and muscles that move with real joint-angle data and light up with real muscle activation." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="lab.css" />
+<link rel="stylesheet" href="body3d.css" />
 </head>
 <body class="lab-body">
 
@@ -22,25 +23,28 @@
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html#explorer">Explorer</a></li>
       <li><a href="index.html#compare">Compare</a></li>
-      <li><a href="index.html#sources">Sources</a></li>
-      <li><a href="lab.html" class="active">The Forge ⚡</a></li>
-      <li><a href="body3d.html">The Anatomy 🦴</a></li>
+      <li><a href="lab.html">The Forge ⚡</a></li>
+      <li><a href="body3d.html" class="active">The Anatomy 🦴</a></li>
     </ul>
   </div>
 </nav>
 
 <header class="lab-header">
   <div class="container">
-    <div class="section-label">Same data, different physics</div>
-    <h1 class="lab-title">The Forge</h1>
+    <div class="section-label">Same data, in three dimensions</div>
+    <h1 class="lab-title anatomy-title">The Anatomy</h1>
     <p class="lab-sub">
-      No chart axes here. Ground reaction force is launched as a real particle spray —
-      simulated by <b>Rapier2D</b>, a rigid-body physics engine written in Rust and run in
-      your browser as WebAssembly — so a bigger force <em>literally</em> throws matter
-      further under real gravity and drag. Muscle activation drifts off each muscle belly
-      as glowing embers, brighter and denser the harder that muscle is working.
-      Same literature-grounded curves as the <a href="index.html#explorer">Explorer</a> page,
-      rendered as forces acting on things instead of lines on a graph.
+      A 3D articulated figure whose hips, knees, and ankles move on the <b>same literature-grounded
+      joint-angle curves</b> as every other page — and whose muscles glow from cool to hot with their
+      <b>real activation levels</b>. Orbit around it, scrub the cycle, and watch which muscles do the
+      work through the movement. Built in <b>three.js</b> (WebGL) running straight in your browser.
+    </p>
+    <p class="anatomy-note">
+      This build uses stylised procedural bone &amp; muscle volumes as a stand-in. The rendering and
+      data pipeline is designed so a real anatomical mesh (e.g. an open
+      <a href="https://simtk.org/projects/z-anatomy" target="_blank" rel="noopener">Z-Anatomy</a> /
+      <a href="https://github.com/Kevin-Mattheus-Moerman/BodyParts3D" target="_blank" rel="noopener">BodyParts3D</a>
+      model) can be dropped in later without changing the data wiring.
     </p>
   </div>
 </header>
@@ -48,15 +52,15 @@
 <main class="container">
   <div class="lab-tabs" id="movementTabs"></div>
 
-  <div class="lab-stage-wrap">
-    <canvas id="labCanvas"></canvas>
+  <div class="body3d-stage" id="stageWrap">
     <div class="lab-hud">
       <div class="lab-phase">
         <span id="phaseLabel">—</span>
         <span id="phasePercent">0%</span>
       </div>
-      <div class="lab-status" id="physicsStatus">loading physics engine…</div>
+      <div class="lab-status" id="webglStatus">starting WebGL…</div>
     </div>
+    <div class="body3d-hint">drag to orbit · scroll to zoom</div>
   </div>
 
   <div class="lab-controls">
@@ -72,9 +76,9 @@
   <div class="lab-legend" id="legend"></div>
 
   <p class="how-note" style="margin-top:28px;">
-    The particle spray's height and density are a direct, literal rendering of the
-    instantaneous ground-reaction-force curve — nothing here is hand-animated. See
-    <a href="index.html#sources">Sources</a> for what the underlying curves are grounded in.
+    Muscle colour is a direct read-out of each muscle's activation curve at the current instant
+    (cool = quiet, hot = working hard). See <a href="index.html#sources">Sources</a> for what the
+    underlying curves are grounded in.
   </p>
 </main>
 
@@ -87,7 +91,15 @@
 <script src="spline.js"></script>
 <script src="data.js"></script>
 <script src="runtime.js"></script>
-<script src="figure.js"></script>
-<script type="module" src="lab.js"></script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="body3d.js"></script>
 </body>
 </html>
