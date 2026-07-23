@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Forge — Motion Lab</title>
+<meta name="description" content="Ground reaction force and muscle activation rendered as real particle physics (Rapier2D / Rust / WASM) instead of chart axes." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="lab.css" />
+</head>
+<body class="lab-body">
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#explorer">Explorer</a></li>
+      <li><a href="index.html#compare">Compare</a></li>
+      <li><a href="index.html#sources">Sources</a></li>
+      <li><a href="lab.html" class="active">The Forge ⚡</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label">Same data, different physics</div>
+    <h1 class="lab-title">The Forge</h1>
+    <p class="lab-sub">
+      No chart axes here. Ground reaction force is launched as a real particle spray —
+      simulated by <b>Rapier2D</b>, a rigid-body physics engine written in Rust and run in
+      your browser as WebAssembly — so a bigger force <em>literally</em> throws matter
+      further under real gravity and drag. Muscle activation drifts off each muscle belly
+      as glowing embers, brighter and denser the harder that muscle is working.
+      Same literature-grounded curves as the <a href="index.html#explorer">Explorer</a> page,
+      rendered as forces acting on things instead of lines on a graph.
+    </p>
+  </div>
+</header>
+
+<main class="container">
+  <div class="lab-tabs" id="movementTabs"></div>
+
+  <div class="lab-stage-wrap">
+    <canvas id="labCanvas"></canvas>
+    <div class="lab-hud">
+      <div class="lab-phase">
+        <span id="phaseLabel">—</span>
+        <span id="phasePercent">0%</span>
+      </div>
+      <div class="lab-status" id="physicsStatus">loading physics engine…</div>
+    </div>
+  </div>
+
+  <div class="lab-controls">
+    <button id="playBtn" class="transport-btn" aria-label="Play">▶</button>
+    <input type="range" id="scrubber" min="0" max="1000" value="0" />
+    <div class="lab-slider-group">
+      <label for="playbackSpeed">Playback speed</label>
+      <input type="range" id="playbackSpeed" min="0.25" max="2" step="0.25" value="1" />
+    </div>
+    <div class="lab-slider-group" id="paramSlot"></div>
+  </div>
+
+  <div class="lab-legend" id="legend"></div>
+
+  <p class="how-note" style="margin-top:28px;">
+    The particle spray's height and density are a direct, literal rendering of the
+    instantaneous ground-reaction-force curve — nothing here is hand-animated. See
+    <a href="index.html#sources">Sources</a> for what the underlying curves are grounded in.
+  </p>
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+  </div>
+</footer>
+
+<script src="spline.js"></script>
+<script src="data.js"></script>
+<script src="runtime.js"></script>
+<script src="figure.js"></script>
+<script type="module" src="lab.js"></script>
+</body>
+</html>

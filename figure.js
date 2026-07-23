@@ -4,6 +4,10 @@
 // bobbing vertically per the movement's hipDrop curve, while the reference leg and trunk are
 // drawn below/above it purely from the joint-angle curves. This keeps one consistent rendering
 // path for stance, swing, and flight phases across all five movements.
+//
+// computeSkeleton() is the shared geometry: both the dashboard (drawStickFigure) and the
+// physics lab (lab.js, for spawning particles at real joint/muscle positions) use it so the
+// two pages are always drawing the same body.
 
 const SEG = { foot: 0.16, shank: 0.42, thigh: 0.45, trunk: 0.56, headR: 0.09, arm: 0.46 };
 const LEG_LEN = SEG.shank + SEG.thigh;
@@ -21,22 +25,12 @@ function setupCanvasDPR(canvas) {
   return { ctx, w: cssW, h: cssH };
 }
 
-function drawStickFigure(canvas, state) {
-  const { ctx, w: W, h: H } = setupCanvasDPR(canvas);
-  ctx.clearRect(0, 0, W, H);
-
+function computeSkeleton(W, H, state) {
   const groundY = H - 34;
   const scale = (H - 90) / (LEG_LEN + SEG.trunk + SEG.headR * 2);
   const cx = W / 2;
 
-  ctx.strokeStyle = "#22304a";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(24, groundY);
-  ctx.lineTo(W - 24, groundY);
-  ctx.stroke();
-
-  const { hipAngle, kneeAngle, ankleAngle, trunkLean, hipDrop, grf } = state;
+  const { hipAngle, kneeAngle, ankleAngle, trunkLean, hipDrop } = state;
 
   const hip = { x: cx, y: groundY - LEG_LEN * scale + hipDrop * scale };
 
@@ -73,6 +67,36 @@ function drawStickFigure(canvas, state) {
     x: shoulder.x + SEG.arm * scale * Math.sin(toRad(armTilt)),
     y: shoulder.y + SEG.arm * scale * Math.cos(toRad(armTilt)),
   };
+
+  const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+
+  return {
+    groundY, scale, hip, knee, ankle, footTip, shoulder, headCenter, hand,
+    muscleBellies: {
+      "Gluteus Maximus": mid(hip, { x: hip.x, y: hip.y - SEG.thigh * scale * 0.3 }),
+      "Quadriceps": mid(hip, knee),
+      "Hamstrings": mid(hip, knee),
+      "Gastroc / Soleus": mid(knee, ankle),
+      "Tibialis Anterior": mid(knee, ankle),
+      "Erector Spinae": mid(hip, shoulder),
+    },
+  };
+}
+
+function drawStickFigure(canvas, state) {
+  const { ctx, w: W, h: H } = setupCanvasDPR(canvas);
+  ctx.clearRect(0, 0, W, H);
+
+  const groundY = H - 34;
+  ctx.strokeStyle = "#22304a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(24, groundY);
+  ctx.lineTo(W - 24, groundY);
+  ctx.stroke();
+
+  const { hip, knee, ankle, footTip, shoulder, headCenter, hand, scale } = computeSkeleton(W, H, state);
+  const { grf } = state;
 
   // GRF arrow (ground reaction force), rooted at the foot, scaled in body-weights.
   if (grf > 0.03) {
