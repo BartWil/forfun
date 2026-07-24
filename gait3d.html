@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Real Gait — Motion Lab</title>
+<meta name="description" content="A realistic rigged human body walking on real motion-capture joint angles, in the browser." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=3" />
+<link rel="stylesheet" href="lab.css?v=3" />
+<link rel="stylesheet" href="gait3d.css?v=3" />
+</head>
+<body class="lab-body">
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#explorer">Explorer</a></li>
+      <li><a href="lab.html">The Forge ⚡</a></li>
+      <li><a href="body3d.html">The Anatomy 🦴</a></li>
+      <li><a href="gait3d.html" class="active">Real Gait 🚶</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label">A real body on real data</div>
+    <h1 class="lab-title gait-title">Real Gait</h1>
+    <p class="lab-sub">
+      A properly rigged, realistically-proportioned human body — walking on <b>real motion-capture
+      joint angles</b> averaged from an open gait dataset. No canned animation: every hip, knee, and
+      ankle rotation you see is measured data, retargeted onto the skeleton in real time with
+      <b>three.js</b>.
+    </p>
+  </div>
+</header>
+
+<main class="container">
+  <div class="gait-stage" id="stageWrap">
+    <div class="lab-hud">
+      <div class="lab-phase">
+        <span id="phaseLabel">—</span>
+        <span id="phasePercent">0%</span>
+      </div>
+      <div class="lab-status" id="webglStatus">loading model…</div>
+    </div>
+    <div class="body3d-hint">drag to orbit · scroll to zoom</div>
+  </div>
+
+  <div class="lab-controls">
+    <button id="playBtn" class="transport-btn" aria-label="Play">▶</button>
+    <input type="range" id="scrubber" min="0" max="1000" value="0" />
+    <div class="lab-slider-group">
+      <label for="playbackSpeed">Playback speed</label>
+      <input type="range" id="playbackSpeed" min="0.25" max="2" step="0.25" value="0.6" />
+    </div>
+  </div>
+
+  <section class="gx">
+    <h2>What you're looking at</h2>
+    <div class="gx-grid">
+      <div class="gx-card">
+        <h3>The motion is <em>measured</em>, not animated by hand</h3>
+        <p>
+          The hip, knee, and ankle rotations come from the <b>Fukuchi et&nbsp;al. 2018</b> open walking
+          data set — 3D motion capture of <b>42 healthy adults</b> walking overground at a comfortable
+          speed. We took the grand-average sagittal joint angles (averaged over every subject and both
+          legs, <b>84 gait curves</b>) and retargeted them straight onto the skeleton. Nothing here is a
+          canned game animation.
+        </p>
+        <div class="gx-cycle" aria-hidden="true">
+          <div class="gx-stance">Stance ~0–62% <span>foot on the ground</span></div>
+          <div class="gx-swing">Swing ~62–100% <span>foot in the air</span></div>
+        </div>
+        <p class="gx-small">
+          The timeline is one <b>gait cycle</b> — one foot's ground contact to that same foot's next
+          contact — rescaled to 0–100%. In walking the foot is down ~62% of the cycle (there's no flight
+          phase, unlike running). The other leg runs exactly half a cycle behind.
+        </p>
+      </div>
+
+      <div class="gx-card">
+        <h3>How a body walks from angles alone</h3>
+        <p>
+          Joint angles say how the limbs bend but not where the body <em>is</em> in space — that pelvis
+          motion isn't in the angle data. So the walking is reconstructed with <b>foot-locking</b>: the
+          foot in contact is pinned to the ground and the body is carried over it, which recovers real
+          overground progression (≈0.8&nbsp;m per stride here). The camera rides along, so the figure
+          looks in place while the ground slides past and the feet stay genuinely planted.
+        </p>
+        <p class="gx-small">
+          The body itself is a generic rigged mannequin (three.js “Xbot”). The <b>data</b> driving it is
+          real; the mesh is just the canvas. Sagittal plane only — the measured out-of-plane rotations
+          are small and left out for clarity.
+        </p>
+      </div>
+    </div>
+    <p class="gx-foot">
+      Data: Fukuchi CA, Fukuchi RK, Duarte M (2018), <em>A public data set of overground and treadmill
+      walking kinematics and kinetics of healthy individuals</em>,
+      <a href="https://peerj.com/articles/4640/" target="_blank" rel="noopener">PeerJ 6:e4640</a> /
+      <a href="https://doi.org/10.6084/m9.figshare.5722711" target="_blank" rel="noopener">figshare 5722711</a>.
+      Rendering: <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>. Educational
+      visualisation — not a clinical or individual assessment.
+    </p>
+  </section>
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+  </div>
+</footer>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="gait3d.js?v=3"></script>
+</body>
+</html>
