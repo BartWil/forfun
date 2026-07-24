@@ -93,15 +93,81 @@
 
   <div class="lab-legend" id="legend"></div>
 
-  <p class="how-note" style="margin-top:28px;">
-    Both views read from the <em>same</em> activation curves at the current instant — the 3D muscle
-    volumes glow cool → hot, the 2D map lights up neutral → red. Running activation is computed directly
-    from the <a href="https://doi.org/10.5281/zenodo.1254380" target="_blank" rel="noopener">Santuz et&nbsp;al. 2018</a>
-    open running-EMG data set — a grand average of 11,388 gait cycles from 135 adults; see
-    <a href="index.html#sources">Sources</a> for the rest. The 2D map is
-    the open <a href="https://github.com/vulovix/body-muscles" target="_blank" rel="noopener">body-muscles</a>
-    library (Apache&nbsp;2.0); the 3D figure is <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>.
-  </p>
+  <section class="data-explainer">
+    <h2>What you're looking at</h2>
+
+    <div class="dx-grid">
+      <div class="dx-card">
+        <h3>The <span class="dx-pct">%</span> is one stride, not seconds</h3>
+        <p>
+          Every curve runs left-to-right over <b>one full gait cycle</b> — from one foot's ground
+          contact to that <em>same</em> foot's next contact — rescaled to 0–100&nbsp;% so different
+          people and speeds line up. The playhead % at the top is where in that cycle you are now.
+        </p>
+        <div class="dx-cycle" aria-hidden="true">
+          <div class="dx-stance">Stance ~0–39% <span>foot on the ground</span></div>
+          <div class="dx-swing">Swing ~39–100% <span>foot in the air</span></div>
+        </div>
+        <p class="dx-small">
+          For running the foot is on the ground only ~39% of the stride (the rest is swing, including
+          brief flight) — that split is measured from this very data set and is where the muscle bursts
+          are timed against.
+        </p>
+      </div>
+
+      <div class="dx-card">
+        <h3>Colour = how hard a muscle is working <em>for it</em></h3>
+        <p>
+          Each muscle's signal is normalised to <b>its own peak in the cycle</b>: <b>0</b> = quiet,
+          <b>1.0</b> = that muscle's hardest moment. So colour tells you <em>when</em> a muscle fires,
+          not whether the calf is “stronger” than the quad — cross-muscle amplitude from surface EMG
+          isn't comparable, so we don't imply it.
+        </p>
+        <div class="dx-ramp">
+          <span>quiet</span>
+          <div class="dx-bar dx-bar-3d"></div><small>3D volumes (cool→hot)</small>
+          <div class="dx-bar dx-bar-2d"></div><small>2D map (neutral→red)</small>
+          <span>peak</span>
+        </div>
+      </div>
+
+      <div class="dx-card dx-card-wide">
+        <h3>What's measured vs. what's modelled</h3>
+        <table class="dx-table">
+          <thead><tr><th>Signal</th><th>Movement</th><th>Where it comes from</th></tr></thead>
+          <tbody>
+            <tr class="dx-real">
+              <td>Muscle activation</td><td>Running</td>
+              <td><b>Real EMG.</b> Grand average of <b>11,388 gait cycles</b> from <b>135 adults</b>
+                (<a href="https://doi.org/10.5281/zenodo.1254380" target="_blank" rel="noopener">Santuz et&nbsp;al. 2018</a>, open data)</td>
+            </tr>
+            <tr>
+              <td>Muscle activation</td><td>Walk, jump, land, squat</td>
+              <td>Illustrative reconstructions from the biomechanics literature</td>
+            </tr>
+            <tr>
+              <td>Joint angles &amp; ground force</td><td>All</td>
+              <td>Literature-based reconstructions (Perry, Winter, Novacheck, …)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="dx-small">
+          <b>How the running EMG was turned into these curves:</b> raw signals → 50&nbsp;Hz high-pass →
+          full-wave rectify → 20&nbsp;Hz low-pass envelope → normalise each muscle to its own peak →
+          time-normalise every cycle to 100 stance + 100 swing points → average across all 11,388 cycles.
+          This is the standard pipeline from the paper. The 13 recorded channels are pooled into the five
+          shown here (e.g. rectus femoris + both vasti → “Quadriceps”).
+        </p>
+      </div>
+    </div>
+
+    <p class="dx-foot">
+      Both views read the <em>same</em> numbers at each instant. The 2D map is the open
+      <a href="https://github.com/vulovix/body-muscles" target="_blank" rel="noopener">body-muscles</a>
+      library (Apache&nbsp;2.0); the 3D figure is <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>.
+      Educational visualisation — not a clinical or individual assessment.
+    </p>
+  </section>
 </main>
 
 <footer id="footer">

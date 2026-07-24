@@ -37,6 +37,7 @@ const webglStatus = document.getElementById("webglStatus");
 let renderer, scene, camera, controls;
 let root;                 // whole body, repositioned vertically by hipDrop
 const legRigs = {};       // { left: rig, right: rig }
+const armRigs = [];       // [{ group, side }]
 let trunkGroup, erectorMuscle, grfArrow;
 
 function makeBoneMaterial() {
@@ -143,18 +144,18 @@ function buildFigure() {
   head.position.set(0.02, L.trunk + L.headR + 0.06, 0);
   trunkGroup.add(head);
 
-  // arms (static, slightly hanging) for readability
+  // arms — swing is applied per frame (see applyArms)
   [1, -1].forEach(side => {
     const armGroup = new THREE.Group();
     armGroup.position.set(0, L.trunk, side * L.shoulderHalf);
-    armGroup.rotation.z = -0.12;
     armGroup.add(makeBone(L.arm, 0.03, 0.025));
     const fore = new THREE.Group();
     fore.position.set(0, -L.arm, 0);
-    fore.rotation.z = 0.18;
+    fore.rotation.z = 0.28;        // fixed slight elbow flexion
     fore.add(makeBone(L.forearm, 0.025, 0.02));
     armGroup.add(fore);
     trunkGroup.add(armGroup);
+    armRigs.push({ group: armGroup, side });
   });
 
   root.add(trunkGroup);
@@ -231,6 +232,49 @@ function applyState(st, st2) {
     rig.hipGroup.rotation.z = s.hipAngle * DEG;
     rig.kneeGroup.rotation.z = -s.kneeAngle * DEG;
     rig.ankleGroup.rotation.z = s.ankleAngle * DEG;
+  }
+}
+
+// Arms swing anti-phase to the same-side leg during gait; for the bilateral moves
+// they reach forward together as a counterbalance while the body lowers.
+function applyArms(movementId, st, st2) {
+  if (movementId === "walk" || movementId === "run") {
+    const gain = movementId === "run" ? 0.5 : 0.42;
+    for (const a of armRigs) {
+      const s = a.side > 0 ? st2 : st;          // arm opposes the leg on its own side
+      a.group.rotation.z = -gain * s.hipAngle * DEG;
+    }
+  } else {
+    const fwd = Math.max(-0.5, Math.min(1.2, st.hipDrop * 2.4));
+    for (const a of armRigs) a.group.rotation.z = fwd;
+  }
+}
+
+// Keep the figure on the ground: shift the whole body vertically so the lowest foot
+// rests on y=0. Grounded gaits are clamped every frame; ballistic moves (jump/land)
+// plant only while in contact (GRF > 0) so the flight phase can still lift off.
+const SOLE_CORNERS = [
+  new THREE.Vector3(L.foot * 0.35 - L.foot / 2, -0.05,  0.045),
+  new THREE.Vector3(L.foot * 0.35 + L.foot / 2, -0.05,  0.045),
+  new THREE.Vector3(L.foot * 0.35 - L.foot / 2, -0.05, -0.045),
+  new THREE.Vector3(L.foot * 0.35 + L.foot / 2, -0.05, -0.045),
+];
+const GROUNDED = { walk: true, run: true, squat: true, jump: false, land: false };
+const _sv = new THREE.Vector3();
+function footMinY(ankleGroup) {
+  let m = Infinity;
+  for (const c of SOLE_CORNERS) {
+    _sv.copy(c).applyMatrix4(ankleGroup.matrixWorld);
+    if (_sv.y < m) m = _sv.y;
+  }
+  return m;
+}
+function groundContact(movementId, st) {
+  root.updateMatrixWorld(true);
+  const minSole = Math.min(footMinY(legRigs.left.ankleGroup), footMinY(legRigs.right.ankleGroup));
+  const correction = -minSole;                  // >0 lift out of ground, <0 drop to ground
+  if (GROUNDED[movementId] || correction > 0 || st.grf > 0.1) {
+    root.position.y += correction;
   }
 }
 
@@ -433,6 +477,8 @@ function animate(timestamp) {
 
   updatePhaseLabel(tPercent);
   applyState(st, st2);
+  applyArms(currentMovementId, st, st2);
+  groundContact(currentMovementId, st);
   applyMuscles(movement, scales, tPercent, tPercent2);
   updateGrfArrow(st, movement, scales, tPercent);
   updateMuscleMap(movement, scales, tPercent, tPercent2);
