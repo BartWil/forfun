@@ -262,6 +262,59 @@ function updateGrfArrow(st, movement, scales, tPercent) {
   grfArrow.visible = st.grf > 0.05;
 }
 
+// ================= 2D EMG heatmap (body-muscles UMD, window.BodyMuscles) =================
+// Maps our six modelled muscles onto the library's anatomical region IDs and paints them from the
+// SAME activation curves: right-side regions get the primary limb, left-side regions the
+// contralateral (phase-shifted) limb — matching the 3D figure. Front view carries quads + tibialis;
+// back view carries glutes, hamstrings, calves, and the erectors.
+let mmFront = null, mmBack = null, mmLastF = "", mmLastB = "";
+const MM_FRONT = { "Quadriceps": ["quads"], "Tibialis Anterior": ["tibialis-anterior"] };
+const MM_BACK = {
+  "Gluteus Maximus": ["gluteus-maximus"],
+  "Hamstrings": ["hamstrings-medial", "hamstrings-lateral"],
+  "Gastroc / Soleus": ["calves-gastroc-medial", "calves-gastroc-lateral", "calves-soleus"],
+  "Erector Spinae": ["lower-back-erectors"],
+};
+
+function initMuscleMap() {
+  const status = document.getElementById("mmStatus");
+  const BM = window.BodyMuscles;
+  if (!BM || !BM.BodyChart) { if (status) status.textContent = "unavailable"; return; }
+  try {
+    mmFront = new BM.BodyChart(document.getElementById("mmFront"), { view: BM.ViewSide.FRONT, bodyState: {} });
+    mmBack = new BM.BodyChart(document.getElementById("mmBack"), { view: BM.ViewSide.BACK, bodyState: {} });
+    if (status) status.textContent = "live";
+  } catch (e) {
+    console.error("muscle map init:", e);
+    if (status) status.textContent = "error";
+  }
+}
+
+const mmIntensity = (a) => Math.max(0, Math.min(10, Math.round(a * 10)));
+
+function mmBuildState(map, movement, scales, tR, tL) {
+  const state = {};
+  for (const [name, bases] of Object.entries(map)) {
+    const iR = mmIntensity(muscleActivationAt(movement, scales, name, tR));
+    const iL = mmIntensity(muscleActivationAt(movement, scales, name, tL));
+    for (const base of bases) {
+      state[base + "-right"] = { intensity: iR, selected: iR > 0 };
+      state[base + "-left"] = { intensity: iL, selected: iL > 0 };
+    }
+    if (name === "Erector Spinae") state["spine"] = { intensity: iR, selected: iR > 0 };
+  }
+  return state;
+}
+
+function updateMuscleMap(movement, scales, tR, tL) {
+  if (!mmFront) return;
+  const fs = mmBuildState(MM_FRONT, movement, scales, tR, tL);
+  const bs = mmBuildState(MM_BACK, movement, scales, tR, tL);
+  const fk = JSON.stringify(fs), bk = JSON.stringify(bs);
+  if (fk !== mmLastF) { mmFront.update({ bodyState: fs }); mmLastF = fk; }
+  if (bk !== mmLastB) { mmBack.update({ bodyState: bs }); mmLastB = bk; }
+}
+
 // ================= UI wiring =================
 const phaseLabel = document.getElementById("phaseLabel");
 const phasePercent = document.getElementById("phasePercent");
@@ -382,6 +435,7 @@ function animate(timestamp) {
   applyState(st, st2);
   applyMuscles(movement, scales, tPercent, tPercent2);
   updateGrfArrow(st, movement, scales, tPercent);
+  updateMuscleMap(movement, scales, tPercent, tPercent2);
 
   controls.update();
   renderer.render(scene, camera);
@@ -394,6 +448,7 @@ function animate(timestamp) {
     buildTabs();
     buildParamSlider();
     buildLegend();
+    initMuscleMap();
     webglStatus.textContent = "three.js (WebGL): live";
     requestAnimationFrame(animate);
   } catch (err) {

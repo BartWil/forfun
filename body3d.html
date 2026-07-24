@@ -52,15 +52,33 @@
 <main class="container">
   <div class="lab-tabs" id="movementTabs"></div>
 
-  <div class="body3d-stage" id="stageWrap">
-    <div class="lab-hud">
-      <div class="lab-phase">
-        <span id="phaseLabel">—</span>
-        <span id="phasePercent">0%</span>
+  <div class="anatomy-split">
+    <div class="body3d-stage" id="stageWrap">
+      <div class="lab-hud">
+        <div class="lab-phase">
+          <span id="phaseLabel">—</span>
+          <span id="phasePercent">0%</span>
+        </div>
+        <div class="lab-status" id="webglStatus">starting WebGL…</div>
       </div>
-      <div class="lab-status" id="webglStatus">starting WebGL…</div>
+      <div class="body3d-hint">drag to orbit · scroll to zoom</div>
     </div>
-    <div class="body3d-hint">drag to orbit · scroll to zoom</div>
+
+    <div class="musclemap-panel" id="muscleMapPanel">
+      <div class="mm-head">
+        <span class="mm-title">EMG heatmap</span>
+        <span class="mm-status" id="mmStatus">loading…</span>
+      </div>
+      <div class="mm-views">
+        <figure class="mm-view"><div id="mmFront" class="mm-svg"></div><figcaption>Front</figcaption></figure>
+        <figure class="mm-view"><div id="mmBack" class="mm-svg"></div><figcaption>Back</figcaption></figure>
+      </div>
+      <p class="mm-note">
+        The same six activation curves, painted onto a 2D anatomical map (front + back) as an
+        EMG-style heatmap — neutral → yellow → orange → red with rising activation. Unlike the 3D
+        figure it doesn't move with the joints; it's a body that <em>lights up</em>.
+      </p>
+    </div>
   </div>
 
   <div class="lab-controls">
@@ -76,9 +94,12 @@
   <div class="lab-legend" id="legend"></div>
 
   <p class="how-note" style="margin-top:28px;">
-    Muscle colour is a direct read-out of each muscle's activation curve at the current instant
-    (cool = quiet, hot = working hard). See <a href="index.html#sources">Sources</a> for what the
-    underlying curves are grounded in.
+    Both views read from the <em>same</em> activation curves at the current instant — the 3D muscle
+    volumes glow cool → hot, the 2D map lights up neutral → red. Running activation timing is grounded
+    in the <a href="https://doi.org/10.5281/zenodo.1254380" target="_blank" rel="noopener">Santuz et&nbsp;al. 2018</a>
+    open running-EMG data set; see <a href="index.html#sources">Sources</a> for the rest. The 2D map is
+    the open <a href="https://github.com/vulovix/body-muscles" target="_blank" rel="noopener">body-muscles</a>
+    library (Apache&nbsp;2.0); the 3D figure is <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>.
   </p>
 </main>
 
@@ -88,6 +109,7 @@
   </div>
 </footer>
 
+<script src="https://unpkg.com/body-muscles@1.0.0/dist/umd/body-muscles.umd.min.js"></script>
 <script src="spline.js"></script>
 <script src="data.js"></script>
 <script src="runtime.js"></script>

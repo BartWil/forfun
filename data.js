@@ -67,12 +67,21 @@ const MOVEMENTS = {
     ankle: [[0,3],[5,8],[12,15],[20,20],[26,12],[30,-15],[33,-32],[38,-20],[45,-2],[55,5],[70,6],[85,4],[97,3]],
     trunkLean: [[0,8],[50,9],[95,8]],
     hipDrop: [[0,0.08],[10,0.12],[20,0.08],[30,0.02],[45,-0.02],[60,-0.03],[75,-0.01],[90,0.03],[97,0.07]],
+    // Running muscle-activation envelopes shaped to the four motor primitives that
+    // Santuz et al. 2018 (Front. Physiol.; open data set, 135 recordings) extract from
+    // running EMG via NMF: weight acceptance (early stance), propulsion (late stance),
+    // early swing, and late swing. Each muscle is placed on the primitive(s) it loads.
     muscles: [
-      { name: "Gluteus Maximus", keyframes: [[0,0.75],[8,0.6],[15,0.3],[22,0.1],[30,0.02],[75,0],[85,0.35],[92,0.65],[97,0.8]] },
-      { name: "Quadriceps", keyframes: [[0,0.7],[6,0.65],[12,0.55],[20,0.3],[28,0.1],[35,0.02],[80,0],[88,0.25],[95,0.55]] },
-      { name: "Hamstrings", keyframes: [[0,0.55],[6,0.4],[15,0.15],[25,0.03],[55,0],[65,0.2],[75,0.5],[85,0.75],[95,0.7]] },
-      { name: "Gastroc / Soleus", keyframes: [[0,0.15],[8,0.35],[16,0.6],[22,0.8],[27,0.95],[31,0.7],[34,0.1],[40,0],[97,0]] },
-      { name: "Tibialis Anterior", keyframes: [[0,0.45],[6,0.3],[14,0.1],[30,0],[45,0.05],[55,0.25],[65,0.45],[80,0.5],[92,0.48],[97,0.46]] },
+      // weight acceptance — gluteals peak just after touchdown, re-arm in late swing
+      { name: "Gluteus Maximus", keyframes: [[0,0.8],[8,0.6],[16,0.3],[24,0.1],[32,0.02],[72,0],[84,0.4],[92,0.7],[100,0.82]] },
+      // weight acceptance — quadriceps absorb impact early stance; RF re-arms pre-contact
+      { name: "Quadriceps", keyframes: [[0,0.72],[6,0.68],[14,0.5],[22,0.25],[30,0.08],[38,0.02],[78,0],[88,0.3],[96,0.6],[100,0.68]] },
+      // late swing — hamstrings decelerate the swinging shank, carry into early stance
+      { name: "Hamstrings", keyframes: [[0,0.6],[8,0.45],[18,0.15],[28,0.03],[55,0],[68,0.25],[80,0.6],[90,0.85],[97,0.78]] },
+      // propulsion — plantarflexors peak in late stance, silent through swing
+      { name: "Gastroc / Soleus", keyframes: [[0,0.12],[8,0.3],[16,0.55],[24,0.8],[30,0.95],[35,0.6],[40,0.1],[45,0],[97,0]] },
+      // dorsiflexor bursts — touchdown control + early-swing foot clearance (two peaks)
+      { name: "Tibialis Anterior", keyframes: [[0,0.5],[5,0.35],[14,0.12],[26,0.03],[38,0.15],[48,0.5],[58,0.55],[70,0.4],[85,0.4],[95,0.48],[100,0.5]] },
     ],
     param: {
       id: "speed", label: "Running speed", unit: "", min: 0, max: 1, step: 0.01, default: 0.4,
