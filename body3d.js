@@ -323,14 +323,14 @@ const MM_BACK = {
 function initMuscleMap() {
   const status = document.getElementById("mmStatus");
   const BM = window.BodyMuscles;
-  if (!BM || !BM.BodyChart) { if (status) status.textContent = "unavailable"; return; }
+  if (!BM || !BM.BodyChart) { if (status) status.textContent = i18n.t("unavailable"); return; }
   try {
     mmFront = new BM.BodyChart(document.getElementById("mmFront"), { view: BM.ViewSide.FRONT, bodyState: {} });
     mmBack = new BM.BodyChart(document.getElementById("mmBack"), { view: BM.ViewSide.BACK, bodyState: {} });
-    if (status) status.textContent = "live";
+    if (status) status.textContent = i18n.t("live");
   } catch (e) {
     console.error("muscle map init:", e);
-    if (status) status.textContent = "error";
+    if (status) status.textContent = i18n.t("error");
   }
 }
 
@@ -381,7 +381,7 @@ function buildTabs() {
   MOVEMENT_ORDER.forEach(id => {
     const btn = document.createElement("button");
     btn.className = "movement-tab" + (id === currentMovementId ? " active" : "");
-    btn.textContent = MOVEMENTS[id].label;
+    btn.textContent = i18n.t(MOVEMENTS[id].label);
     btn.addEventListener("click", () => switchMovement(id));
     movementTabsEl.appendChild(btn);
   });
@@ -391,14 +391,14 @@ function buildParamSlider() {
   const p = MOVEMENTS[currentMovementId].param;
   paramSlot.innerHTML = "";
   const label = document.createElement("label");
-  const span = document.createElement("span"); span.textContent = p.label;
-  const pv = document.createElement("span"); pv.className = "pv"; pv.textContent = p.display(paramValue);
+  const span = document.createElement("span"); span.textContent = i18n.t(p.label);
+  const pv = document.createElement("span"); pv.className = "pv"; pv.textContent = i18n.t(p.display(paramValue));
   label.appendChild(span); label.appendChild(pv);
   const input = document.createElement("input");
   input.type = "range"; input.min = p.min; input.max = p.max; input.step = p.step; input.value = paramValue;
   input.addEventListener("input", () => {
     paramValue = parseFloat(input.value);
-    pv.textContent = p.display(paramValue);
+    pv.textContent = i18n.t(p.display(paramValue));
     scales = computeScales(MOVEMENTS[currentMovementId], paramValue);
   });
   paramSlot.appendChild(label); paramSlot.appendChild(input);
@@ -408,16 +408,16 @@ function buildLegend() {
   legendEl.innerHTML = "";
   const ramp = document.createElement("div");
   ramp.className = "lg-item";
-  ramp.innerHTML = `<span class="lg-dot" style="background:linear-gradient(90deg,#33465f,#ffb43c,#ff3c28)"></span> Muscle glow = activation (quiet → working hard)`;
+  ramp.innerHTML = `<span class="lg-dot" style="background:linear-gradient(90deg,#33465f,#ffb43c,#ff3c28)"></span> ${i18n.t("Muscle glow = activation (quiet → working hard)")}`;
   legendEl.appendChild(ramp);
   const grf = document.createElement("div");
   grf.className = "lg-item";
-  grf.innerHTML = `<span class="lg-dot" style="background:#5eead4"></span> Arrow = ground reaction force`;
+  grf.innerHTML = `<span class="lg-dot" style="background:#5eead4"></span> ${i18n.t("Arrow = ground reaction force")}`;
   legendEl.appendChild(grf);
   MUSCLE_LIST.forEach(name => {
     const item = document.createElement("div");
     item.className = "lg-item";
-    item.innerHTML = `<span class="lg-dot" style="background:#647092"></span> ${name}`;
+    item.innerHTML = `<span class="lg-dot" style="background:#647092"></span> ${i18n.t(name)}`;
     legendEl.appendChild(item);
   });
 }
@@ -445,9 +445,16 @@ scrubber.addEventListener("input", () => {
 function updatePhaseLabel(tPercent) {
   const phases = MOVEMENTS[currentMovementId].phases;
   const hit = phases.find(([a, b]) => tPercent >= a && tPercent < b) || phases[phases.length - 1];
-  phaseLabel.textContent = hit[2];
+  phaseLabel.textContent = i18n.t(hit[2]);
   phasePercent.textContent = Math.round(tPercent) + "%";
 }
+
+// Re-render JS-injected text when the language switches.
+document.addEventListener("i18n:changed", () => {
+  buildTabs();
+  buildParamSlider();
+  buildLegend();
+});
 
 function onResize() {
   const w = stageWrap.clientWidth, h = stageWrap.clientHeight;
@@ -495,7 +502,7 @@ function animate(timestamp) {
     buildParamSlider();
     buildLegend();
     initMuscleMap();
-    webglStatus.textContent = "three.js (WebGL): live";
+    webglStatus.textContent = i18n.t("three.js (WebGL): live");
     requestAnimationFrame(animate);
   } catch (err) {
     console.error("Anatomy boot error:", err);

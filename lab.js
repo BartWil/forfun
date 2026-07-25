@@ -304,7 +304,7 @@ function buildTabs() {
   MOVEMENT_ORDER.forEach(id => {
     const btn = document.createElement("button");
     btn.className = "movement-tab" + (id === currentMovementId ? " active" : "");
-    btn.textContent = MOVEMENTS[id].label;
+    btn.textContent = i18n.t(MOVEMENTS[id].label);
     btn.addEventListener("click", () => switchMovement(id));
     movementTabsEl.appendChild(btn);
   });
@@ -316,17 +316,17 @@ function buildParamSlider() {
   paramSlot.innerHTML = "";
   const label = document.createElement("label");
   const span = document.createElement("span");
-  span.textContent = p.label;
+  span.textContent = i18n.t(p.label);
   const pv = document.createElement("span");
   pv.className = "pv";
-  pv.textContent = p.display(paramValue);
+  pv.textContent = i18n.t(p.display(paramValue));
   label.appendChild(span); label.appendChild(pv);
   const input = document.createElement("input");
   input.type = "range";
   input.min = p.min; input.max = p.max; input.step = p.step; input.value = paramValue;
   input.addEventListener("input", () => {
     paramValue = parseFloat(input.value);
-    pv.textContent = p.display(paramValue);
+    pv.textContent = i18n.t(p.display(paramValue));
     scales = computeScales(m, paramValue);
   });
   paramSlot.appendChild(label);
@@ -338,12 +338,12 @@ function buildLegend() {
   legendEl.innerHTML = "";
   const grfItem = document.createElement("div");
   grfItem.className = "lg-item";
-  grfItem.innerHTML = `<span class="lg-dot" style="background:#5eead4"></span> Particle spray = ground reaction force (teal → gold → white as it climbs)`;
+  grfItem.innerHTML = `<span class="lg-dot" style="background:#5eead4"></span> ${i18n.t("Particle spray = ground reaction force (teal → gold → white as it climbs)")}`;
   legendEl.appendChild(grfItem);
   m.muscles.forEach(mu => {
     const item = document.createElement("div");
     item.className = "lg-item";
-    item.innerHTML = `<span class="lg-dot" style="background:${MUSCLE_COLORS[mu.name] || "#e8edf7"}"></span> ${mu.name}`;
+    item.innerHTML = `<span class="lg-dot" style="background:${MUSCLE_COLORS[mu.name] || "#e8edf7"}"></span> ${i18n.t(mu.name)}`;
     legendEl.appendChild(item);
   });
 }
@@ -372,9 +372,16 @@ scrubber.addEventListener("input", () => {
 function updatePhaseLabel(tPercent) {
   const phases = MOVEMENTS[currentMovementId].phases;
   const hit = phases.find(([a, b]) => tPercent >= a && tPercent < b) || phases[phases.length - 1];
-  phaseLabel.textContent = hit[2];
+  phaseLabel.textContent = i18n.t(hit[2]);
   phasePercent.textContent = Math.round(tPercent) + "%";
 }
+
+// Re-render JS-injected text when the language switches.
+document.addEventListener("i18n:changed", () => {
+  buildTabs();
+  buildParamSlider();
+  buildLegend();
+});
 
 // Cached once here and only refreshed on actual resize — calling setupCanvasDPR() (which
 // resets canvas.width/height, clearing the bitmap) every frame would wipe out the
@@ -458,7 +465,7 @@ function frameInner(timestamp) {
   await initPhysics();
   resizeCanvas();
   physicsStatusEl.textContent = useRapier
-    ? "Rapier2D (Rust → WASM) physics: live"
-    : "Physics CDN unavailable — showing manual projectile motion instead";
+    ? i18n.t("Rapier2D (Rust → WASM) physics: live")
+    : i18n.t("Physics CDN unavailable — showing manual projectile motion instead");
   requestAnimationFrame(frame);
 })();
