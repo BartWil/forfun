@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Curve Builder — Motion Lab data tool</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.5 system-ui, sans-serif; background: #0b0f17; color: #e8edf7; padding: 24px; }
+  h1 { font-size: 1.3rem; margin: 0 0 4px; }
+  h1 span { color: #5eead4; }
+  p.lead { color: #9aa7bd; margin: 0 0 20px; max-width: 760px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  label { display: block; font-size: .8rem; font-weight: 600; color: #9aa7bd; margin: 14px 0 4px; letter-spacing: .03em; }
+  textarea { width: 100%; min-height: 150px; background: #10151f; color: #e8edf7; border: 1px solid #232c3d;
+    border-radius: 8px; padding: 10px; font: 12px/1.45 ui-monospace, Menlo, monospace; resize: vertical; }
+  .row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+  .row label { margin: 0; }
+  input[type=range] { width: 160px; }
+  input[type=file] { font-size: .85rem; }
+  button { background: #5eead4; color: #06231d; border: 0; border-radius: 8px; padding: 9px 16px;
+    font-weight: 700; cursor: pointer; font-size: .9rem; }
+  button.ghost { background: transparent; color: #5eead4; border: 1px solid #2c4a44; }
+  canvas { width: 100%; height: 240px; background: #10151f; border: 1px solid #232c3d; border-radius: 8px; display: block; }
+  .curve-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0; }
+  .curve-tabs button { background: #161d2b; color: #9aa7bd; border: 1px solid #232c3d; font-weight: 600; padding: 5px 11px; font-size: .8rem; }
+  .curve-tabs button.active { background: rgba(94,234,212,.16); color: #5eead4; border-color: #2c4a44; }
+  .out { position: relative; }
+  .hint { font-size: .78rem; color: #6f7c92; margin-top: 6px; }
+  code { background: #161d2b; padding: 1px 5px; border-radius: 4px; color: #ffd479; font-size: .85em; }
+  .stat { font-size: .8rem; color: #9aa7bd; }
+  .legend { display: inline-flex; gap: 14px; font-size: .78rem; color: #9aa7bd; margin-left: 8px; }
+  .legend b { font-weight: 600; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<h1>Curve <span>Builder</span></h1>
+<p class="lead">
+  Turn a processed, cycle-normalised dataset curve into the keyframe format <code>data.js</code> uses.
+  Paste or load a CSV, tune how aggressively each curve is simplified, eyeball the fit, then copy the
+  arrays. Everything runs locally in your browser — nothing is uploaded.
+</p>
+
+<div class="grid">
+  <div>
+    <label for="csv">CSV input</label>
+    <textarea id="csv" spellcheck="false" placeholder="percent,vgrf,hip,knee,ankle
+0,0.15,30,5,2
+1,0.30,29,8,0
+2,0.55,27,12,-3
+...  (percent = 0–100, one row per sample; column names become curve names)"></textarea>
+    <div class="row">
+      <input type="file" id="file" accept=".csv,.txt,.tsv" />
+      <button id="loadSample" class="ghost" type="button">Load sample</button>
+    </div>
+
+    <div class="row">
+      <label for="eps">Simplification (ε, % of range): <span id="epsVal">3.0</span></label>
+      <input type="range" id="eps" min="0" max="0.15" step="0.005" value="0.03" />
+      <span class="stat" id="reduceStat"></span>
+    </div>
+
+    <div class="curve-tabs" id="curveTabs"></div>
+    <canvas id="preview" width="720" height="240"></canvas>
+    <div class="legend">
+      <span><b><span class="dot" style="background:#5a6a86"></span>raw</b> data</span>
+      <span><b><span class="dot" style="background:#5eead4"></span>reduced</b> keyframes</span>
+    </div>
+  </div>
+
+  <div class="out">
+    <label>Keyframe output (paste into <code>data.js</code>)</label>
+    <textarea id="output" spellcheck="false" readonly style="min-height:420px;"></textarea>
+    <div class="row">
+      <button id="copy" type="button">Copy output</button>
+      <span class="hint">Sign/scale conventions still need a human check — compare against the axis conventions at the top of <code>data.js</code>.</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- Ramer–Douglas–Peucker reduction ------------------------------------
+// Each curve is normalised to its own [0,1] box (in both percent and value)
+// before RDP, so ε is a fraction of the curve's own span and means the same
+// thing whether the curve is vGRF (~0–1.2 BW), a joint angle (~0–120°), or an
+// EMG envelope (0–1). reduceCurve() returns the kept ORIGINAL points.
+function reduceCurve(pts, epsilon) {
+  if (pts.length < 3) return pts.slice();
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const xmin = Math.min(...xs), xmax = Math.max(...xs);
+  const ymin = Math.min(...ys), ymax = Math.max(...ys);
+  const xr = (xmax - xmin) || 1, yr = (ymax - ymin) || 1;
+  const norm = pts.map(([x, y]) => [(x - xmin) / xr, (y - ymin) / yr]);
+  const keep = new Array(pts.length).fill(false);
+  keep[0] = keep[pts.length - 1] = true;
+  rdpMark(norm, 0, pts.length - 1, epsilon, keep);
+  return pts.filter((_, i) => keep[i]);
+}
+function rdpMark(pts, lo, hi, eps, keep) {
+  if (hi - lo < 2) return;
+  const a = pts[lo], b = pts[hi];
+  let idx = -1, dmax = 0;
+  for (let i = lo + 1; i < hi; i++) {
+    const d = perpDist(pts[i], a, b);
+    if (d > dmax) { dmax = d; idx = i; }
+  }
+  if (dmax > eps && idx > -1) {
+    keep[idx] = true;
+    rdpMark(pts, lo, idx, eps, keep);
+    rdpMark(pts, idx, hi, eps, keep);
+  }
+}
+function perpDist(p, a, b) {
+  const dx = b[0] - a[0], dy = b[1] - a[1];
+  const len = Math.hypot(dx, dy) || 1e-9;
+  return Math.abs(dy * p[0] - dx * p[1] + b[0] * a[1] - b[1] * a[0]) / len;
+}
+
+// ---- CSV parsing --------------------------------------------------------
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim() && !l.trim().startsWith("#"));
+  if (!lines.length) return { cols: [], rows: [] };
+  const delim = (lines[0].match(/\t/) ? "\t" : lines[0].match(/;/) ? ";" : ",");
+  const header = lines[0].split(delim).map(s => s.trim());
+  const rows = lines.slice(1).map(l => l.split(delim).map(s => parseFloat(s.trim())));
+  return { cols: header, rows };
+}
+
+let parsed = { cols: [], rows: [] };
+let curveNames = [];    // value columns (everything except the percent column)
+let activeCurve = null;
+
+const csvEl = document.getElementById("csv");
+const epsEl = document.getElementById("eps");
+const epsVal = document.getElementById("epsVal");
+const tabsEl = document.getElementById("curveTabs");
+const outEl = document.getElementById("output");
+const cv = document.getElementById("preview");
+const reduceStat = document.getElementById("reduceStat");
+
+function xColumnIndex() {
+  const i = parsed.cols.findIndex(c => /^(percent|pct|%|cycle|time|t)$/i.test(c));
+  return i >= 0 ? i : 0;
+}
+function pointsFor(name) {
+  const xi = xColumnIndex();
+  const ci = parsed.cols.indexOf(name);
+  return parsed.rows
+    .filter(r => Number.isFinite(r[xi]) && Number.isFinite(r[ci]))
+    .map(r => [r[xi], r[ci]]);
+}
+
+function rebuild() {
+  parsed = parseCSV(csvEl.value);
+  const xi = xColumnIndex();
+  curveNames = parsed.cols.filter((_, i) => i !== xi);
+  if (!curveNames.includes(activeCurve)) activeCurve = curveNames[0] || null;
+
+  tabsEl.innerHTML = "";
+  curveNames.forEach(name => {
+    const b = document.createElement("button");
+    b.textContent = name;
+    b.className = name === activeCurve ? "active" : "";
+    b.onclick = () => { activeCurve = name; rebuild(); };
+    tabsEl.appendChild(b);
+  });
+
+  emitOutput();
+  draw();
+}
+
+function emitOutput() {
+  const eps = parseFloat(epsEl.value);
+  const blocks = curveNames.map(name => {
+    const pts = pointsFor(name);
+    const reduced = reduceCurve(pts, eps).map(([x, y]) => [round(x), round(y)]);
+    return `  ${jsKey(name)}: ${JSON.stringify(reduced)},`;
+  });
+  outEl.value = "{\n" + blocks.join("\n") + "\n}";
+  if (activeCurve) {
+    const full = pointsFor(activeCurve).length;
+    const red = reduceCurve(pointsFor(activeCurve), eps).length;
+    reduceStat.textContent = `${activeCurve}: ${full} → ${red} keyframes`;
+  }
+}
+function round(n) { return Math.round(n * 100) / 100; }
+function jsKey(name) { return /^[a-zA-Z_$][\w$]*$/.test(name) ? name : JSON.stringify(name); }
+
+function draw() {
+  const ctx = cv.getContext("2d");
+  const W = cv.width, H = cv.height, pad = 24;
+  ctx.clearRect(0, 0, W, H);
+  if (!activeCurve) return;
+  const pts = pointsFor(activeCurve);
+  if (pts.length < 2) return;
+  const eps = parseFloat(epsEl.value);
+  const reduced = reduceCurve(pts, eps);
+  const ys = pts.map(p => p[1]);
+  let ymin = Math.min(...ys), ymax = Math.max(...ys);
+  if (ymin === ymax) { ymin -= 1; ymax += 1; }
+  const sx = x => pad + (x / 100) * (W - 2 * pad);
+  const sy = y => H - pad - ((y - ymin) / (ymax - ymin)) * (H - 2 * pad);
+
+  // raw
+  ctx.strokeStyle = "#5a6a86";
+  ctx.lineWidth = 1.5; ctx.beginPath();
+  pts.forEach((p, i) => { const X = sx(p[0]), Y = sy(p[1]); i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+  ctx.stroke();
+
+  // reduced
+  ctx.strokeStyle = "#5eead4"; ctx.lineWidth = 2; ctx.beginPath();
+  reduced.forEach((p, i) => { const X = sx(p[0]), Y = sy(p[1]); i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
+  ctx.stroke();
+  ctx.fillStyle = "#5eead4";
+  reduced.forEach(p => { ctx.beginPath(); ctx.arc(sx(p[0]), sy(p[1]), 3, 0, 7); ctx.fill(); });
+}
+
+epsEl.addEventListener("input", () => { epsVal.textContent = (parseFloat(epsEl.value) * 100).toFixed(1); emitOutput(); draw(); });
+csvEl.addEventListener("input", rebuild);
+document.getElementById("file").addEventListener("change", e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader(); r.onload = () => { csvEl.value = r.result; rebuild(); }; r.readAsText(f);
+});
+document.getElementById("copy").addEventListener("click", () => {
+  outEl.select(); document.execCommand("copy");
+});
+document.getElementById("loadSample").addEventListener("click", () => {
+  // Synthetic double-hump vGRF + sagittal angles over one gait cycle (for tool demo only).
+  let rows = ["percent,vgrf,hip,knee,ankle"];
+  for (let p = 0; p <= 100; p++) {
+    const stance = p <= 62;
+    const vgrf = stance ? Math.max(0, 1.05 + 0.12 * Math.sin(p / 62 * Math.PI * 2) + 0.1 * Math.sin(p / 62 * Math.PI)) : 0;
+    const hip = 30 * Math.cos(p / 100 * Math.PI * 2) * 0.5 + 8 * Math.sin(p / 100 * Math.PI * 2) + 8;
+    const knee = 10 + 12 * Math.sin(p / 100 * Math.PI) + (p > 60 ? 45 * Math.sin((p - 60) / 40 * Math.PI) : 0);
+    const ankle = 6 * Math.sin(p / 100 * Math.PI * 2) - (p > 55 && p < 65 ? 15 : 0);
+    rows.push([p, vgrf.toFixed(3), hip.toFixed(1), knee.toFixed(1), ankle.toFixed(1)].join(","));
+  }
+  csvEl.value = rows.join("\n"); rebuild();
+});
+
+rebuild();
+</script>
+</body>
+</html>
