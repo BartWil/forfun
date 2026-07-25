@@ -114,7 +114,7 @@ function onModelLoaded(gltf) {
   scene.add(model);
   modelBaseY = model.position.y;
   ready = true;
-  webglStatus.textContent = "three.js (WebGL): live · real mocap data";
+  webglStatus.textContent = i18n.t("three.js (WebGL): live · real mocap data");
 }
 
 // ---- drive the skeleton from the real angles ----
@@ -164,7 +164,7 @@ function applyPose(tPercent) {
 
 function updatePhase(tPercent) {
   const hit = PHASES.find(([a, b]) => tPercent >= a && tPercent < b) || PHASES[PHASES.length - 1];
-  phaseLabel.textContent = hit[2];
+  phaseLabel.textContent = i18n.t(hit[2]);
   phasePercent.textContent = Math.round(tPercent) + "%";
 }
 
@@ -224,7 +224,7 @@ function animate(ts) {
     initScene();
     new GLTFLoader().load(MODEL_URL, onModelLoaded, undefined, err => {
       console.error("GLB load error:", err);
-      webglStatus.textContent = "model load failed";
+      webglStatus.textContent = i18n.t("model load failed");
     });
     requestAnimationFrame(animate);
   } catch (err) {

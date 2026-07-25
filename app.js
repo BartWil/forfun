@@ -34,7 +34,7 @@ let lastTime = null;
 function updatePhaseLabel(tPercent) {
   const phases = MOVEMENTS[currentMovementId].phases;
   const hit = phases.find(([a, b]) => tPercent >= a && tPercent < b) || phases[phases.length - 1];
-  phaseLabel.textContent = hit[2];
+  phaseLabel.textContent = i18n.t(hit[2]);
   phasePercent.textContent = Math.round(tPercent) + "%";
 }
 
@@ -46,10 +46,10 @@ function buildParamSlider() {
   wrap.className = "param-slider";
   const label = document.createElement("label");
   const span = document.createElement("span");
-  span.textContent = p.label;
+  span.textContent = i18n.t(p.label);
   const pv = document.createElement("span");
   pv.className = "pv";
-  pv.textContent = p.display(paramValue);
+  pv.textContent = i18n.t(p.display(paramValue));
   label.appendChild(span);
   label.appendChild(pv);
   const input = document.createElement("input");
@@ -57,7 +57,7 @@ function buildParamSlider() {
   input.min = p.min; input.max = p.max; input.step = p.step; input.value = paramValue;
   input.addEventListener("input", () => {
     paramValue = parseFloat(input.value);
-    pv.textContent = p.display(paramValue);
+    pv.textContent = i18n.t(p.display(paramValue));
     refreshMovementData();
   });
   wrap.appendChild(label);
@@ -92,7 +92,7 @@ function switchMovement(id) {
   document.querySelectorAll(".movement-tab").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.movement === id);
   });
-  movementBlurbEl.innerHTML = `<b>${m.label}</b> — ${m.blurb}`;
+  movementBlurbEl.innerHTML = `<b>${i18n.t(m.label)}</b> — ${i18n.t(m.blurb)}`;
 
   buildParamSlider();
   refreshMovementData();
@@ -154,14 +154,22 @@ const compareBMovement = document.getElementById("compareB-movement");
 const compareAParam = document.getElementById("compareA-param");
 const compareBParam = document.getElementById("compareB-param");
 
-MOVEMENT_ORDER.forEach(id => {
-  const optA = document.createElement("option"); optA.value = id; optA.textContent = MOVEMENTS[id].label;
-  const optB = document.createElement("option"); optB.value = id; optB.textContent = MOVEMENTS[id].label;
-  compareAMovement.appendChild(optA);
-  compareBMovement.appendChild(optB);
-});
-compareAMovement.value = "walk";
-compareBMovement.value = "run";
+function buildCompareOptions() {
+  const selA = compareAMovement.value || "walk";
+  const selB = compareBMovement.value || "run";
+  compareAMovement.innerHTML = "";
+  compareBMovement.innerHTML = "";
+  MOVEMENT_ORDER.forEach(id => {
+    const label = i18n.t(MOVEMENTS[id].label);
+    const optA = document.createElement("option"); optA.value = id; optA.textContent = label;
+    const optB = document.createElement("option"); optB.value = id; optB.textContent = label;
+    compareAMovement.appendChild(optA);
+    compareBMovement.appendChild(optB);
+  });
+  compareAMovement.value = selA;
+  compareBMovement.value = selB;
+}
+buildCompareOptions();
 
 const compareGrfChart = new Chart(document.getElementById("compareGrfChart").getContext("2d"), {
   type: "line",
@@ -195,15 +203,15 @@ function renderCompare() {
   const curvesB = sampledCurves(mB, scalesB);
 
   compareGrfChart.data.datasets = [
-    traceDataset(mA.label, curvesA.grf, "#5eead4"),
-    traceDataset(mB.label, curvesB.grf, "#ff6f5e"),
+    traceDataset(i18n.t(mA.label), curvesA.grf, "#5eead4"),
+    traceDataset(i18n.t(mB.label), curvesB.grf, "#ff6f5e"),
   ];
   compareGrfChart.options.scales.y.max = niceMax([...curvesA.grf, ...curvesB.grf], 1.15);
   compareGrfChart.update();
 
   compareAngleChart.data.datasets = [
-    traceDataset(mA.label + " knee", curvesA.knee, "#5eead4"),
-    traceDataset(mB.label + " knee", curvesB.knee, "#ff6f5e"),
+    traceDataset(i18n.t(mA.label) + i18n.t(" knee"), curvesA.knee, "#5eead4"),
+    traceDataset(i18n.t(mB.label) + i18n.t(" knee"), curvesB.knee, "#ff6f5e"),
   ];
   const allKnee = [...curvesA.knee, ...curvesB.knee];
   compareAngleChart.options.scales.y.max = Math.max(...allKnee) + 10;
@@ -217,3 +225,14 @@ function renderCompare() {
 });
 
 renderCompare();
+
+// Re-render JS-injected text when the language switches (without resetting
+// the current parameter value or playback position).
+document.addEventListener("i18n:changed", () => {
+  const m = MOVEMENTS[currentMovementId];
+  movementBlurbEl.innerHTML = `<b>${i18n.t(m.label)}</b> — ${i18n.t(m.blurb)}`;
+  buildParamSlider();
+  refreshMovementData(); // rebuilds muscle-row labels
+  buildCompareOptions();
+  renderCompare();
+});

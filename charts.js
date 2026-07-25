@@ -120,7 +120,7 @@ function buildMuscleRows(container, muscleCurves) {
     row.className = "muscle-row";
     const label = document.createElement("div");
     label.className = "m-label";
-    label.textContent = name;
+    label.textContent = (window.i18n ? i18n.t(name) : name);
     const canvas = document.createElement("canvas");
     canvas.height = 28;
     row.appendChild(label);
