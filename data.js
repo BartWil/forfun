@@ -33,6 +33,24 @@ const MOVEMENTS = {
     hip: [[0,31.1],[11,28.5],[36,2.3],[54,-8.6],[61,-4.2],[81,28.8],[88,32.3]],
     knee: [[0,1.3],[12,16.3],[37,4.3],[44,4.1],[49,6.9],[57,19.8],[68,56.5],[74,63.0],[82,50.3],[95,3.8],[97,0.4]],
     ankle: [[0,1.5],[7,-4.3],[21,6.3],[42,13.1],[48,13.4],[54,9.2],[65,-11.6],[82,6.4],[86,6.7],[95,1.7]],
+    // Real per-speed grand averages (Fukuchi 2018, mean overground speeds) the slider blends.
+    speeds: [
+      { v: 0.86,
+        grf: [[0,0.05],[17,0.97],[31,0.89],[48,1.03],[54,0.86],[64,0.03],[99,0]],
+        hip: [[0,29.0],[10,25.3],[38,2.3],[56,-6.3],[81,27.2],[88,30.4]],
+        knee: [[0,1.2],[11,9.8],[39,4.4],[51,7.9],[58,18.2],[69,53.5],[74,58.8],[81,49.0],[95,3.8]],
+        ankle: [[0,0.6],[6,-5.4],[22,4.8],[48,14.3],[56,10.3],[66,-8.0],[82,6.7]] },
+      { v: 1.27,
+        grf: [[0,0.05],[14,1.05],[30,0.76],[48,1.1],[63,0.01],[99,0]],
+        hip: [[0,31.1],[11,28.5],[36,2.3],[54,-8.6],[61,-4.2],[81,28.8],[88,32.3]],
+        knee: [[0,1.3],[12,16.3],[37,4.3],[44,4.1],[49,6.9],[57,19.8],[68,56.5],[74,63.0],[82,50.3],[95,3.8],[97,0.4]],
+        ankle: [[0,1.5],[7,-4.3],[21,6.3],[42,13.1],[48,13.4],[54,9.2],[65,-11.6],[82,6.4],[86,6.7],[95,1.7]] },
+      { v: 1.60,
+        grf: [[0,0.06],[14,1.19],[30,0.62],[45,1.13],[49,1.14],[62,0.01],[99,0]],
+        hip: [[0,34.0],[12,31.5],[37,0.5],[54,-10.8],[61,-5.2],[81,30.2],[88,34.2]],
+        knee: [[0,2.3],[13,20.6],[36,3.9],[43,3.1],[48,5.9],[56,18.8],[67,56.8],[73,64.3],[82,50.7],[95,4.2],[97,1.1]],
+        ankle: [[0,2.6],[7,-3.8],[20,7.3],[46,12.4],[53,6.9],[63,-13.6],[81,6.6],[86,7.1],[94,2.6]] },
+    ],
     sources: {
       grf:     { ref: "Fukuchi et al. 2018", paper: "10.7717/peerj.4640", data: "10.6084/m9.figshare.5722711", n: 42, kind: "measured" },
       angles:  { ref: "Fukuchi et al. 2018", paper: "10.7717/peerj.4640", data: "10.6084/m9.figshare.5722711", n: 42, kind: "measured" },
@@ -56,13 +74,13 @@ const MOVEMENTS = {
       { name: "Tibialis Anterior", keyframes: [[0,0.99],[11,0.21],[53,0.09],[64,0.43],[68,0.41],[75,0.47],[81,0.37],[88,0.34],[94,0.49]] },
     ],
     param: {
-      id: "speed", label: "Walking speed", unit: "", min: 0, max: 1, step: 0.01, default: 0.4,
-      display: v => (0.8 + v * 1.0).toFixed(1) + " m/s",
-      cycleDuration: v => 1300 - 500 * v,
-      grfScale: v => 1.0 + 0.15 * v,
-      angleScale: v => 1.0 + 0.25 * v,
-      hipDropScale: v => 1.0 + 0.2 * v,
-      muscleScale: v => 1.0 + 0.2 * v,
+      // Slider spans the measured overground range (0.86–1.60 m/s); curves are the real
+      // per-speed averages blended by speedMps, so no illustrative magnitude scaling.
+      id: "speed", label: "Walking speed", unit: "", min: 0, max: 1, step: 0.01, default: 0.55,
+      speedMps: v => 0.86 + v * 0.74,
+      display: v => (0.86 + v * 0.74).toFixed(2) + " m/s",
+      cycleDuration: v => 1350 - 450 * v,
+      grfScale: () => 1, angleScale: () => 1, hipDropScale: () => 1, muscleScale: () => 1,
     },
     blurb: "Walking produces a signature double-hump vertical ground reaction force: one peak at weight acceptance (loading response), a dip in mid-stance as the body vaults over a relatively straight leg, and a second peak at push-off. The knee shows a subtle \"double bump\" of its own — a small flexion wave at loading response for shock absorption, then a much larger flexion in swing to clear the foot. Slide the speed control and watch both peaks grow, and swing get quicker, as walking speed increases."
   },
@@ -105,21 +123,39 @@ const MOVEMENTS = {
       { name: "Gastroc / Soleus", keyframes: [[0,0.23],[16,1.0],[23,0.91],[37,0.08],[82,0.07],[100,0.23]] },
       { name: "Tibialis Anterior", keyframes: [[0,0.89],[6,0.24],[16,0.33],[23,0.27],[35,0.07],[42,0.33],[50,0.33],[59,0.56],[66,0.48],[78,0.42],[81,0.43],[89,0.58],[97,1.0],[100,0.89]] },
     ],
+    // Real per-speed grand averages (Fukuchi 2017) the slider interpolates between.
+    speeds: [
+      { v: 2.5,
+        grf: [[0,0.06],[16,2.28],[38,0.1],[45,0],[97,0]],
+        hip: [[0,33.0],[15,29.4],[34,1.5],[42,-2.8],[58,8.2],[79,42.8],[85,43.3]],
+        knee: [[0,11.1],[16,42.7],[22,38.8],[35,16.6],[41,16.2],[62,82.7],[70,93.3],[79,76.7],[94,16.1]],
+        ankle: [[0,2.7],[5,2.5],[16,20.0],[23,22.6],[39,-12.8],[46,-19.0],[57,-13.9],[75,1.1],[90,3.5]] },
+      { v: 3.5,
+        grf: [[0,0.07],[15,2.49],[35,0.09],[40,0],[97,0]],
+        hip: [[0,38.3],[14,33.6],[31,0.1],[39,-6.3],[56,4.9],[78,51.2],[86,52.0]],
+        knee: [[0,11.8],[15,43.9],[21,39.3],[33,15.5],[39,16.2],[60,93.6],[68,108.2],[78,88.8],[94,17.9]],
+        ankle: [[0,4.2],[6,2.9],[16,20.9],[22,23.5],[41,-21.5],[55,-16.4],[74,-0.5],[91,4.9]] },
+      { v: 4.5,
+        grf: [[0,0.08],[8,2.01],[15,2.57],[33,0.1],[39,0],[97,0]],
+        hip: [[0,42.6],[14,35.1],[30,-3.0],[37,-10.0],[55,2.3],[78,57.9],[87,59.3]],
+        knee: [[0,13.7],[15,44.4],[32,13.6],[37,14.7],[60,103.9],[67,117.1],[75,104.6],[93,25.2]],
+        ankle: [[0,2.1],[6,0.4],[16,20.3],[21,22.7],[38,-24.6],[53,-20.5],[74,-2.9],[90,3.6]] },
+    ],
     sources: {
       grf:     { ref: "Fukuchi et al. 2017", paper: "10.7717/peerj.3298", data: "10.6084/m9.figshare.4543435", n: 39, kind: "measured" },
       angles:  { ref: "Fukuchi et al. 2017", paper: "10.7717/peerj.3298", data: "10.6084/m9.figshare.4543435", n: 39, kind: "measured" },
       muscles: { ref: "Santuz et al. 2018", data: "10.5281/zenodo.1254380", n: 135, cycles: 11388, kind: "measured" },
     },
     param: {
-      id: "speed", label: "Running speed", unit: "", min: 0, max: 1, step: 0.01, default: 0.4,
-      display: v => (2.5 + v * 6.5).toFixed(1) + " m/s",
-      cycleDuration: v => 750 - 300 * v,
-      grfScale: v => 0.85 + 0.55 * v,
-      angleScale: v => 0.85 + 0.4 * v,
-      hipDropScale: v => 1.0 + 0.4 * v,
-      muscleScale: v => 0.85 + 0.5 * v,
+      // Slider spans the dataset's measured range (2.5–4.5 m/s); curves are the real
+      // per-speed averages blended by speedMps, so no illustrative magnitude scaling.
+      id: "speed", label: "Running speed", unit: "", min: 0, max: 1, step: 0.01, default: 0.5,
+      speedMps: v => 2.5 + v * 2.0,
+      display: v => (2.5 + v * 2.0).toFixed(1) + " m/s",
+      cycleDuration: v => 820 - 220 * v,
+      grfScale: () => 1, angleScale: () => 1, hipDropScale: () => 1, muscleScale: () => 1,
     },
-    blurb: "Running trades walking's double-hump force for a single, much larger peak — typically 2-3x body weight, versus ~1.15x for walking — because there's no double-support phase to share the load. Notice the knee folds up far more (past 100° of flexion) than in walking: a shorter, lighter swinging leg is a more efficient pendulum at speed. Push the speed slider toward sprinting and watch peak force, joint ranges, and muscle bursts all climb together."
+    blurb: "Running trades walking's double-hump force for a single, much larger peak — typically 2-3x body weight, versus ~1.15x for walking — because there's no double-support phase to share the load. Notice the knee folds up far more (past 100° of flexion) than in walking: a shorter, lighter swinging leg is a more efficient pendulum at speed. Slide from 2.5 to 4.5 m/s and watch the impact peak grow and the knee fold up further — blended from real motion capture at three measured speeds."
   },
 
   jump: {
