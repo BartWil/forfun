@@ -100,6 +100,11 @@ const MOVEMENTS = {
       { name: "Gastroc / Soleus", keyframes: [[0,0.23],[16,1.0],[23,0.91],[37,0.08],[82,0.07],[100,0.23]] },
       { name: "Tibialis Anterior", keyframes: [[0,0.89],[6,0.24],[16,0.33],[23,0.27],[35,0.07],[42,0.33],[50,0.33],[59,0.56],[66,0.48],[78,0.42],[81,0.43],[89,0.58],[97,1.0],[100,0.89]] },
     ],
+    sources: {
+      grf:     { ref: "Literature reconstruction", kind: "modelled" },
+      angles:  { ref: "Literature reconstruction", kind: "modelled" },
+      muscles: { ref: "Santuz et al. 2018", data: "10.5281/zenodo.1254380", n: 135, cycles: 11388, kind: "measured" },
+    },
     param: {
       id: "speed", label: "Running speed", unit: "", min: 0, max: 1, step: 0.01, default: 0.4,
       display: v => (2.5 + v * 6.5).toFixed(1) + " m/s",
@@ -136,6 +141,11 @@ const MOVEMENTS = {
       { name: "Gastroc / Soleus", keyframes: [[0,0.1],[20,0.15],[35,0.25],[45,0.35],[55,0.55],[62,0.85],[68,0.95],[72,0.3],[80,0],[87,0.05],[90,0.2],[93,0.5],[96,0.55],[98,0.25]] },
       { name: "Tibialis Anterior", keyframes: [[0,0.1],[25,0.15],[45,0.25],[62,0.1],[75,0.15],[85,0.3],[90,0.35],[93,0.25],[98,0.15]] },
     ],
+    sources: {
+      grf:     { ref: "Literature reconstruction", kind: "modelled" },
+      angles:  { ref: "Literature reconstruction", kind: "modelled" },
+      muscles: { ref: "Literature reconstruction", kind: "modelled" },
+    },
     param: {
       id: "effort", label: "Jump effort", unit: "", min: 0, max: 1, step: 0.01, default: 0.6,
       display: v => (v < 0.34 ? "Small hop" : v < 0.67 ? "Moderate jump" : "Maximal effort"),
@@ -171,6 +181,11 @@ const MOVEMENTS = {
       { name: "Gastroc / Soleus", keyframes: [[0,0.15],[15,0.3],[22,0.5],[28,0.7],[35,0.85],[42,0.75],[52,0.5],[65,0.35],[80,0.2],[97,0.15]] },
       { name: "Tibialis Anterior", keyframes: [[0,0.35],[15,0.4],[22,0.3],[28,0.1],[40,0.05],[55,0.15],[70,0.2],[85,0.15],[97,0.3]] },
     ],
+    sources: {
+      grf:     { ref: "Literature reconstruction", kind: "modelled" },
+      angles:  { ref: "Literature reconstruction", kind: "modelled" },
+      muscles: { ref: "Literature reconstruction", kind: "modelled" },
+    },
     param: {
       id: "stiffness", label: "Landing technique — soft ↔ stiff", unit: "", min: 0, max: 1, step: 0.01, default: 0.5,
       display: v => (v < 0.34 ? "Soft, absorbing" : v < 0.67 ? "Moderate" : "Stiff, straight-legged"),
@@ -205,6 +220,11 @@ const MOVEMENTS = {
       { name: "Gastroc / Soleus", keyframes: [[0,0.1],[20,0.18],[35,0.3],[50,0.4],[65,0.35],[80,0.22],[95,0.11]] },
       { name: "Erector Spinae", keyframes: [[0,0.1],[20,0.2],[35,0.35],[50,0.55],[65,0.4],[80,0.22],[95,0.11]] },
     ],
+    sources: {
+      grf:     { ref: "Literature reconstruction", kind: "modelled" },
+      angles:  { ref: "Literature reconstruction", kind: "modelled" },
+      muscles: { ref: "Literature reconstruction", kind: "modelled" },
+    },
     param: {
       id: "depth", label: "Squat depth", unit: "", min: 0, max: 1, step: 0.01, default: 0.6,
       display: v => (v < 0.34 ? "Quarter" : v < 0.67 ? "Parallel" : "Deep"),

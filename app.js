@@ -96,6 +96,29 @@ function switchMovement(id) {
 
   buildParamSlider();
   refreshMovementData();
+  updateSourceBadges();
+}
+
+// ---- Provenance badges under each chart (measured vs modelled) ----
+const sourceBadges = {
+  grf: document.getElementById("grfSource"),
+  angles: document.getElementById("angleSource"),
+  muscles: document.getElementById("muscleSource"),
+};
+function setSourceBadge(el, s) {
+  if (!el) return;
+  if (!s) { el.textContent = ""; el.className = "source-badge"; el.removeAttribute("title"); return; }
+  const kind = i18n.t(s.kind === "measured" ? "Measured" : "Modelled");
+  el.textContent = s.ref ? kind + " · " + i18n.t(s.ref) : kind;
+  el.className = "source-badge " + s.kind;
+  const doi = s.data || s.paper;
+  if (doi) el.title = "doi:" + doi; else el.removeAttribute("title");
+}
+function updateSourceBadges() {
+  const src = MOVEMENTS[currentMovementId].sources || {};
+  setSourceBadge(sourceBadges.grf, src.grf);
+  setSourceBadge(sourceBadges.angles, src.angles);
+  setSourceBadge(sourceBadges.muscles, src.muscles);
 }
 
 document.querySelectorAll(".movement-tab").forEach(btn => {
@@ -233,6 +256,7 @@ document.addEventListener("i18n:changed", () => {
   movementBlurbEl.innerHTML = `<b>${i18n.t(m.label)}</b> — ${i18n.t(m.blurb)}`;
   buildParamSlider();
   refreshMovementData(); // rebuilds muscle-row labels
+  updateSourceBadges();
   buildCompareOptions();
   renderCompare();
 });

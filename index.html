@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=3" />
+<link rel="stylesheet" href="style.css?v=6" />
 </head>
 <body>
 
@@ -135,14 +135,17 @@
       <div class="charts-panel">
         <div class="chart-card">
           <h4 data-i18n="chart.grf.h">Vertical ground reaction force</h4>
+          <span class="source-badge" id="grfSource"></span>
           <div class="chart-wrap"><canvas id="grfChart"></canvas></div>
         </div>
         <div class="chart-card">
           <h4 data-i18n="chart.angle.h">Joint angles</h4>
+          <span class="source-badge" id="angleSource"></span>
           <div class="chart-wrap"><canvas id="angleChart"></canvas></div>
         </div>
         <div class="chart-card">
           <h4 data-i18n="chart.muscle.h">Muscle activation</h4>
+          <span class="source-badge" id="muscleSource"></span>
           <div id="muscleRows" class="muscle-rows"></div>
         </div>
       </div>
@@ -220,12 +223,12 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<script src="i18n.js?v=3"></script>
-<script src="spline.js?v=3"></script>
-<script src="data.js?v=5"></script>
-<script src="runtime.js?v=3"></script>
-<script src="figure.js?v=3"></script>
-<script src="charts.js?v=3"></script>
-<script src="app.js?v=3"></script>
+<script src="i18n.js?v=6"></script>
+<script src="spline.js?v=6"></script>
+<script src="data.js?v=6"></script>
+<script src="runtime.js?v=6"></script>
+<script src="figure.js?v=6"></script>
+<script src="charts.js?v=6"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>

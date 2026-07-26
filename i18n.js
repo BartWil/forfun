@@ -123,6 +123,11 @@
       "Poświata mięśnia = aktywacja (spoczynek → ciężka praca)",
     "Arrow = ground reaction force": "Strzałka = siła reakcji podłoża",
 
+    // Provenance badges (app.js)
+    "Measured": "Zmierzone",
+    "Modelled": "Modelowane",
+    "Literature reconstruction": "Rekonstrukcja z literatury",
+
     // Compare-chart series suffix (app.js)
     " knee": " kolano",
 
@@ -224,15 +229,21 @@
     "dx.th.movement": "Ruch",
     "dx.th.source": "Skąd pochodzi",
     "dx.r1.a": "Aktywacja mięśni",
-    "dx.r1.b": "Bieg",
-    "dx.r1.c": "<b>Rzeczywiste EMG.</b> Średnia z <b>11 388 cykli chodu</b> od <b>135 osób dorosłych</b>\n                (<a href=\"https://doi.org/10.5281/zenodo.1254380\" target=\"_blank\" rel=\"noopener\">Santuz et&nbsp;al. 2018</a>, dane otwarte)",
+    "dx.r1.b": "Chód",
+    "dx.r1.c": "<b>Rzeczywiste EMG.</b> Średnia z <b>13 693 cykli chodu</b> od <b>140 osób dorosłych</b>\n                (<a href=\"https://doi.org/10.5281/zenodo.5171823\" target=\"_blank\" rel=\"noopener\">Santuz i&nbsp;wsp. 2021</a>, dane otwarte)",
     "dx.r2.a": "Aktywacja mięśni",
-    "dx.r2.b": "Chód, skok, lądowanie, przysiad",
-    "dx.r2.c": "Poglądowe rekonstrukcje z literatury biomechanicznej",
-    "dx.r3.a": "Kąty stawowe i siła podłoża",
-    "dx.r3.b": "Wszystkie",
-    "dx.r3.c": "Rekonstrukcje oparte na literaturze (Perry, Winter, Novacheck, …)",
-    "dx.pipeline": "<b>Jak przełożono biegowe EMG na te krzywe:</b> surowe sygnały → filtr górnoprzepustowy 50&nbsp;Hz →\n          prostowanie pełnookresowe → obwiednia dolnoprzepustowa 20&nbsp;Hz → normalizacja każdego mięśnia do jego własnego szczytu →\n          normalizacja czasowa każdego cyklu do 100 punktów podporu + 100 punktów wymachu → uśrednienie po wszystkich 11 388 cyklach.\n          To standardowy potok z publikacji. 13 zarejestrowanych kanałów połączono w pięć pokazanych tutaj\n          (np. prosty uda + oba obszerne → „Mięsień czworogłowy uda”).",
+    "dx.r2.b": "Bieg",
+    "dx.r2.c": "<b>Rzeczywiste EMG.</b> Średnia z <b>11 388 cykli chodu</b> od <b>135 osób dorosłych</b>\n                (<a href=\"https://doi.org/10.5281/zenodo.1254380\" target=\"_blank\" rel=\"noopener\">Santuz i&nbsp;wsp. 2018</a>, dane otwarte)",
+    "dx.r3.a": "Aktywacja mięśni",
+    "dx.r3.b": "Skok, lądowanie, przysiad",
+    "dx.r3.c": "Poglądowe rekonstrukcje z literatury biomechanicznej",
+    "dx.r4.a": "Kąty stawowe i siła podłoża",
+    "dx.r4.b": "Chód",
+    "dx.r4.c": "<b>Zmierzone.</b> Średnia z <b>42 osób dorosłych</b>\n                (<a href=\"https://doi.org/10.7717/peerj.4640\" target=\"_blank\" rel=\"noopener\">Fukuchi i&nbsp;wsp. 2018</a>, dane otwarte)",
+    "dx.r5.a": "Kąty stawowe i siła podłoża",
+    "dx.r5.b": "Bieg, skok, lądowanie, przysiad",
+    "dx.r5.c": "Rekonstrukcje oparte na literaturze (Perry, Winter, Novacheck, …)",
+    "dx.pipeline": "<b>Jak przełożono biegowe i chodowe EMG na te krzywe:</b> surowe sygnały → filtr górnoprzepustowy 50&nbsp;Hz →\n          prostowanie pełnookresowe → obwiednia dolnoprzepustowa 20&nbsp;Hz → normalizacja każdego mięśnia do jego własnego szczytu →\n          normalizacja czasowa każdego cyklu do 100 punktów podporu + 100 punktów wymachu → uśrednienie po wszystkich cyklach\n          (13 693 chód; 11 388 bieg). To standardowy potok z publikacji. 13 zarejestrowanych kanałów połączono w pięć pokazanych tutaj\n          (np. prosty uda + oba obszerne → „Mięsień czworogłowy uda”).",
     "dx.foot": "Oba widoki odczytują w każdej chwili <em>te same</em> liczby. Mapa 2D to otwarta biblioteka\n      <a href=\"https://github.com/vulovix/body-muscles\" target=\"_blank\" rel=\"noopener\">body-muscles</a>\n      (Apache&nbsp;2.0); figura 3D to <a href=\"https://threejs.org\" target=\"_blank\" rel=\"noopener\">three.js</a>.\n      Wizualizacja edukacyjna — nie ocena kliniczna ani indywidualna.",
 
     // gait3d.html (Real Gait)
