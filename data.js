@@ -79,10 +79,15 @@ const MOVEMENTS = {
       [75, 95, "Leg swings forward"],
       [95, 100, "Preparing to land"],
     ],
-    grf: [[0,0.05],[4,0.7],[10,1.5],[16,2.1],[21,2.3],[26,1.8],[30,0.6],[33,0.05],[36,0],[97,0]],
-    hip: [[0,42],[10,25],[20,5],[28,-12],[32,-15],[45,-5],[55,10],[65,30],[75,50],[85,58],[95,50]],
-    knee: [[0,28],[8,40],[15,48],[22,35],[28,22],[35,30],[45,60],[55,95],[62,118],[70,110],[80,70],[90,30],[97,20]],
-    ankle: [[0,3],[5,8],[12,15],[20,20],[26,12],[30,-15],[33,-32],[38,-20],[45,-2],[55,5],[70,6],[85,4],[97,3]],
+    // vGRF + sagittal hip/knee/ankle: 39-subject grand average, treadmill running at
+    // 3.5 m/s, from Fukuchi, Fukuchi & Duarte 2017 (PeerJ 5:e3298; figshare 4543435).
+    // Right-limb sagittal (Z) angles in degrees (hip/knee + = flexion, ankle + =
+    // dorsiflexion); vGRF = RgrfY / g in body weights, zero through the flight phase.
+    // Time-normalised over the stride, reduced to keyframes (RDP). See sources{} below.
+    grf: [[0,0.07],[15,2.49],[35,0.09],[40,0],[97,0]],
+    hip: [[0,38.3],[14,33.6],[31,0.1],[39,-6.3],[56,4.9],[78,51.2],[86,52.0]],
+    knee: [[0,11.8],[15,43.9],[21,39.3],[33,15.5],[39,16.2],[60,93.6],[68,108.2],[78,88.8],[94,17.9]],
+    ankle: [[0,4.2],[6,2.9],[16,20.9],[22,23.5],[41,-21.5],[55,-16.4],[74,-0.5],[91,4.9]],
     trunkLean: [[0,8],[50,9],[95,8]],
     hipDrop: [[0,0.08],[10,0.12],[20,0.08],[30,0.02],[45,-0.02],[60,-0.03],[75,-0.01],[90,0.03],[97,0.07]],
     // Running muscle activation = REAL grand-average linear EMG envelopes computed from the
@@ -101,8 +106,8 @@ const MOVEMENTS = {
       { name: "Tibialis Anterior", keyframes: [[0,0.89],[6,0.24],[16,0.33],[23,0.27],[35,0.07],[42,0.33],[50,0.33],[59,0.56],[66,0.48],[78,0.42],[81,0.43],[89,0.58],[97,1.0],[100,0.89]] },
     ],
     sources: {
-      grf:     { ref: "Literature reconstruction", kind: "modelled" },
-      angles:  { ref: "Literature reconstruction", kind: "modelled" },
+      grf:     { ref: "Fukuchi et al. 2017", paper: "10.7717/peerj.3298", data: "10.6084/m9.figshare.4543435", n: 39, kind: "measured" },
+      angles:  { ref: "Fukuchi et al. 2017", paper: "10.7717/peerj.3298", data: "10.6084/m9.figshare.4543435", n: 39, kind: "measured" },
       muscles: { ref: "Santuz et al. 2018", data: "10.5281/zenodo.1254380", n: 135, cycles: 11388, kind: "measured" },
     },
     param: {
