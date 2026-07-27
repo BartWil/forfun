@@ -39,7 +39,7 @@
     // Movement labels (data.js `label`)
     "Walking": "Chód",
     "Running": "Bieg",
-    "Jumping (countermovement)": "Skok (z zamachem)",
+    "Countermovement jump": "Skok z zamachem",
     "Landing": "Lądowanie",
     "Squatting": "Przysiad",
 
@@ -72,9 +72,13 @@
     "Preparing to land": "Przygotowanie do lądowania",
     // Phase labels — jump
     "Quiet stance": "Spokojna postawa",
+    "Unweighting": "Odciążenie",
+    "Braking (eccentric)": "Hamowanie (ekscentryczne)",
+    "Propulsion (concentric)": "Napęd (koncentryczny)",
+    "Flight": "Faza lotu",
+    "Landing impact": "Uderzenie lądowania",
     "Countermovement (braking)": "Zamach (hamowanie)",
     "Propulsion (drive up)": "Napęd (wybicie)",
-    "Flight": "Faza lotu",
     "Landing & absorption": "Lądowanie i amortyzacja",
     // Phase labels — landing
     "Falling / descent": "Opadanie / zniżanie",
@@ -109,8 +113,8 @@
       "Chód wytwarza charakterystyczną, dwugarbną pionową siłę reakcji podłoża: pierwszy szczyt podczas przyjmowania obciążenia (odpowiedź na obciążenie), zagłębienie w środkowej fazie podporu, gdy ciało przetacza się nad względnie wyprostowaną nogą, oraz drugi szczyt przy odbiciu. Kolano wykazuje własny subtelny „podwójny garb” — niewielką falę zgięcia przy odpowiedzi na obciążenie, amortyzującą wstrząs, a następnie znacznie większe zgięcie w fazie wymachu, by przenieść stopę nad podłożem. Przesuń suwak prędkości i obserwuj, jak oba szczyty rosną, a wymach przyspiesza wraz ze wzrostem prędkości chodu.",
     "Running trades walking's double-hump force for a single, much larger peak — typically 2-3x body weight, versus ~1.15x for walking — because there's no double-support phase to share the load. Notice the knee folds up far more (past 100° of flexion) than in walking: a shorter, lighter swinging leg is a more efficient pendulum at speed. Slide from 2.5 to 4.5 m/s and watch the impact peak grow and the knee fold up further — blended from real motion capture at three measured speeds.":
       "Bieg zamienia dwugarbną siłę chodu na pojedynczy, znacznie większy szczyt — zwykle 2–3-krotność masy ciała, w porównaniu z ~1,15 przy chodzie — ponieważ nie ma fazy podwójnego podporu, która rozłożyłaby obciążenie. Zwróć uwagę, że kolano zgina się znacznie mocniej (powyżej 100° zgięcia) niż w chodzie: krótsza, lżejsza noga wymachowa to sprawniejsze wahadło przy dużej prędkości. Przesuń suwak od 2,5 do 4,5 m/s i obserwuj, jak rośnie szczyt uderzenia, a kolano zgina się coraz mocniej — z interpolacji rzeczywistych danych z trzech zmierzonych prędkości.",
-    "The countermovement (dipping down before jumping) lets the leg extensors pre-stretch and build force before the concentric drive — braking force can actually exceed the propulsive peak. Watch the hip, knee, and ankle extend almost simultaneously (\"triple extension\") right at takeoff, then the landing spike at the end, often the single highest force of the whole cycle. Increase jump effort and see the dip get deeper and every peak get bigger.":
-      "Zamach (obniżenie ciała przed skokiem) pozwala prostownikom nogi wstępnie się rozciągnąć i zbudować siłę przed fazą koncentryczną — siła hamowania może faktycznie przewyższyć szczyt napędowy. Obserwuj, jak biodro, kolano i staw skokowy prostują się niemal jednocześnie („potrójne wyprostowanie”) tuż przy wybiciu, a następnie skok siły przy lądowaniu na końcu — często najwyższą siłę w całym cyklu. Zwiększ intensywność skoku i zobacz, jak zagłębienie staje się głębsze, a każdy szczyt większy.",
+    "One complete countermovement jump — quiet stance, a dip to pre-stretch the leg extensors (the countermovement), the braking and concentric drive, take-off and flight, then the landing. The dip lets the extensors build force before the push-off, so braking force can rival the propulsive peak; the hip, knee and ankle extend almost together (\"triple extension\") right at take-off, and the landing spike at the end is often the single highest force of the whole movement. Increase jump effort and watch the dip deepen and every peak grow.":
+      "Jeden kompletny skok z zamachem — spokojna postawa, zejście wstępnie rozciągające prostowniki nogi (zamach), faza hamowania i napędu koncentrycznego, wybicie i lot, a następnie lądowanie. Zejście pozwala prostownikom zbudować siłę przed wypchnięciem, więc siła hamowania może dorównać szczytowi napędowemu; biodro, kolano i staw skokowy prostują się niemal jednocześnie („potrójne wyprostowanie”) tuż przy wybiciu, a skok siły przy lądowaniu na końcu to często najwyższa siła w całym ruchu. Zwiększ intensywność skoku i obserwuj, jak zagłębienie się pogłębia, a każdy szczyt rośnie.",
     "Landing generates the sharpest force spike of any movement here — a soft, knee-bent landing can keep the impact peak to around 2-3x body weight, spread over more time. Push the technique slider toward \"stiff\" and see why straight-legged landings are a well-known risk factor in ACL-injury research: the same drop now delivers a much higher, faster spike through much less joint flexion to absorb it.":
       "Lądowanie generuje najostrzejszy skok siły spośród wszystkich ruchów tutaj — miękkie lądowanie ze zgiętym kolanem może utrzymać szczyt uderzenia w okolicy 2–3-krotności masy ciała, rozłożony w czasie. Przesuń suwak techniki w stronę „sztywnej” i zobacz, dlaczego lądowania na prostych nogach są dobrze znanym czynnikiem ryzyka w badaniach nad urazami ACL: ten sam upadek dostarcza teraz znacznie wyższy, szybszy skok siły przy znacznie mniejszym zgięciu stawów zdolnym go zamortyzować.",
     "The squat is the most \"quasi-static\" movement here — ground reaction force barely leaves the neighborhood of body weight, because the whole body's center of mass moves slowly and under control. What changes dramatically with depth is joint range and muscle demand: quadriceps and gluteal activation both climb steadily as the knee and hip flex further, peaking near the transition from descent to drive out of the bottom.":
@@ -178,7 +182,7 @@
     "explorer.title": "Wybierz ruch",
     "tab.walk": "Chód",
     "tab.run": "Bieg",
-    "tab.jump": "Skok",
+    "tab.jump": "Skok z zamachem",
     "tab.land": "Lądowanie",
     "tab.squat": "Przysiad",
     "chart.grf.h": "Pionowa siła reakcji podłoża",
@@ -235,7 +239,7 @@
     "dx.r2.b": "Bieg",
     "dx.r2.c": "<b>Rzeczywiste EMG.</b> Średnia z <b>11 388 cykli chodu</b> od <b>135 osób dorosłych</b>\n                (<a href=\"https://doi.org/10.5281/zenodo.1254380\" target=\"_blank\" rel=\"noopener\">Santuz i&nbsp;wsp. 2018</a>, dane otwarte)",
     "dx.r3.a": "Aktywacja mięśni",
-    "dx.r3.b": "Skok, lądowanie, przysiad",
+    "dx.r3.b": "Skok z zamachem, przysiad",
     "dx.r3.c": "Poglądowe rekonstrukcje z literatury biomechanicznej",
     "dx.r4.a": "Kąty stawowe i siła podłoża",
     "dx.r4.b": "Chód",
@@ -244,7 +248,7 @@
     "dx.r5.b": "Bieg",
     "dx.r5.c": "<b>Zmierzone.</b> Średnia z <b>39 osób dorosłych</b>\n                (<a href=\"https://doi.org/10.7717/peerj.3298\" target=\"_blank\" rel=\"noopener\">Fukuchi i&nbsp;wsp. 2017</a>, dane otwarte)",
     "dx.r6.a": "Kąty stawowe i siła podłoża",
-    "dx.r6.b": "Skok, lądowanie, przysiad",
+    "dx.r6.b": "Skok z zamachem, przysiad",
     "dx.r6.c": "Rekonstrukcje oparte na literaturze (Perry, Winter, Novacheck, …)",
     "dx.pipeline": "<b>Jak przełożono biegowe i chodowe EMG na te krzywe:</b> surowe sygnały → filtr górnoprzepustowy 50&nbsp;Hz →\n          prostowanie pełnookresowe → obwiednia dolnoprzepustowa 20&nbsp;Hz → normalizacja każdego mięśnia do jego własnego szczytu →\n          normalizacja czasowa każdego cyklu do 100 punktów podporu + 100 punktów wymachu → uśrednienie po wszystkich cyklach\n          (13 693 chód; 11 388 bieg). To standardowy potok z publikacji. 13 zarejestrowanych kanałów połączono w pięć pokazanych tutaj\n          (np. prosty uda + oba obszerne → „Mięsień czworogłowy uda”).",
     "dx.foot": "Oba widoki odczytują w każdej chwili <em>te same</em> liczby. Mapa 2D to otwarta biblioteka\n      <a href=\"https://github.com/vulovix/body-muscles\" target=\"_blank\" rel=\"noopener\">body-muscles</a>\n      (Apache&nbsp;2.0); figura 3D to <a href=\"https://threejs.org\" target=\"_blank\" rel=\"noopener\">three.js</a>.\n      Wizualizacja edukacyjna — nie ocena kliniczna ani indywidualna.",

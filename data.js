@@ -159,15 +159,17 @@ const MOVEMENTS = {
   },
 
   jump: {
-    label: "Jumping (countermovement)",
-    cycleLabel: "countermovement jump — quiet stance to landing",
+    label: "Countermovement jump",
+    cycleLabel: "countermovement jump — stance · dip · drive · flight · landing",
     contralateralShift: 0,
     phases: [
-      [0, 15, "Quiet stance"],
-      [15, 45, "Countermovement (braking)"],
-      [45, 70, "Propulsion (drive up)"],
-      [70, 88, "Flight"],
-      [88, 100, "Landing & absorption"],
+      [0, 10, "Quiet stance"],
+      [10, 25, "Unweighting"],
+      [25, 45, "Braking (eccentric)"],
+      [45, 68, "Propulsion (concentric)"],
+      [68, 87, "Flight"],
+      [87, 96, "Landing impact"],
+      [96, 100, "Stabilization"],
     ],
     grf: [[0,1.0],[8,0.85],[15,0.5],[22,0.3],[30,0.5],[38,0.9],[45,1.5],[52,1.75],[60,2.05],[66,1.5],[70,0.5],[72,0.05],[80,0],[87,0],[90,0.3],[92,3.2],[94,2.1],[96,1.3],[98,1.05]],
     hip: [[0,5],[15,15],[25,35],[35,55],[45,75],[55,50],[62,20],[68,0],[70,-5],[75,-3],[85,5],[90,20],[93,45],[96,35],[98,15]],
@@ -196,47 +198,7 @@ const MOVEMENTS = {
       hipDropScale: v => 0.5 + 0.9 * v,
       muscleScale: v => 0.6 + 0.6 * v,
     },
-    blurb: "The countermovement (dipping down before jumping) lets the leg extensors pre-stretch and build force before the concentric drive — braking force can actually exceed the propulsive peak. Watch the hip, knee, and ankle extend almost simultaneously (\"triple extension\") right at takeoff, then the landing spike at the end, often the single highest force of the whole cycle. Increase jump effort and see the dip get deeper and every peak get bigger."
-  },
-
-  land: {
-    label: "Landing",
-    cycleLabel: "drop landing — descent to stabilization (loops for demonstration)",
-    contralateralShift: 0,
-    phases: [
-      [0, 25, "Falling / descent"],
-      [25, 45, "Impact absorption"],
-      [45, 75, "Stabilization"],
-      [75, 100, "Return to standing"],
-    ],
-    grf: [[0,0],[22,0],[25,0.3],[28,4.5],[32,2.8],[37,1.6],[42,1.15],[48,1.0],[60,1.02],[72,1.0],[85,1.0],[90,0.7],[95,0.2]],
-    hip: [[0,10],[15,12],[25,15],[32,35],[38,55],[45,68],[55,55],[65,50],[75,48],[85,30],[93,15],[97,10]],
-    knee: [[0,15],[15,18],[25,20],[30,35],[35,60],[40,80],[45,92],[55,72],[65,65],[75,62],[85,40],[93,20],[97,15]],
-    ankle: [[0,5],[15,6],[25,8],[30,15],[35,22],[42,28],[50,20],[60,17],[75,15],[85,10],[93,6],[97,5]],
-    trunkLean: [[0,8],[20,9],[30,15],[38,24],[45,29],[55,22],[65,20],[75,18],[85,12],[95,8]],
-    hipDrop: [[0,0.05],[15,0.06],[25,0.08],[32,0.2],[38,0.32],[45,0.42],[55,0.3],[65,0.27],[75,0.25],[85,0.15],[93,0.07],[97,0.05]],
-    muscles: [
-      { name: "Quadriceps", keyframes: [[0,0.15],[15,0.25],[22,0.4],[28,0.75],[35,0.95],[42,1.0],[50,0.8],[60,0.55],[75,0.4],[85,0.2],[97,0.15]] },
-      { name: "Gluteus Maximus", keyframes: [[0,0.1],[15,0.2],[22,0.3],[30,0.55],[38,0.75],[45,0.8],[55,0.6],[65,0.45],[80,0.3],[92,0.15],[97,0.1]] },
-      { name: "Hamstrings", keyframes: [[0,0.12],[15,0.2],[25,0.3],[32,0.5],[40,0.65],[48,0.55],[58,0.4],[70,0.3],[85,0.18],[97,0.12]] },
-      { name: "Gastroc / Soleus", keyframes: [[0,0.15],[15,0.3],[22,0.5],[28,0.7],[35,0.85],[42,0.75],[52,0.5],[65,0.35],[80,0.2],[97,0.15]] },
-      { name: "Tibialis Anterior", keyframes: [[0,0.35],[15,0.4],[22,0.3],[28,0.1],[40,0.05],[55,0.15],[70,0.2],[85,0.15],[97,0.3]] },
-    ],
-    sources: {
-      grf:     { ref: "Literature reconstruction", kind: "modelled" },
-      angles:  { ref: "Literature reconstruction", kind: "modelled" },
-      muscles: { ref: "Literature reconstruction", kind: "modelled" },
-    },
-    param: {
-      id: "stiffness", label: "Landing technique — soft ↔ stiff", unit: "", min: 0, max: 1, step: 0.01, default: 0.5,
-      display: v => (v < 0.34 ? "Soft, absorbing" : v < 0.67 ? "Moderate" : "Stiff, straight-legged"),
-      cycleDuration: v => 1300 - 300 * v,
-      grfScale: v => 0.55 + 0.9 * v,
-      angleScale: v => 1.3 - 0.8 * v,
-      hipDropScale: v => 1.3 - 0.8 * v,
-      muscleScale: v => 1.1 - 0.2 * v,
-    },
-    blurb: "Landing generates the sharpest force spike of any movement here — a soft, knee-bent landing can keep the impact peak to around 2-3x body weight, spread over more time. Push the technique slider toward \"stiff\" and see why straight-legged landings are a well-known risk factor in ACL-injury research: the same drop now delivers a much higher, faster spike through much less joint flexion to absorb it."
+    blurb: "One complete countermovement jump — quiet stance, a dip to pre-stretch the leg extensors (the countermovement), the braking and concentric drive, take-off and flight, then the landing. The dip lets the extensors build force before the push-off, so braking force can rival the propulsive peak; the hip, knee and ankle extend almost together (\"triple extension\") right at take-off, and the landing spike at the end is often the single highest force of the whole movement. Increase jump effort and watch the dip deepen and every peak grow."
   },
 
   squat: {
@@ -279,4 +241,4 @@ const MOVEMENTS = {
   },
 };
 
-const MOVEMENT_ORDER = ["walk", "run", "jump", "land", "squat"];
+const MOVEMENT_ORDER = ["walk", "run", "jump", "squat"];
