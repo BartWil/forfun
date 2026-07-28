@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gait Lab — Motion Lab</title>
+<meta name="description" content="Introduce a deficit — foot drop, weak quadriceps, a stiff ankle — and watch the compensations emerge in the walking pattern." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=13" />
+<link rel="stylesheet" href="sandbox.css?v=13" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#explorer">Explorer</a></li>
+      <li><a href="lab.html">The Forge ⚡</a></li>
+      <li><a href="body3d.html">The Anatomy 🦴</a></li>
+      <li><a href="gait3d.html">Real Gait 🚶</a></li>
+      <li><a href="sandbox.html" class="active">Gait Lab 🦿</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label">Cause &amp; compensation</div>
+    <h1 class="lab-title sandbox-title">Gait Lab</h1>
+    <p class="lab-sub">
+      Healthy walking is a chain of finely-timed events — and when one link weakens, the body
+      improvises. Switch on a <b>deficit</b> and watch how the walk changes: the ghost is typical gait,
+      the solid figure is <b>the same person coping with the problem</b>. The classic compensations here
+      are exactly what clinicians look for in a gait exam.
+    </p>
+  </div>
+</header>
+
+<main class="container">
+  <div class="sbx-tabs" id="conditionTabs"></div>
+
+  <div class="sbx-grid">
+    <div class="sbx-stage">
+      <canvas id="figureCanvas" width="440" height="460"></canvas>
+      <label class="sbx-ghost-toggle">
+        <input type="checkbox" id="ghostToggle" checked /> show typical gait (ghost)
+      </label>
+    </div>
+
+    <div class="sbx-info" id="diagnosis">
+      <div class="sbx-cond-name" id="condName">—</div>
+      <div class="sbx-block">
+        <h4>Primary deficit</h4>
+        <p id="condPrimary">—</p>
+      </div>
+      <div class="sbx-block sbx-comp">
+        <h4>Compensation you're seeing</h4>
+        <p id="condComp">—</p>
+      </div>
+      <p class="sbx-note" id="condNote"></p>
+      <p class="sbx-source" id="condSource"></p>
+    </div>
+  </div>
+
+  <div class="lab-controls">
+    <button id="playBtn" class="transport-btn" aria-label="Play">▶</button>
+    <input type="range" id="scrubber" min="0" max="1000" value="0" />
+    <div class="lab-slider-group">
+      <label for="severity">Severity <span class="pv" id="sevVal">70%</span></label>
+      <input type="range" id="severity" min="0" max="1" step="0.05" value="0.7" />
+    </div>
+    <div class="lab-slider-group">
+      <label for="playbackSpeed">Playback speed</label>
+      <input type="range" id="playbackSpeed" min="0.25" max="2" step="0.25" value="0.6" />
+    </div>
+  </div>
+
+  <p class="how-note" style="margin-top:26px; max-width:760px;">
+    A teaching abstraction in the sagittal (side-on) plane: the primary deficit and its main
+    compensations are modelled on the walking kinematics; side-to-side compensations
+    (circumduction, pelvic drop) are described but can't be shown from this angle. Grounded in
+    Perry &amp; Burnfield, <em>Gait Analysis: Normal and Pathological Function</em> (2nd ed.). Not a
+    diagnostic tool.
+  </p>
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=13"></script>
+<script src="spline.js?v=13"></script>
+<script src="data.js?v=13"></script>
+<script src="runtime.js?v=13"></script>
+<script src="figure.js?v=13"></script>
+<script src="sandbox.js?v=13"></script>
+</body>
+</html>

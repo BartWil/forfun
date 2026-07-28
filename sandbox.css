@@ -1,0 +1,55 @@
+/* Gait Lab — deficit → compensation sandbox. Builds on style.css + lab.css tokens. */
+
+.sandbox-title{
+  background:linear-gradient(90deg, #ffb84f, #ff6f5e);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+.sbx-tabs{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:22px; }
+.sbx-tab{
+  display:flex; align-items:center; gap:8px;
+  background:var(--panel); border:1px solid var(--panel-border); color:var(--text-dim);
+  padding:10px 16px; border-radius:999px; font-family:var(--font-body); font-weight:500;
+  font-size:.9rem; cursor:pointer; transition:all .15s;
+}
+.sbx-tab:hover{ border-color:var(--accent-2); color:var(--text); transform:translateY(-1px); }
+.sbx-tab.active{
+  background:rgba(255,111,94,0.12); border-color:var(--accent-2); color:var(--text);
+  box-shadow:0 6px 18px -10px rgba(255,111,94,0.5);
+}
+
+.sbx-grid{ display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:22px; align-items:stretch; }
+
+.sbx-stage{
+  background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); padding:16px; display:flex; flex-direction:column; align-items:center;
+}
+#figureCanvas{ width:100%; max-width:440px; height:auto; display:block; background:var(--bg-alt); border-radius:12px; }
+.sbx-ghost-toggle{
+  margin-top:12px; font-size:.8rem; color:var(--text-dim); display:flex; align-items:center; gap:8px; cursor:pointer;
+}
+.sbx-ghost-toggle input{ accent-color:var(--accent); }
+
+.sbx-info{
+  background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); padding:22px 24px; min-width:0;
+}
+.sbx-cond-name{
+  font-family:var(--font-display); font-size:1.2rem; font-weight:600; color:var(--text);
+  margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid var(--hairline);
+}
+.sbx-block{ margin-bottom:16px; }
+.sbx-block h4{
+  font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; font-weight:600;
+  color:var(--text-dimmer); margin-bottom:6px;
+}
+.sbx-block p{ font-size:.92rem; color:var(--text-dim); margin:0; line-height:1.6; }
+.sbx-comp h4{ color:var(--accent-2); }
+.sbx-comp{ background:rgba(255,111,94,0.06); border-left:3px solid var(--accent-2);
+  padding:12px 14px; border-radius:0 8px 8px 0; margin-left:-2px; }
+.sbx-note{ font-size:.82rem; color:var(--text-dimmer); font-style:italic; margin:14px 0 0; line-height:1.55; }
+.sbx-source{ font-size:.78rem; color:var(--text-dimmer); margin:10px 0 0; }
+
+@media (max-width: 860px){
+  .sbx-grid{ grid-template-columns:1fr; }
+}
