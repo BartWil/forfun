@@ -8,9 +8,9 @@
 
 .body3d-stage{
   position:relative; border-radius:16px; overflow:hidden;
-  border:1px solid #1a2233;
+  border:1px solid var(--hairline);
   background:radial-gradient(ellipse 70% 60% at 50% 30%, rgba(94,234,212,0.06), transparent 65%), #06090f;
-  height:640px;
+  height:640px; box-shadow:var(--shadow-pop);
 }
 .body3d-stage canvas{ display:block; width:100%; height:100%; }
 
@@ -28,7 +28,8 @@
 .anatomy-split .body3d-stage{ height:auto; min-height:560px; }
 
 .musclemap-panel{
-  border:1px solid #1a2233; border-radius:16px; background:#080b12;
+  border:1px solid var(--hairline); border-radius:16px; background:var(--panel-2);
+  box-shadow:var(--shadow-card);
   padding:16px 16px 14px; display:flex; flex-direction:column;
 }
 .mm-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px; }
@@ -57,7 +58,8 @@
 }
 .dx-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
 .dx-card{
-  border:1px solid #1a2233; border-radius:14px; background:#080b12;
+  border:1px solid var(--hairline); border-radius:14px; background:var(--panel-2);
+  box-shadow:var(--shadow-card);
   padding:18px 20px;
 }
 .dx-card-wide{ grid-column:1 / -1; }

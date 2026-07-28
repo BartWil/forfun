@@ -23,6 +23,9 @@ const scrubLinePlugin = {
 };
 Chart.register(scrubLinePlugin);
 
+// consistent typography with the rest of the site
+if (window.Chart) Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+
 function baseChartOptions(yTitle, yMin, yMax) {
   return {
     responsive: true,
@@ -34,18 +37,29 @@ function baseChartOptions(yTitle, yMin, yMax) {
         type: "linear", min: 0, max: 100,
         title: { display: true, text: "% of cycle", color: "#647092", font: { size: 10 } },
         ticks: { color: "#647092", font: { size: 10 }, maxTicksLimit: 6 },
-        grid: { color: "#1a2233" },
+        grid: { color: "rgba(255,255,255,0.05)", tickColor: "rgba(255,255,255,0.08)" },
+        border: { color: "rgba(255,255,255,0.08)" },
       },
       y: {
         min: yMin, max: yMax,
         title: { display: true, text: yTitle, color: "#647092", font: { size: 10 } },
         ticks: { color: "#647092", font: { size: 10 } },
-        grid: { color: "#1a2233" },
+        grid: { color: "rgba(255,255,255,0.05)", tickColor: "rgba(255,255,255,0.08)" },
+        border: { color: "rgba(255,255,255,0.08)" },
       },
     },
     plugins: {
-      legend: { display: true, position: "top", labels: { color: "#93a1bd", boxWidth: 14, font: { size: 11 } } },
-      tooltip: { enabled: false },
+      legend: { display: true, position: "top", labels: { color: "#93a1bd", boxWidth: 14, boxHeight: 3, font: { size: 11 }, usePointStyle: false } },
+      // Styled tooltip so users can read exact values at any point in the cycle.
+      tooltip: {
+        enabled: true, mode: "index", intersect: false,
+        backgroundColor: "rgba(15,20,32,0.96)", borderColor: "rgba(255,255,255,0.1)", borderWidth: 1,
+        titleColor: "#e8edf7", bodyColor: "#93a1bd", padding: 10, cornerRadius: 8, displayColors: true, boxPadding: 4,
+        callbacks: {
+          title: (items) => items.length ? Math.round(items[0].parsed.x) + "% of cycle" : "",
+          label: (item) => ` ${item.dataset.label}: ${item.parsed.y.toFixed(1)}`,
+        },
+      },
     },
   };
 }
