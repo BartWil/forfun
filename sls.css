@@ -15,7 +15,16 @@
   background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
   box-shadow:var(--shadow-card); padding:16px; display:flex; flex-direction:column; align-items:center;
 }
-#slsCanvas{ width:100%; max-width:440px; height:auto; display:block; background:var(--bg-alt); border-radius:12px; }
+.sls-3d{
+  position:relative; width:100%; height:440px; border-radius:12px; overflow:hidden;
+  background:radial-gradient(ellipse 70% 60% at 50% 30%, rgba(94,234,212,0.06), transparent 65%), #06090f;
+}
+.sls-3d canvas{ display:block; width:100%; height:100%; }
+.sls-hint{
+  position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+  font-size:.72rem; color:var(--text-dimmer); pointer-events:none;
+  background:rgba(10,14,23,0.5); padding:4px 11px; border-radius:999px; border:1px solid #22304a;
+}
 .sls-presets{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; justify-content:center; }
 .sls-preset{
   background:var(--panel); border:1px solid var(--panel-border); color:var(--text-dim);

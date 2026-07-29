@@ -52,7 +52,9 @@
 <main class="container">
   <div class="sls-grid">
     <div class="sls-stage">
-      <canvas id="slsCanvas" width="440" height="470"></canvas>
+      <div class="sls-3d" id="slsStage">
+        <div class="sls-hint">drag to orbit · scroll to zoom</div>
+      </div>
       <div class="sls-presets">
         <button class="sls-preset" data-control="0.12">Good control</button>
         <button class="sls-preset" data-control="0.55">Moderate</button>
@@ -128,6 +130,14 @@
 </footer>
 
 <script src="i18n.js?v=13"></script>
-<script src="sls.js?v=13"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="sls.js?v=13"></script>
 </body>
 </html>
