@@ -52,10 +52,14 @@
 <main class="container">
   <div class="sls-grid">
     <div class="sls-stage">
+      <div class="sls-modes">
+        <button class="sls-mode active" data-mode="synthetic">Synthetic model</button>
+        <button class="sls-mode" data-mode="real">Real OpenCap capture 🎥</button>
+      </div>
       <div class="sls-3d" id="slsStage">
         <div class="sls-hint">drag to orbit · scroll to zoom</div>
       </div>
-      <div class="sls-presets">
+      <div class="sls-presets" id="presets">
         <button class="sls-preset" data-control="0.12">Good control</button>
         <button class="sls-preset" data-control="0.55">Moderate</button>
         <button class="sls-preset" data-control="0.9">Valgus collapse</button>
@@ -64,7 +68,17 @@
 
     <div class="sls-panel">
       <div class="sls-metrics" id="metrics"></div>
-      <div class="sls-controls">
+      <div class="sls-real-note" id="realNote" hidden>
+        <h4>Real markerless capture</h4>
+        <p>
+          These are <b>real 3D joint positions</b> from an OpenCap capture — two phone videos turned
+          into a moving skeleton — shown as an <b>anonymized pilot sample</b> (single-leg squat, left
+          stance). It's here to show <em>what the raw motion looks like</em>, so no metrics or
+          interpretation are shown. Notice the planted (stance) leg tracks cleanly while the lifted leg
+          is noisier — a real limitation of markerless capture on an occluded limb.
+        </p>
+      </div>
+      <div class="sls-controls" id="controlWrap">
         <div class="sls-slider">
           <label for="control">Movement control <span class="pv" id="controlVal">good → poor</span></label>
           <input type="range" id="control" min="0" max="1" step="0.01" value="0.35" />

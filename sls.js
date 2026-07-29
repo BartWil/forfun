@@ -73,6 +73,8 @@ const FOOT_X = -0.05;              // planted stance foot (person's right leg), 
 const DEG = Math.PI / 180;
 
 let renderer, scene, camera, controls;
+let synthGroup, realGroup, realData = null, mode = "synthetic";
+const realJoints = [], realBones = []; let realHead = null;
 const bones = {}, joints = {};
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const YAX = V(0, 1, 0);
@@ -106,10 +108,13 @@ function initScene() {
   const grid = new THREE.PolarGridHelper(2.4, 8, 5, 64, 0x1a2740, 0x1a2740);
   grid.position.y = 0.001; scene.add(grid);
 
+  synthGroup = new THREE.Group(); realGroup = new THREE.Group(); realGroup.visible = false;
+  scene.add(synthGroup); scene.add(realGroup);
+
   // ideal vertical alignment reference over the stance foot
   const refMat = new THREE.LineDashedMaterial({ color: 0x647092, dashSize: 0.05, gapSize: 0.04 });
   const refGeo = new THREE.BufferGeometry().setFromPoints([V(FOOT_X, SEG.ankleH, 0), V(FOOT_X, STAND_HIP_Y, 0)]);
-  const refLine = new THREE.Line(refGeo, refMat); refLine.computeLineDistances(); scene.add(refLine);
+  const refLine = new THREE.Line(refGeo, refMat); refLine.computeLineDistances(); synthGroup.add(refLine);
 
   // bones (unit cylinders, re-laid each frame) + joint spheres
   const cyl = new THREE.CylinderGeometry(1, 1, 1, 12);
@@ -118,13 +123,13 @@ function initScene() {
   BONES.forEach(id => {
     const r = (id === "pelvis" || id.startsWith("spine")) ? 0.03 : 0.022;
     const m = new THREE.Mesh(cyl, boneMat());
-    m.scale.set(r, 1, r); m.castShadow = true; scene.add(m); bones[id] = m;
+    m.scale.set(r, 1, r); m.castShadow = true; synthGroup.add(m); bones[id] = m;
   });
   const sph = new THREE.SphereGeometry(1, 16, 12);
   ["stHip", "swHip", "stKnee", "stAnkle", "swKnee", "chest", "head", "shoR", "shoL"].forEach(id => {
     const rad = id === "stKnee" ? 0.05 : (id === "head" ? SEG.headR : 0.035);
     const m = new THREE.Mesh(sph, boneMat()); m.scale.setScalar(rad); m.castShadow = true;
-    scene.add(m); joints[id] = m;
+    synthGroup.add(m); joints[id] = m;
   });
 }
 
@@ -205,6 +210,45 @@ function poseSkeleton() {
   bones.stFemur.material.color.setHex(q.col);
 }
 
+// ---------------- real OpenCap capture (anonymized pilot sample) ----------------
+function initRealCapture() {
+  fetch("opencap_sls_sample.json?v=13").then(r => r.json()).then(d => { realData = d; buildRealSkeleton(d); })
+    .catch(e => console.error("opencap sample load failed:", e));
+}
+function buildRealSkeleton(d) {
+  const sph = new THREE.SphereGeometry(1, 14, 10);
+  const cyl = new THREE.CylinderGeometry(1, 1, 1, 10);
+  const bmat = new THREE.MeshStandardMaterial({ color: 0x9fb4d8, roughness: 0.5, metalness: 0.05 });
+  d.joints.forEach(nm => {
+    const jm = new THREE.MeshStandardMaterial({ color: 0x5eead4, roughness: 0.4, emissive: 0x0a3b34, emissiveIntensity: 0.5 });
+    const m = new THREE.Mesh(sph, jm); m.scale.setScalar(nm.includes("Hip") || nm === "Neck" ? 0.03 : 0.026);
+    m.castShadow = true; realGroup.add(m); realJoints.push(m);
+  });
+  d.bones.forEach(() => { const m = new THREE.Mesh(cyl, bmat); m.scale.set(0.017, 1, 0.017); m.castShadow = true; realGroup.add(m); realBones.push(m); });
+  realHead = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 12), bmat); realGroup.add(realHead);
+}
+function poseReal(fi) {
+  const fr = realData.frames[fi];
+  const P = fr.map(p => V(p[0], p[1], p[2]));
+  realJoints.forEach((m, i) => m.position.copy(P[i]));
+  realData.bones.forEach((b, i) => layBone(realBones[i], P[b[0]], P[b[1]]));
+  const neck = P[0], hip = P[7], up = neck.clone().sub(hip).normalize();
+  realHead.position.copy(neck.clone().add(up.multiplyScalar(0.12)));
+}
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll(".sls-mode").forEach(b => b.classList.toggle("active", b.dataset.mode === m));
+  const real = m === "real";
+  synthGroup.visible = !real; realGroup.visible = real;
+  document.getElementById("metrics").hidden = real;
+  document.getElementById("realNote").hidden = !real;
+  document.getElementById("controlWrap").hidden = real;
+  document.getElementById("presets").hidden = real;
+  cycle = 0;
+}
+document.querySelectorAll(".sls-mode").forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
+
 // ---------------- controls + loop ----------------
 let cycle = 20, playing = true, lastTime = null;
 function controlLabel(c) { return c < 0.25 ? "excellent" : c < 0.5 ? "good" : c < 0.75 ? "moderate" : "poor"; }
@@ -227,9 +271,13 @@ function animate(ts) {
     cycle = ((cycle % 100) + 100) % 100;
     scrubber.value = Math.round(cycle / 100 * 1000);
   }
-  compute(cycle, parseFloat(controlEl.value));
-  poseSkeleton();
-  updateMetrics();
+  if (mode === "real") {
+    if (realData) { const fi = Math.min(realData.frames.length - 1, Math.floor(cycle / 100 * realData.frames.length)); poseReal(fi); }
+  } else {
+    compute(cycle, parseFloat(controlEl.value));
+    poseSkeleton();
+    updateMetrics();
+  }
   controls.update();
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
@@ -238,4 +286,5 @@ function animate(ts) {
 buildMetrics();
 controlVal.textContent = controlLabel(parseFloat(controlEl.value));
 initScene();
+initRealCapture();
 requestAnimationFrame(animate);
