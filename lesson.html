@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anatomy of a Step — Motion Lab</title>
+<meta name="description" content="A guided, scroll-along walkthrough of a single walking step — heel strike to the next, one phase at a time." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=13" />
+<link rel="stylesheet" href="lesson.css?v=13" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#explorer">Explorer</a></li>
+      <li><a href="lab.html">The Forge ⚡</a></li>
+      <li><a href="body3d.html">The Anatomy 🦴</a></li>
+      <li><a href="gait3d.html">Real Gait 🚶</a></li>
+      <li><a href="sandbox.html">Gait Lab 🦿</a></li>
+      <li><a href="muscle.html">Levers 💪</a></li>
+      <li><a href="lesson.html" class="active">Learn 📖</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label">A guided walk-through</div>
+    <h1 class="lab-title lesson-title">Anatomy of a Step</h1>
+    <p class="lab-sub">
+      One ordinary step hides a beautifully timed sequence. Scroll down and we'll walk through it
+      together — one phase at a time — while the figure moves and the force trace keeps pace. Poke the
+      controls whenever you like; the point is to <b>play</b>.
+    </p>
+  </div>
+</header>
+
+<main class="container">
+  <div class="lesson-scrolly">
+
+    <!-- sticky visual -->
+    <div class="lesson-viz">
+      <div class="lesson-viz-inner">
+        <canvas id="lessonFigure" width="360" height="380"></canvas>
+        <div class="lesson-phase">
+          <span id="phaseLabel">—</span>
+          <span id="phasePercent">0%</span>
+        </div>
+        <canvas id="lessonChart" width="360" height="120"></canvas>
+        <div class="lesson-legend">
+          <span><i class="dot dot-grf"></i>ground force</span>
+          <span><i class="dot dot-knee"></i>knee bend</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- narrative steps -->
+    <div class="lesson-steps">
+      <section class="step" data-cycle="2">
+        <h3>It's a loop, not a line</h3>
+        <p>
+          Biomechanists measure walking in <b>one gait cycle</b>: from one foot touching down to that
+          <em>same</em> foot touching down again. We stretch it to 0–100% so everyone lines up, whatever
+          their height or speed. Grab this and scrub through the whole thing:
+        </p>
+        <input type="range" id="introScrub" class="inline-scrub" min="0" max="100" value="2" />
+        <p class="step-hint">Roughly the first ~60% is <b>stance</b> (foot down); the rest is <b>swing</b> (foot in the air).</p>
+      </section>
+
+      <section class="step" data-cycle="6">
+        <h3>1 · Heel strike &amp; loading</h3>
+        <p>
+          The heel lands and the body drops onto it. Watch the force trace spike to its
+          <b>first peak</b> — more than your body weight — as you catch your falling mass. The knee
+          immediately bends a little to soften the blow, like a car's suspension.
+        </p>
+      </section>
+
+      <section class="step" data-cycle="30">
+        <h3>2 · Mid-stance — the vault</h3>
+        <p>
+          Now you roll up and over a nearly straight leg, like an inverted pendulum. The leg is at its
+          longest, your hips at their highest — so the ground force actually dips <em>below</em> body
+          weight for a moment. The knee has straightened back out.
+        </p>
+      </section>
+
+      <section class="step" data-cycle="50">
+        <h3>3 · Push-off</h3>
+        <p>
+          The calf fires and the ankle drives you forward and up onto the toes. That's the force trace's
+          <b>second peak</b>. This push is the engine of walking — most of the propulsion happens right
+          here, at the end of stance.
+        </p>
+      </section>
+
+      <section class="step" data-cycle="63">
+        <h3>4 · Toe-off</h3>
+        <p>
+          The toes leave the ground and the ground force drops to <b>zero</b> — this leg is now flying.
+          For the next third of the cycle it carries no load at all; it just has to swing through and get
+          ready to land.
+        </p>
+      </section>
+
+      <section class="step" data-cycle="73">
+        <h3>5 · Swing — clear the floor</h3>
+        <p>
+          Here's the knee's <b>big</b> bend — up to ~60°. With no ground to push on, the only job is to
+          fold the leg up so the foot doesn't catch. A shorter, folded leg is also a faster pendulum, so
+          it whips forward efficiently.
+        </p>
+      </section>
+
+      <section class="step" data-cycle="92">
+        <h3>6 · Reaching for the next step</h3>
+        <p>
+          The knee straightens and the leg reaches forward, decelerating so the heel can land gently. The
+          instant it touches down, the loop starts over — and the <em>other</em> leg is doing all of this
+          exactly half a cycle behind.
+        </p>
+      </section>
+
+      <section class="step" data-cycle="10">
+        <h3>Now you drive</h3>
+        <p>
+          That's one step. Jump straight to any moment —
+          <button class="goto" data-goto="6">loading</button>
+          <button class="goto" data-goto="30">mid-stance</button>
+          <button class="goto" data-goto="50">push-off</button>
+          <button class="goto" data-goto="73">swing</button>
+          — or scrub the whole cycle yourself and watch the force and the knee move together:
+        </p>
+        <input type="range" id="freeScrub" class="inline-scrub" min="0" max="100" value="10" />
+        <p class="step-hint">
+          Want the same data as charts, physics particles, or a real 3-D body? Try the
+          <a href="index.html#explorer">Explorer</a>, <a href="lab.html">Forge</a>, or
+          <a href="gait3d.html">Real Gait</a>.
+        </p>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=13"></script>
+<script src="spline.js?v=13"></script>
+<script src="data.js?v=13"></script>
+<script src="runtime.js?v=13"></script>
+<script src="figure.js?v=13"></script>
+<script src="lesson.js?v=13"></script>
+</body>
+</html>
