@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Muscle Levers — Motion Lab</title>
+<meta name="description" content="Why your muscles pull with hundreds of newtons to hold a light weight — an interactive lever-and-torque demo of the elbow." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=13" />
+<link rel="stylesheet" href="muscle.css?v=13" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#explorer">Explorer</a></li>
+      <li><a href="lab.html">The Forge ⚡</a></li>
+      <li><a href="body3d.html">The Anatomy 🦴</a></li>
+      <li><a href="gait3d.html">Real Gait 🚶</a></li>
+      <li><a href="sandbox.html">Gait Lab 🦿</a></li>
+      <li><a href="muscle.html" class="active">Levers 💪</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label">Force × distance</div>
+    <h1 class="lab-title lever-title">Muscle Levers</h1>
+    <p class="lab-sub">
+      Hold a 5&nbsp;kg dumbbell and your biceps doesn't pull with 5&nbsp;kg of force — it pulls with
+      more like <b>50</b>. Muscles attach right next to the joints they move, so they work on a tiny
+      lever arm and pay for it in force. Drag the sliders and watch the trade-off: <b>a joint is a
+      lever, and torque is force × distance</b>.
+    </p>
+  </div>
+</header>
+
+<main class="container">
+  <div class="lv-grid">
+    <div class="lv-stage">
+      <canvas id="leverCanvas" width="560" height="400"></canvas>
+    </div>
+
+    <div class="lv-panel">
+      <div class="lv-readouts">
+        <div class="lv-read lv-read-hero">
+          <span class="lv-num" id="rForce">—</span>
+          <span class="lv-unit">biceps force</span>
+        </div>
+        <div class="lv-read">
+          <span class="lv-num lv-ratio" id="rRatio">—</span>
+          <span class="lv-unit">mechanical disadvantage (pull ÷ load)</span>
+        </div>
+        <div class="lv-read">
+          <span class="lv-num" id="rJoint">—</span>
+          <span class="lv-unit">force squeezing the elbow joint</span>
+        </div>
+      </div>
+
+      <div class="lv-controls">
+        <div class="lv-slider">
+          <label for="load">Weight in hand <span class="pv" id="loadVal">5.0 kg</span></label>
+          <input type="range" id="load" min="0.5" max="20" step="0.5" value="5" />
+        </div>
+        <div class="lv-slider">
+          <label for="insert">Biceps attaches <span class="pv" id="insertVal">4.0 cm</span> from elbow</label>
+          <input type="range" id="insert" min="2" max="6" step="0.1" value="4" />
+        </div>
+        <div class="lv-slider">
+          <label for="forearm">Forearm length (elbow → hand) <span class="pv" id="forearmVal">34 cm</span></label>
+          <input type="range" id="forearm" min="26" max="42" step="1" value="34" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="lv-explainer">
+    <div class="lv-ex-grid">
+      <div class="lv-ex-card">
+        <h3>Why the huge force?</h3>
+        <p>
+          For the arm to hold still, the turning effect (<b>torque</b>) the muscle makes must exactly
+          balance the torque from the weight. Torque = force × its distance from the joint. The weight
+          sits ~<b>34&nbsp;cm</b> out; the biceps pulls only ~<b>4&nbsp;cm</b> from the elbow — so to
+          match the torque, its force must be about <b>34 ÷ 4 ≈ 8–10×</b> the weight. Short lever arm,
+          big force. That's the deal almost every muscle in your body makes.
+        </p>
+      </div>
+      <div class="lv-ex-card">
+        <h3>So why build bodies this way?</h3>
+        <p>
+          Losing force buys <b>speed and range</b>: a muscle shortening a couple of centimetres near the
+          joint whips the hand through a big, fast arc. The same short lever that costs force lets you
+          throw, kick, and sprint. It also keeps limbs slim and light near the body. The price is joint
+          load — notice the third number climb: most of that muscle force ends up <b>compressing the
+          joint</b>.
+        </p>
+      </div>
+      <div class="lv-ex-card">
+        <h3>Agonist &amp; antagonist</h3>
+        <p>
+          Curling up, the <b style="color:#ff6f5e">biceps</b> is the <b>agonist</b> (the mover) while the
+          triceps on the back of the arm is the <b>antagonist</b>, relaxing and paying out to let the
+          motion happen. Straighten the arm against a load and the roles swap. Muscles only pull, so they
+          come in opposing pairs — one for each direction.
+        </p>
+      </div>
+    </div>
+    <p class="how-note" style="max-width:760px; margin-top:20px;">
+      A simplified 2-D static model: forearm held horizontal, biceps pulling vertically, joint and
+      segment weights ignored so the lever arithmetic stays visible. Real moment arms shift with elbow
+      angle and the muscle wraps over the joint — but the trade-off is exactly this. Classic third-class
+      lever (effort between the pivot and the load).
+    </p>
+  </section>
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=13"></script>
+<script src="muscle.js?v=13"></script>
+</body>
+</html>

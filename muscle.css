@@ -1,0 +1,48 @@
+/* Muscle Levers — torque/lever demo. Builds on style.css tokens. */
+
+.lever-title{
+  background:linear-gradient(90deg, #ff6f5e, #ffb84f);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+.lv-grid{ display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:22px; align-items:stretch; }
+
+.lv-stage{
+  background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); padding:16px; display:flex; align-items:center; justify-content:center;
+}
+#leverCanvas{ width:100%; max-width:560px; height:auto; display:block; }
+
+.lv-panel{ display:flex; flex-direction:column; gap:18px; min-width:0; }
+
+.lv-readouts{
+  background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); padding:18px 20px; display:flex; flex-direction:column; gap:14px;
+}
+.lv-read{ display:flex; flex-direction:column; gap:2px; }
+.lv-num{ font-family:var(--font-display); font-weight:700; font-size:1.5rem; color:var(--text); line-height:1; }
+.lv-read-hero .lv-num{ font-size:2.4rem; color:#ff6f5e; }
+.lv-ratio{ color:#ffb84f; }
+.lv-unit{ font-size:.76rem; color:var(--text-dimmer); letter-spacing:.02em; }
+
+.lv-controls{
+  background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); padding:18px 20px; display:flex; flex-direction:column; gap:18px;
+}
+.lv-slider label{ display:flex; justify-content:space-between; gap:10px; font-size:.85rem; color:var(--text-dim); margin-bottom:8px; }
+.lv-slider .pv{ color:var(--accent); font-weight:600; font-family:var(--font-display); }
+.lv-slider input[type=range]{ width:100%; }
+
+.lv-explainer{ margin-top:34px; }
+.lv-ex-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.lv-ex-card{
+  background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); padding:20px 22px;
+}
+.lv-ex-card h3{ font-family:var(--font-display); font-size:1rem; font-weight:600; color:#e6edf6; margin-bottom:10px; }
+.lv-ex-card p{ font-size:.9rem; color:var(--text-dim); line-height:1.6; margin:0; }
+
+@media (max-width: 860px){
+  .lv-grid{ grid-template-columns:1fr; }
+  .lv-ex-grid{ grid-template-columns:1fr; }
+}
