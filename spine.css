@@ -1,0 +1,45 @@
+/* Spine Under Load — Nachemson disc-pressure explorable. Builds on style.css. */
+
+.spine-title{
+  background:linear-gradient(90deg, #7dd3fc, #ff6f5e);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+.spine-grid{ display:grid; grid-template-columns:minmax(0,0.85fr) minmax(0,1fr); gap:22px; align-items:stretch; }
+
+.spine-stage{
+  background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); padding:16px; display:flex; align-items:center; justify-content:center;
+}
+#spineCanvas{ width:100%; max-width:440px; height:auto; display:block; background:var(--bg-alt); border-radius:12px; }
+
+.spine-panel{ display:flex; flex-direction:column; gap:16px; min-width:0; }
+.spine-readout{
+  background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); padding:16px 20px;
+}
+.spine-big{ font-family:var(--font-display); font-weight:700; line-height:1; }
+.spine-big #pctVal{ font-size:2.8rem; color:#ff6f5e; }
+.spine-pct{ font-size:.9rem; color:var(--text-dimmer); margin-left:6px; }
+.spine-mpa{ font-family:var(--font-display); font-size:1rem; color:var(--text-dim); margin-top:4px; }
+.spine-name{ font-size:.9rem; color:var(--text); margin-top:8px; }
+
+.spine-bars{
+  background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); padding:10px 14px; display:flex; flex-direction:column;
+}
+.spine-bar-row{
+  display:grid; grid-template-columns:150px 1fr 46px; align-items:center; gap:10px;
+  padding:7px 6px; border-radius:8px; cursor:pointer; transition:background .12s;
+}
+.spine-bar-row:hover{ background:rgba(255,255,255,.03); }
+.spine-bar-row.active{ background:rgba(125,211,252,.1); outline:1px solid rgba(125,211,252,.35); }
+.spine-bar-label{ font-size:.8rem; color:var(--text-dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.spine-bar-track{ height:14px; background:var(--panel-border); border-radius:7px; overflow:hidden; }
+.spine-bar-fill{ height:100%; border-radius:7px; transition:width .3s ease; }
+.spine-bar-val{ font-family:var(--font-display); font-weight:600; font-size:.82rem; text-align:right; color:var(--text-dim); }
+
+@media (max-width: 860px){
+  .spine-grid{ grid-template-columns:1fr; }
+  .spine-bar-row{ grid-template-columns:120px 1fr 42px; }
+}

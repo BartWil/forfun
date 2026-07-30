@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Spine Under Load — Motion Lab</title>
+<meta name="description" content="How posture and lifting change the pressure inside a lumbar disc — the classic Nachemson / Wilke curves, made interactive." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=14" />
+<link rel="stylesheet" href="spine.css?v=14" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#explorer">Explorer</a></li>
+      <li><a href="lab.html">The Forge ⚡</a></li>
+      <li><a href="body3d.html">The Anatomy 🦴</a></li>
+      <li><a href="gait3d.html">Real Gait 🚶</a></li>
+      <li><a href="sandbox.html">Gait Lab 🦿</a></li>
+      <li><a href="muscle.html">Levers 💪</a></li>
+      <li><a href="lesson.html">Learn 📖</a></li>
+      <li><a href="sls.html">Knee Control 🦵</a></li>
+      <li><a href="dyno.html">Muscle Dyno 🔬</a></li>
+      <li><a href="spine.html" class="active">Spine 🩻</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label">Load on the lumbar disc</div>
+    <h1 class="lab-title spine-title">Spine Under Load</h1>
+    <p class="lab-sub">
+      In the 1960s Alf Nachemson pushed a pressure needle into people's lumbar discs and asked them to
+      sit, stand, bend, and lift. The result is one of the most quoted figures in spine care — and it's
+      full of surprises (sitting beats standing; a rounded-back lift is brutal). Click a posture and
+      watch the disc pressure change.
+    </p>
+  </div>
+</header>
+
+<main class="container">
+  <div class="spine-grid">
+    <div class="spine-stage">
+      <canvas id="spineCanvas" width="440" height="470"></canvas>
+    </div>
+
+    <div class="spine-panel">
+      <div class="spine-readout">
+        <div class="spine-big"><span id="pctVal">100</span><span class="spine-pct">% of standing</span></div>
+        <div class="spine-mpa" id="mpaVal">≈ 0.50 MPa</div>
+        <div class="spine-name" id="postName">Standing upright</div>
+      </div>
+      <div class="spine-bars" id="bars"></div>
+    </div>
+  </div>
+
+  <section class="sls-explainer">
+    <div class="sls-ex-grid">
+      <div class="sls-ex-card">
+        <h3>Why sitting beats standing</h3>
+        <p>
+          It feels restful, but relaxed sitting <b>raises</b> disc pressure above standing. Sitting flattens
+          the lumbar lordosis and switches off the passive support of a neutral spine, so the disc and
+          muscles carry more. Add a forward lean at a desk and it climbs further. The cue "sit tall / use a
+          lumbar support" is this curve in one sentence. <em>Nachemson; Nordin &amp; Frankel.</em>
+        </p>
+      </div>
+      <div class="sls-ex-card">
+        <h3>Why the load's lever arm is everything</h3>
+        <p>
+          Hold a box far from your body, or round your back to reach it, and its weight acts on a long lever
+          arm from the disc — the back muscles must pull <em>hard</em> to balance it, and nearly all of that
+          force presses straight down through the disc. Keep the load close and hinge at the hips (neutral
+          spine) and the same box costs the disc far less. This is the "lift with your legs" mechanism.
+        </p>
+      </div>
+      <div class="sls-ex-card">
+        <h3>Nuance the students should hear</h3>
+        <p>
+          Nachemson's classic percentages are a <b>teaching model</b> from a small in-vivo sample; Wilke's
+          1999 restudy refined some values (sitting and standing came out closer). And "high disc pressure"
+          is not the same as "danger" — spines are built to load. Use the ranking to explain <em>mechanics</em>,
+          not to make anyone afraid to bend. <em>Wilke et&nbsp;al. 1999.</em>
+        </p>
+      </div>
+    </div>
+    <p class="how-note" style="max-width:780px; margin-top:20px;">
+      Relative pressures are the classic Nachemson values (standing ≈ 100%), as reproduced in Nordin &amp;
+      Frankel and Neumann; the MPa figures assume ~0.5&nbsp;MPa standing (Wilke) and are approximate.
+      Illustrative teaching model — not a measurement or clinical advice.
+    </p>
+  </section>
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=14"></script>
+<script src="spine.js?v=14"></script>
+</body>
+</html>
