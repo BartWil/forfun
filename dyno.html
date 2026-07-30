@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Muscle Dyno — Motion Lab</title>
+<meta name="description" content="Length–tension and force–velocity of skeletal muscle — a Hill model you can drag, with the physiology running as real Ruby in your browser (ruby.wasm)." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=14" />
+<link rel="stylesheet" href="dyno.css?v=14" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html#explorer">Explorer</a></li>
+      <li><a href="lab.html">The Forge ⚡</a></li>
+      <li><a href="body3d.html">The Anatomy 🦴</a></li>
+      <li><a href="gait3d.html">Real Gait 🚶</a></li>
+      <li><a href="sandbox.html">Gait Lab 🦿</a></li>
+      <li><a href="muscle.html">Levers 💪</a></li>
+      <li><a href="lesson.html">Learn 📖</a></li>
+      <li><a href="sls.html">Knee Control 🦵</a></li>
+      <li><a href="dyno.html" class="active">Muscle Dyno 🔬</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label">How a muscle makes force</div>
+    <h1 class="lab-title dyno-title">Muscle Dyno</h1>
+    <p class="lab-sub">
+      A muscle's force isn't a fixed number — it depends on <b>how long it is</b> and <b>how fast it's
+      changing length</b>. Drag the sliders and watch the two rules every kinesiology text drills into
+      you: the <b>length–tension</b> curve and the <b>force–velocity</b> curve. The twist:
+      <b>the muscle model itself runs as real Ruby in your browser</b>, compiled to WebAssembly.
+    </p>
+    <div class="dyno-engine" id="engineBadge">⏳ booting Ruby engine (ruby.wasm)…</div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="dyno-grid">
+    <div class="dyno-charts">
+      <div class="dyno-card">
+        <h4>Length–tension</h4>
+        <canvas id="ltChart" width="520" height="240"></canvas>
+      </div>
+      <div class="dyno-card">
+        <h4>Force–velocity &amp; power</h4>
+        <canvas id="fvChart" width="520" height="240"></canvas>
+      </div>
+    </div>
+
+    <div class="dyno-side">
+      <div class="dyno-card">
+        <h4>Sarcomere overlap</h4>
+        <canvas id="sarco" width="360" height="120"></canvas>
+        <p class="dyno-sarco-note" id="sarcoNote">optimal filament overlap</p>
+      </div>
+
+      <div class="dyno-card dyno-readouts" id="readouts"></div>
+
+      <div class="dyno-card dyno-controls">
+        <div class="dyno-slider">
+          <label for="len">Muscle length <span class="pv" id="lenVal">1.00 L₀</span></label>
+          <input type="range" id="len" min="0.5" max="1.7" step="0.01" value="1.0" />
+        </div>
+        <div class="dyno-slider">
+          <label for="vel">Contraction velocity <span class="pv" id="velVal">isometric</span></label>
+          <input type="range" id="vel" min="-1" max="1" step="0.02" value="0" />
+        </div>
+        <div class="dyno-slider">
+          <label for="act">Activation <span class="pv" id="actVal">100%</span></label>
+          <input type="range" id="act" min="0" max="1" step="0.01" value="1.0" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="dyno-code">
+    <div class="dyno-code-head">
+      <h3>The physiology, as Ruby</h3>
+      <span id="codeBadge" class="dyno-code-badge">this exact code computes your operating point</span>
+    </div>
+    <pre class="dyno-src"><code id="rubySrc"></code></pre>
+  </section>
+
+  <section class="sls-explainer">
+    <div class="sls-ex-grid">
+      <div class="sls-ex-card">
+        <h3>Length–tension: it's about overlap</h3>
+        <p>
+          Active force comes from myosin heads pulling on actin. Too <b>short</b> and the filaments jam
+          into each other; too <b>long</b> and they barely overlap — either way, fewer working
+          cross-bridges, less force. Peak force sits at <b>optimal length (L₀)</b>. Past that, stretched
+          connective tissue adds <b>passive</b> tension (the rising tail). <em>Neumann; Nordin &amp; Frankel.</em>
+        </p>
+      </div>
+      <div class="sls-ex-card">
+        <h3>Force–velocity: slow is strong, eccentric stronger</h3>
+        <p>
+          Shorten fast and force collapses (the Hill hyperbola) — that's why you can't lift a heavy load
+          quickly. But <b>lengthening</b> under load (eccentric) produces <em>more</em> force than
+          holding still, for less effort. Notice <b>power</b> (force × velocity) peaks at an intermediate
+          speed — the basis of optimal-load training. <em>Enoka; Hill 1938.</em>
+        </p>
+      </div>
+      <div class="sls-ex-card">
+        <h3>Why a clinician cares</h3>
+        <p>
+          Manual muscle testing and strengthening depend on <b>joint angle</b>, because angle sets muscle
+          length. A muscle tested in its shortened range tests weak even when healthy. Eccentric strength
+          being highest underlies eccentric rehab (tendinopathy, hamstring injury). Position is not a
+          detail — it's the whole curve.
+        </p>
+      </div>
+    </div>
+    <p class="how-note" style="max-width:780px; margin-top:20px;">
+      A normalised Hill-type model for teaching (force in multiples of maximum isometric force F₀,
+      velocity in multiples of V_max). Curve shapes follow the classic length–tension and force–velocity
+      relationships; exact numbers are illustrative. The Ruby engine downloads ~16&nbsp;MB once; if it
+      can't load, an identical JavaScript model takes over so the page still works.
+    </p>
+  </section>
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=14"></script>
+<script type="module" src="dyno.js?v=14"></script>
+</body>
+</html>

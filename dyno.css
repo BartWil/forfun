@@ -1,0 +1,53 @@
+/* Muscle Dyno — length–tension & force–velocity, powered by ruby.wasm. Builds on style.css. */
+
+.dyno-title{
+  background:linear-gradient(90deg, #ff6f5e, #7c9bff);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.dyno-engine{
+  display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono', monospace;
+  font-size:.8rem; padding:7px 14px; border-radius:999px; margin-top:4px;
+  border:1px solid var(--panel-border); background:var(--panel); color:var(--text-dim);
+}
+.dyno-engine.ruby{ border-color:rgba(204,52,45,.5); background:rgba(204,52,45,.1); color:#ff8a7e; }
+.dyno-engine.js{ border-color:rgba(255,180,60,.4); background:rgba(255,180,60,.1); color:#ffb43c; }
+
+.dyno-grid{ display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); gap:22px; align-items:start; }
+.dyno-charts{ display:flex; flex-direction:column; gap:22px; min-width:0; }
+.dyno-side{ display:flex; flex-direction:column; gap:22px; min-width:0; }
+
+.dyno-card{
+  background:var(--panel-2); border:1px solid var(--hairline); border-radius:var(--radius);
+  box-shadow:var(--shadow-card); padding:16px 18px;
+}
+.dyno-card h4{ font-size:.9rem; color:var(--text); margin-bottom:12px; }
+.dyno-card canvas{ width:100%; height:auto; display:block; }
+
+.dyno-sarco-note{ font-size:.78rem; color:var(--text-dimmer); margin:10px 0 0; text-align:center; }
+
+.dyno-readouts{ display:flex; flex-direction:column; gap:0; padding:6px 18px; }
+.dyno-read{ display:flex; justify-content:space-between; align-items:baseline; padding:10px 0; border-bottom:1px solid var(--hairline); }
+.dyno-read:last-child{ border-bottom:none; }
+.dyno-read .rk{ font-size:.84rem; color:var(--text-dim); }
+.dyno-read .rv{ font-family:var(--font-display); font-weight:700; font-size:1.15rem; }
+.rv-total{ color:#ff6f5e; } .rv-active{ color:#7c9bff; } .rv-passive{ color:#5eead4; } .rv-power{ color:#ffb43c; }
+
+.dyno-controls{ display:flex; flex-direction:column; gap:18px; }
+.dyno-slider label{ display:flex; justify-content:space-between; font-size:.85rem; color:var(--text-dim); margin-bottom:8px; }
+.dyno-slider .pv{ color:var(--accent); font-weight:600; font-family:var(--font-display); }
+.dyno-slider input{ width:100%; }
+
+.dyno-code{ margin-top:30px; min-width:0; max-width:100%; }
+.dyno-code-head{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:12px; }
+.dyno-code-head h3{ font-family:var(--font-display); font-size:1.15rem; color:var(--text); }
+.dyno-code-badge{ font-family:'JetBrains Mono', monospace; font-size:.72rem; color:var(--text-dimmer); }
+.dyno-src{
+  background:#0a0e17; border:1px solid var(--panel-border); border-radius:12px; padding:18px 20px;
+  overflow-x:auto; margin:0;
+}
+.dyno-src code{ font-family:'JetBrains Mono', monospace; font-size:.82rem; line-height:1.6; color:#c7d0e0; white-space:pre; }
+.dyno-src .kw{ color:#ff8a7e; } .dyno-src .cm{ color:#647092; font-style:italic; } .dyno-src .num{ color:#ffb43c; } .dyno-src .fn{ color:#7dd3fc; }
+
+@media (max-width: 900px){
+  .dyno-grid{ grid-template-columns:1fr; }
+}

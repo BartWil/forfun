@@ -75,7 +75,7 @@ section{ padding:clamp(56px, 8vw, 84px) 0; position:relative; }
   color:var(--text); text-decoration:none;
 }
 .nav-logo span{ color:var(--accent); }
-.nav-links{ list-style:none; display:flex; gap:28px; margin:0; padding:0; }
+.nav-links{ list-style:none; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:7px 16px; margin:0; padding:0; }
 .nav-links a{
   color:var(--text-dim); text-decoration:none; font-size:.92rem; font-weight:500;
   transition:color .15s;
