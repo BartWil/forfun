@@ -22,6 +22,12 @@ const POSTURES = [
     J: { head: [.76, .42], shoulder: [.68, .48], hip: [.46, .56], knee: [.46, .76], ankle: [.46, .90], hand: [.73, .74], disc: [.49, .53] } },
 ];
 const MAXPCT = 250;
+const PL_NAMES = {
+  supine: "Leżenie na plecach", side: "Leżenie na boku", stand: "Stanie wyprostowane", walk: "Chód",
+  sit: "Siedzenie rozluźnione", bend: "Stanie, pochylenie do przodu",
+  liftGood: "Podnoszenie 20 kg — zawias biodrowy, neutralne plecy", liftBad: "Podnoszenie 20 kg — zgięcie, zaokrąglone plecy",
+};
+const pname = p => (window.i18n && window.i18n.lang === "pl") ? PL_NAMES[p.id] : p.name;
 
 function pctColor(pct) {
   const t = Math.max(0, Math.min(1, (pct - 25) / 195));
@@ -40,7 +46,7 @@ function buildBars() {
     const row = document.createElement("div");
     row.className = "spine-bar-row" + (i === sel ? " active" : "");
     row.innerHTML =
-      `<div class="spine-bar-label">${p.name}</div>` +
+      `<div class="spine-bar-label">${pname(p)}</div>` +
       `<div class="spine-bar-track"><div class="spine-bar-fill" style="width:${p.pct / MAXPCT * 100}%;background:${pctColor(p.pct)}"></div></div>` +
       `<div class="spine-bar-val">${p.pct}%</div>`;
     row.addEventListener("click", () => { sel = i; render(); });
@@ -54,7 +60,7 @@ function render() {
   document.getElementById("pctVal").textContent = p.pct;
   document.getElementById("pctVal").style.color = pctColor(p.pct);
   document.getElementById("mpaVal").textContent = "≈ " + (p.pct / 100 * 0.5).toFixed(2) + " MPa";
-  document.getElementById("postName").textContent = p.name;
+  document.getElementById("postName").textContent = pname(p);
   drawFigure(p);
 }
 
@@ -117,5 +123,6 @@ function drawFigure(p) {
 }
 
 window.addEventListener("resize", () => drawFigure(POSTURES[sel]));
+document.addEventListener("i18n:changed", () => { buildBars(); render(); });
 buildBars();
 render();

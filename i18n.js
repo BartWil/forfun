@@ -149,6 +149,19 @@
 
   // ---- Static prose: data-i18n key -> Polish ---------------------------
   const STATIC = {
+    // === Spine Under Load ===
+    "sp.label": "Obciążenie krążka lędźwiowego",
+    "sp.title": "Kręgosłup pod obciążeniem",
+    "sp.sub": "W latach 60. Alf Nachemson wprowadzał igłę ciśnieniową do krążków lędźwiowych i prosił badanych, by siadali, stali, pochylali się i podnosili ciężary. Powstał jeden z najczęściej cytowanych wykresów w opiece nad kręgosłupem — pełen niespodzianek (siedzenie obciąża bardziej niż stanie; podnoszenie z zaokrąglonymi plecami jest brutalne). Kliknij pozycję i obserwuj zmianę ciśnienia w krążku.",
+    "sp.c1h": "Dlaczego siedzenie obciąża bardziej niż stanie",
+    "sp.c1p": "Wydaje się odpoczynkiem, ale rozluźnione siedzenie <b>podnosi</b> ciśnienie w krążku powyżej stania. Siedzenie spłaszcza lordozę lędźwiową i wyłącza bierne podparcie neutralnego kręgosłupa, więc krążek i mięśnie przenoszą więcej. Dodaj pochylenie do przodu przy biurku, a ciśnienie rośnie dalej. Wskazówka „siedź prosto / używaj podparcia lędźwiowego” to ten wykres w jednym zdaniu. <em>Nachemson; Nordin i Frankel.</em>",
+    "sp.c2h": "Dlaczego ramię dźwigni obciążenia jest kluczowe",
+    "sp.c2p": "Trzymaj pudełko daleko od ciała albo zaokrąglij plecy, by po nie sięgnąć, a jego ciężar działa na długim ramieniu dźwigni od krążka — mięśnie grzbietu muszą ciągnąć <em>mocno</em>, by je zrównoważyć, a niemal cała ta siła naciska prosto w dół przez krążek. Trzymaj ciężar blisko i zawiasuj w biodrach (neutralny kręgosłup), a to samo pudełko kosztuje krążek znacznie mniej. To mechanizm „podnoś nogami”.",
+    "sp.c3h": "Niuans, który studenci powinni usłyszeć",
+    "sp.c3p": "Klasyczne procenty Nachemsona to <b>model dydaktyczny</b> z małej próby in vivo; ponowne badanie Wilkego z 1999 r. skorygowało niektóre wartości (siedzenie i stanie wyszły bliżej siebie). A „wysokie ciśnienie w krążku” to nie to samo co „niebezpieczeństwo” — kręgosłup jest stworzony do obciążeń. Używaj tego rankingu, by tłumaczyć <em>mechanikę</em>, a nie by kogokolwiek straszyć zginaniem. <em>Wilke i wsp. 1999.</em>",
+    "sp.note": "Względne ciśnienia to klasyczne wartości Nachemsona (stanie ≈ 100%), odtworzone w Nordin i Frankel oraz Neumann; wartości w MPa zakładają ~0,5 MPa podczas stania (Wilke) i są przybliżone. Model dydaktyczny, poglądowy — nie pomiar ani porada kliniczna.",
+    "sp.ofstanding": "% stania",
+
     // Shared: nav + footer + common controls
     "nav.explore": "Odkrywaj",
     "nav.explorer": "Eksplorator",
