@@ -1,0 +1,75 @@
+// nav.js — single source of truth for the site nav. Builds a grouped, bilingual (EN/PL) menu into
+// #navLinks on every page, marks the active item, and wires the mobile hamburger + dropdowns.
+// Loaded after i18n.js so it can read window.i18n.lang and rebuild on language change.
+
+(function () {
+  "use strict";
+  const NAV = [
+    { href: "index.html", en: "Explorer", pl: "Eksplorator" },
+    {
+      g: { en: "Movement", pl: "Ruch" }, items: [
+        { href: "lab.html", en: "The Forge ⚡", pl: "Kuźnia ⚡" },
+        { href: "gait3d.html", en: "Real Gait 🚶", pl: "Prawdziwy chód 🚶" },
+        { href: "sandbox.html", en: "Gait Lab 🦿", pl: "Laboratorium chodu 🦿" },
+      ]
+    },
+    {
+      g: { en: "Body", pl: "Ciało" }, items: [
+        { href: "body3d.html", en: "The Anatomy 🦴", pl: "Anatomia 🦴" },
+        { href: "sls.html", en: "Knee Control 🦵", pl: "Kontrola kolana 🦵" },
+      ]
+    },
+    {
+      g: { en: "Muscle & Joint", pl: "Mięśnie i stawy" }, items: [
+        { href: "muscle.html", en: "Levers 💪", pl: "Dźwignie 💪" },
+        { href: "dyno.html", en: "Muscle Dyno 🔬", pl: "Dynamometr 🔬" },
+        { href: "spine.html", en: "Spine 🩻", pl: "Kręgosłup 🩻" },
+      ]
+    },
+    { href: "lesson.html", en: "Learn 📖", pl: "Nauka 📖" },
+  ];
+
+  const file = (location.pathname.split("/").pop() || "index.html").toLowerCase() || "index.html";
+  const lang = () => (window.i18n && window.i18n.lang === "pl" ? "pl" : "en");
+  const isActive = href => href.split("#")[0].toLowerCase() === file;
+
+  function build() {
+    const ul = document.getElementById("navLinks");
+    if (!ul) return;
+    const L = lang();
+    ul.innerHTML = "";
+    NAV.forEach(node => {
+      if (node.items) {
+        const li = document.createElement("li");
+        li.className = "nav-group" + (node.items.some(it => isActive(it.href)) ? " active-group" : "");
+        const btn = document.createElement("button");
+        btn.type = "button"; btn.className = "nav-group-btn";
+        btn.innerHTML = node.g[L] + ' <span class="nav-caret">▾</span>';
+        btn.addEventListener("click", () => li.classList.toggle("open"));
+        const dd = document.createElement("ul"); dd.className = "nav-dropdown";
+        node.items.forEach(it => {
+          const dli = document.createElement("li");
+          const a = document.createElement("a"); a.href = it.href; a.textContent = it[L];
+          if (isActive(it.href)) a.className = "active";
+          dli.appendChild(a); dd.appendChild(dli);
+        });
+        li.appendChild(btn); li.appendChild(dd); ul.appendChild(li);
+      } else {
+        const li = document.createElement("li");
+        const a = document.createElement("a"); a.href = node.href; a.textContent = node[L];
+        if (isActive(node.href)) a.className = "active";
+        li.appendChild(a); ul.appendChild(li);
+      }
+    });
+  }
+
+  function wireToggle() {
+    const t = document.getElementById("navToggle"), ul = document.getElementById("navLinks");
+    if (t) t.addEventListener("click", () => ul.classList.toggle("open"));
+    if (ul) ul.addEventListener("click", e => { if (e.target.tagName === "A") ul.classList.remove("open"); });
+  }
+
+  function boot() { build(); wireToggle(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+  document.addEventListener("i18n:changed", build);
+})();

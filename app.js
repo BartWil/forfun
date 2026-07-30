@@ -1,8 +1,4 @@
-// ---- Mobile nav ----
-const navToggle = document.getElementById("navToggle");
-const navLinks = document.getElementById("navLinks");
-navToggle?.addEventListener("click", () => navLinks.classList.toggle("open"));
-navLinks?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => navLinks.classList.remove("open")));
+// Mobile nav + grouped menu now handled centrally in nav.js.
 
 // Shared computeScales / liveState / sampledCurves / niceMax now live in runtime.js
 // (loaded before this file), so both the dashboard and the physics lab stay in sync.
