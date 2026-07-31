@@ -270,7 +270,8 @@
     "lp.badge": "Interaktywna biomechanika",
     "lp.title1": "MOTION",
     "lp.title2": "LAB",
-    "lp.sub": "Dziesięć stacji mapujących mechanikę ludzkiego ciała — od pojedynczego kroku po ciśnienie wewnątrz krążka lędźwiowego. Rzeczywiste dane pomiarowe, stworzone do <b>eksperymentowania</b>.",
+    "lp.sub": "Kości pływają. Nic w ciele nie jest ułożone jak cegły — szkielet wisi wewnątrz ciągłej sieci napięcia. <b>Pociągnij i zobacz sam.</b>",
+    "lp.grab": "chwyć bark albo kolano i pociągnij",
     "lp.cta.map": "Otwórz mapę",
     "lp.cta.new": "Jesteś tu nowy? Zacznij od kroku →",
     "lp.scroll": "Przewiń",
@@ -279,8 +280,9 @@
     "lp.map.lead": "Każdy panel poniżej działa na żywo — wszystkie używają tych samych danych i tego samego silnika co stacja, którą otwierają.",
     "lp.path.label": "Sugerowana trasa",
     "lp.path.title": "Jeśli uczysz z tego materiału",
-    "lp.eng.title": "A propos tego gwiezdnego tła",
-    "lp.eng.body": "Gwiazdy dryfujące za tytułem i satelity krążące pomiędzy nimi to nie animacja CSS. To <b>prawdziwe orbity newtonowskie</b>, całkowane w każdej klatce przez moduł WebAssembly, który został <b>złożony ręcznie, bajt po bajcie</b> — nagłówki sekcji LEB128, instrukcja po instrukcji — bez kompilatora i bez żadnych narzędzi w całym procesie. Ma <b id=\"engineBytes\">780</b> bajtów, osadzonych bezpośrednio w stronie, więc drzwi wejściowe nie mają czego pobierać ani co mogłoby zawieść. Prędkości wyliczane są z <span class=\"lp-mono\">v = √(GM/r)</span>; nie ma tam ani jednej funkcji trygonometrycznej.",
+    "lp.eng.title": "Co przed chwilą pociągnąłeś",
+    "lp.eng.body": "To ciało to model <b>biotensegracyjny</b>. Białe elementy to kości — rozpórki ściskane, które <b>nigdy się nie stykają</b> — a każda turkusowa linia to element napięciowy: mięsień, ścięgno, powięź, które potrafią <b>wyłącznie ciągnąć, nigdy pchać</b>, bo tkanka nie popchnie liny. Ponieważ ta sieć napięcia jest ciągła, obciążenie przyłożone gdziekolwiek wędruje wszędzie: pociągnij bark w bok, a <b>przeciwne kolano podąży za nim równie daleko</b>; pociągnij kolano, a głowa odchyli się dalej niż Twoja własna dłoń. Długie przekątne od każdego barku do przeciwnej strony miednicy to nie ozdoba — to <b>taśma skośna tylna</b>, od najszerszego grzbietu przez powięź piersiowo-lędźwiową do przeciwstronnego mięśnia pośladkowego wielkiego. Spróbuj teraz <em>dłoni</em>: prawie nic innego się nie poruszy. Ramię obraca się swobodnie w barku, więc <em>zwisa</em> z sieci, zamiast leżeć w jej wnętrzu — i właśnie dlatego problemy obręczy barkowej zachowują się zupełnie inaczej niż kręgosłupowe.",
+    "lp.eng.body2": "Wszystko rozwiązywane w każdej klatce całkowaniem Verleta i relaksacją więzów. Jedno uczciwe zastrzeżenie: same rozpórki i jednokierunkowe liny nie potrafią <em>przywrócić</em> kształtu — raz odkształcona konstrukcja spokojnie pozostanie w dowolnym luźnym układzie, jaki znajdzie. Dlatego solver wyznacza dodatkowo w każdej klatce najlepiej dopasowany ruch sztywny pozy spoczynkowej i delikatnie ściąga do niej ciało, zastępując sprężysty odrzut, który daje prawdziwie napięta wstępnie powięź. Powrót kształtu po puszczeniu jest dokładny; dryfujące drobiny w tle to nadal prawdziwe orbity newtonowskie z <b id=\"engineBytes\">780</b> bajtów <b>ręcznie złożonego WebAssembly</b>, osadzonych w stronie, więc nie ma czego pobierać ani co mogłoby zawieść.",
     "lp.eng.show": "Pokaż mi kod źródłowy",
 
     // Shared: nav + footer + common controls

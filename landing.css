@@ -8,8 +8,10 @@
 
 /* ---------- HERO ---------- */
 .lp-hero{
-  position:relative; min-height:100svh; display:flex; align-items:center; justify-content:center;
-  overflow:hidden; isolation:isolate;
+  position:relative; min-height:100svh; overflow:hidden; isolation:isolate;
+  display:grid; align-items:center; gap:clamp(12px,4vw,56px);
+  grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);
+  padding:96px clamp(20px,6vw,84px) 96px;
   background:
     radial-gradient(ellipse 90% 60% at 50% 42%, rgba(94,234,212,.10), transparent 62%),
     radial-gradient(ellipse 70% 50% at 78% 78%, rgba(124,155,255,.10), transparent 60%),
@@ -21,8 +23,26 @@
   position:absolute; inset:0; z-index:1; pointer-events:none;
   background:radial-gradient(ellipse 78% 66% at 50% 46%, transparent 38%, rgba(5,7,13,.86) 100%);
 }
+/* the draggable biotensegrity body gets its own column, so it never fights the headline */
+.lp-stage{ position:relative; z-index:2; grid-column:2; justify-self:center; }
+.lp-body{
+  width:min(460px, 44vw); height:min(78vh, 660px); display:block;
+  cursor:grab; touch-action:none;
+}
+.lp-body:active{ cursor:grabbing; }
+.lp-body-ui{
+  position:absolute; left:50%; transform:translateX(-50%); bottom:-4px;
+  display:flex; flex-direction:column; align-items:center; gap:9px;
+}
+.lp-grab-hint{
+  font-family:var(--font-display); font-size:.66rem; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--text-dimmer); pointer-events:none;
+  transition:opacity .4s; opacity:.85;
+}
+.lp-grab-hint.gone{ opacity:0; }
+
 .lp-hero-inner{
-  position:relative; z-index:2; text-align:center; padding:0 24px; max-width:820px;
+  position:relative; z-index:2; grid-column:1; text-align:left; max-width:620px;
   animation:lp-rise .9s cubic-bezier(.2,.8,.25,1) both;
 }
 @keyframes lp-rise{ from{ opacity:0; transform:translateY(22px);} to{ opacity:1; transform:none;} }
@@ -35,8 +55,8 @@
 }
 .lp-title{
   font-family:var(--font-display); font-weight:700; line-height:.92; margin:0 0 20px;
-  font-size:clamp(3.1rem, 13vw, 8.4rem); letter-spacing:-.035em;
-  display:flex; gap:.22em; justify-content:center; flex-wrap:wrap;
+  font-size:clamp(2.9rem, 8vw, 6.4rem); letter-spacing:-.035em;
+  display:flex; gap:.22em; flex-wrap:wrap;
 }
 .lp-title-line{ color:#f2f6ff; text-shadow:0 0 64px rgba(124,155,255,.5); }
 .lp-title-accent{
@@ -46,11 +66,11 @@
 }
 .lp-sub{
   font-size:clamp(1rem,2.1vw,1.18rem); line-height:1.65; color:var(--text-dim);
-  max-width:600px; margin:0 auto 34px;
+  max-width:520px; margin:0 0 34px;
 }
 .lp-sub b{ color:var(--text); font-weight:600; }
 
-.lp-cta{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+.lp-cta{ display:flex; gap:14px; flex-wrap:wrap; }
 .lp-btn{
   font-family:var(--font-display); font-size:.94rem; font-weight:600; text-decoration:none;
   padding:13px 26px; border-radius:999px; transition:transform .18s, box-shadow .18s, background .18s, border-color .18s;
@@ -182,11 +202,23 @@
 }
 
 /* ---------- RESPONSIVE ---------- */
+@media (max-width: 900px){
+  .lp-hero{
+    grid-template-columns:1fr; justify-items:center; text-align:center;
+    padding:92px 20px 72px; gap:8px;
+  }
+  .lp-hero-inner{ grid-column:1; grid-row:1; text-align:center; }
+  .lp-stage{ grid-column:1; grid-row:2; }
+  .lp-body{ width:min(340px, 80vw); height:min(46vh, 400px); }
+  .lp-sub{ margin-left:auto; margin-right:auto; }
+  .lp-cta{ justify-content:center; }
+  .lp-title{ justify-content:center; }
+}
 @media (max-width: 720px){
   .lp-stations, .lp-path, .lp-engine{ padding:66px 0; }
   .lp-grid{ grid-template-columns:1fr; }
   .lp-title{ gap:.1em; }
-  .lp-cta{ flex-direction:column; align-items:stretch; }
+  .lp-cta{ flex-direction:column; align-items:stretch; width:100%; max-width:340px; }
   .lp-engine-card{ padding:22px 18px; }
 }
 

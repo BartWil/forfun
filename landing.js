@@ -513,6 +513,19 @@ const sky = document.getElementById("starfield");
 const skyCtx = sky.getContext("2d");
 let core = null, skyW = 0, skyH = 0;
 
+// ---- the draggable biotensegrity body ----
+let bodyRig = null;
+function initBody() {
+  const el = document.getElementById("tensegrity");
+  if (!el || !window.TensegrityHero) return;
+  const hint = document.getElementById("grabHint");
+  bodyRig = window.TensegrityHero.create(el, {
+    ambient: !reduceMotion,
+    onGrab() { if (hint) hint.classList.add("gone"); },
+  });
+  bodyRig.settle(260);                       // reach equilibrium before the first paint
+}
+
 function sizeSky() {
   const d = DPR();
   const r = sky.getBoundingClientRect();
@@ -554,10 +567,14 @@ function frame(ts) {
   if (last == null) last = ts;
   const dt = Math.min((ts - last) / 1000, 0.05); last = ts;
 
-  if (core) { core.step(dt, skyW, skyH); drawSky(); }
+  if (core && !reduceMotion) { core.step(dt, skyW, skyH); drawSky(); }
+
+  // the body is user-driven, so it keeps responding even under reduced motion —
+  // it simply sits at equilibrium until someone actually pulls on it
+  if (bodyRig) { bodyRig.step(dt); bodyRig.draw(); }
 
   cards.forEach(c => {
-    if (!c.visible || !c.draw || !c.w) return;
+    if (reduceMotion || !c.visible || !c.draw || !c.w) return;
     c.phase = (c.phase + dt * 0.34) % 1;
     const ctx = c.canvas.getContext("2d");
     ctx.setTransform(DPR(), 0, 0, DPR(), 0, 0);
@@ -618,16 +635,22 @@ function initEngineCard() {
 let resizeT = null;
 window.addEventListener("resize", () => {
   clearTimeout(resizeT);
-  resizeT = setTimeout(() => { sizeSky(); sizeCanvases(); if (reduceMotion) drawOnce(); }, 140);
+  resizeT = setTimeout(() => {
+    sizeSky(); sizeCanvases();
+    if (bodyRig) { bodyRig.build(); bodyRig.settle(120); }
+    if (reduceMotion) drawOnce();
+  }, 140);
 });
 document.addEventListener("i18n:changed", () => { buildGrid(); buildPath(); if (reduceMotion) drawOnce(); });
 
 (async function boot() {
   buildGrid();
   buildPath();
+  initBody();
   core = await window.OrbitCore.load();
   sizeSky();
   initEngineCard();
-  if (reduceMotion) { core.step(0.016, skyW, skyH); drawOnce(); }
-  else requestAnimationFrame(frame);
+  core.step(0.016, skyW, skyH);
+  if (reduceMotion) drawOnce();
+  requestAnimationFrame(frame);   // always runs: the body must stay draggable
 })();

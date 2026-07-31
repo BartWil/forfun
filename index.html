@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=23" />
-<link rel="stylesheet" href="landing.css?v=23" />
+<link rel="stylesheet" href="style.css?v=32" />
+<link rel="stylesheet" href="landing.css?v=32" />
 </head>
 <body class="landing-body">
 
@@ -28,6 +28,13 @@
   <canvas id="starfield" class="lp-starfield" aria-hidden="true"></canvas>
   <div class="lp-vignette" aria-hidden="true"></div>
 
+  <div class="lp-stage">
+    <canvas id="tensegrity" class="lp-body" aria-hidden="true"></canvas>
+    <div class="lp-body-ui">
+      <span class="lp-grab-hint" id="grabHint" data-i18n="lp.grab">grab a shoulder or a knee and pull</span>
+    </div>
+  </div>
+
   <div class="lp-hero-inner">
     <div class="lp-badge" data-i18n="lp.badge">Interactive biomechanics</div>
 
@@ -36,9 +43,8 @@
     </h1>
 
     <p class="lp-sub" data-i18n-html="lp.sub">
-      Ten stations mapping the mechanics of the human body — from a single step
-      to the pressure inside a lumbar disc. Real measured data, built to be
-      <b>played with</b>.
+      Bones float. Nothing in a body is stacked like bricks — the skeleton hangs
+      inside a continuous net of tension. <b>Pull on it and see.</b>
     </p>
 
     <div class="lp-cta">
@@ -89,19 +95,33 @@
   <div class="container">
     <div class="lp-engine-card">
       <div class="lp-engine-head">
-        <h3 data-i18n="lp.eng.title">About that starfield</h3>
+        <h3 data-i18n="lp.eng.title">What you just pulled on</h3>
         <span class="lp-engine-chip" id="engineChip">…</span>
       </div>
       <p data-i18n-html="lp.eng.body">
-        The stars drifting behind the title, and the satellites orbiting through
-        them, are not a CSS animation. They are <b>true Newtonian orbits</b>
-        integrated every frame by a WebAssembly module that was
-        <b>hand-assembled byte by byte</b> — LEB128 section headers, opcode by
-        opcode — with no compiler and no toolchain anywhere in the loop. It is
-        <b id="engineBytes">780</b> bytes, embedded directly in the page, so the
-        front door has nothing to download and nothing that can fail. Velocities
-        are solved from <span class="lp-mono">v = √(GM/r)</span>; there is not a
-        single trigonometric function in it.
+        That body is a <b>biotensegrity</b> model. The white members are bones —
+        compression struts that <b>never touch each other</b> — and every teal line is a
+        tension member: muscle, tendon, fascia, which can <b>only pull, never push</b>,
+        because tissue cannot push a rope. Because that tension net is continuous, load
+        applied anywhere travels everywhere: drag one shoulder sideways and the
+        <b>opposite knee follows just as far</b>; drag a knee and the head swings further
+        than your hand does. The long diagonals from each shoulder to the opposite pelvis
+        are not decoration — that is the <b>posterior oblique sling</b>, latissimus to
+        thoracolumbar fascia to opposite gluteus maximus. Now try a <em>hand</em>: almost
+        nothing else moves. An arm pivots freely at the shoulder, so it hangs <em>off</em>
+        the network rather than sitting inside it — which is exactly why shoulder girdle
+        problems behave so differently from spinal ones.
+      </p>
+      <p data-i18n-html="lp.eng.body2">
+        Solved each frame by Verlet integration and constraint relaxation. One honest
+        admission: struts and one-way cables alone cannot <em>restore</em> a shape — once
+        deformed, the rig will happily sit in any slack configuration it finds. So the
+        solver also computes the best-fit rigid motion of the rest pose each frame and eases
+        the body back toward it, standing in for the elastic recoil that genuinely
+        prestressed fascia provides. Shape recovery after release is exact; the drifting
+        motes behind the body are still true Newtonian orbits from
+        <b id="engineBytes">780</b> bytes of <b>hand-assembled WebAssembly</b>, embedded in
+        the page so there is nothing to download and nothing that can fail.
       </p>
       <button class="lp-engine-toggle" id="engineToggle" data-i18n="lp.eng.show">Show me the source</button>
       <pre class="lp-engine-src" id="engineSrc" hidden><code></code></pre>
@@ -116,12 +136,13 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=23"></script>
-<script src="nav.js?v=23"></script>
-<script src="spline.js?v=23"></script>
-<script src="data.js?v=23"></script>
-<script src="runtime.js?v=23"></script>
-<script src="orbit-wasm.js?v=23"></script>
-<script src="landing.js?v=23"></script>
+<script src="i18n.js?v=32"></script>
+<script src="nav.js?v=32"></script>
+<script src="spline.js?v=32"></script>
+<script src="data.js?v=32"></script>
+<script src="runtime.js?v=32"></script>
+<script src="orbit-wasm.js?v=32"></script>
+<script src="tensegrity.js?v=32"></script>
+<script src="landing.js?v=32"></script>
 </body>
 </html>
