@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=16" />
-<link rel="stylesheet" href="muscle.css?v=16" />
+<link rel="stylesheet" href="style.css?v=17" />
+<link rel="stylesheet" href="muscle.css?v=17" />
 </head>
 <body>
 
@@ -36,9 +36,9 @@
 
 <header class="lab-header">
   <div class="container">
-    <div class="section-label">Force × distance</div>
-    <h1 class="lab-title lever-title">Muscle Levers</h1>
-    <p class="lab-sub">
+    <div class="section-label" data-i18n="lv.label">Force × distance</div>
+    <h1 class="lab-title lever-title" data-i18n="lv.title">Muscle Levers</h1>
+    <p class="lab-sub" data-i18n-html="lv.sub">
       Hold a 5&nbsp;kg dumbbell and your biceps doesn't pull with 5&nbsp;kg of force — it pulls with
       more like <b>50</b>. Muscles attach right next to the joints they move, so they work on a tiny
       lever arm and pay for it in force. Drag the sliders and watch the trade-off: <b>a joint is a
@@ -61,25 +61,25 @@
         </div>
         <div class="lv-read">
           <span class="lv-num lv-ratio" id="rRatio">—</span>
-          <span class="lv-unit">mechanical disadvantage (pull ÷ load)</span>
+          <span class="lv-unit" data-i18n="lv.u.ratio">mechanical disadvantage (pull ÷ load)</span>
         </div>
         <div class="lv-read">
           <span class="lv-num" id="rJoint">—</span>
-          <span class="lv-unit">force squeezing the elbow joint</span>
+          <span class="lv-unit" data-i18n="lv.u.joint">force squeezing the elbow joint</span>
         </div>
       </div>
 
       <div class="lv-controls">
         <div class="lv-slider">
-          <label for="load">Weight in hand <span class="pv" id="loadVal">5.0 kg</span></label>
+          <label for="load"><span data-i18n="lv.s.load">Weight in hand</span> <span class="pv" id="loadVal">5.0 kg</span></label>
           <input type="range" id="load" min="0.5" max="20" step="0.5" value="5" />
         </div>
         <div class="lv-slider">
-          <label for="insert">Biceps attaches <span class="pv" id="insertVal">4.0 cm</span> from elbow</label>
+          <label for="insert"><span data-i18n="lv.s.insert">Biceps insertion from elbow</span> <span class="pv" id="insertVal">4.0 cm</span></label>
           <input type="range" id="insert" min="2" max="6" step="0.1" value="4" />
         </div>
         <div class="lv-slider">
-          <label for="forearm">Forearm length (elbow → hand) <span class="pv" id="forearmVal">34 cm</span></label>
+          <label for="forearm"><span data-i18n="lv.s.forearm">Forearm length (elbow → hand)</span> <span class="pv" id="forearmVal">34 cm</span></label>
           <input type="range" id="forearm" min="26" max="42" step="1" value="34" />
         </div>
       </div>
@@ -89,8 +89,8 @@
   <section class="lv-explainer">
     <div class="lv-ex-grid">
       <div class="lv-ex-card">
-        <h3>Why the huge force?</h3>
-        <p>
+        <h3 data-i18n="lv.c1h">Why the huge force?</h3>
+        <p data-i18n-html="lv.c1p">
           For the arm to hold still, the turning effect (<b>torque</b>) the muscle makes must exactly
           balance the torque from the weight. Torque = force × its distance from the joint. The weight
           sits ~<b>34&nbsp;cm</b> out; the biceps pulls only ~<b>4&nbsp;cm</b> from the elbow — so to
@@ -99,8 +99,8 @@
         </p>
       </div>
       <div class="lv-ex-card">
-        <h3>So why build bodies this way?</h3>
-        <p>
+        <h3 data-i18n="lv.c2h">So why build bodies this way?</h3>
+        <p data-i18n-html="lv.c2p">
           Losing force buys <b>speed and range</b>: a muscle shortening a couple of centimetres near the
           joint whips the hand through a big, fast arc. The same short lever that costs force lets you
           throw, kick, and sprint. It also keeps limbs slim and light near the body. The price is joint
@@ -109,8 +109,8 @@
         </p>
       </div>
       <div class="lv-ex-card">
-        <h3>Agonist &amp; antagonist</h3>
-        <p>
+        <h3 data-i18n="lv.c3h">Agonist &amp; antagonist</h3>
+        <p data-i18n-html="lv.c3p">
           Curling up, the <b style="color:#ff6f5e">biceps</b> is the <b>agonist</b> (the mover) while the
           triceps on the back of the arm is the <b>antagonist</b>, relaxing and paying out to let the
           motion happen. Straighten the arm against a load and the roles swap. Muscles only pull, so they
@@ -118,7 +118,7 @@
         </p>
       </div>
     </div>
-    <p class="how-note" style="max-width:760px; margin-top:20px;">
+    <p class="how-note" style="max-width:760px; margin-top:20px;" data-i18n-html="lv.note">
       A simplified 2-D static model: forearm held horizontal, biceps pulling vertically, joint and
       segment weights ignored so the lever arithmetic stays visible. Real moment arms shift with elbow
       angle and the muscle wraps over the joint — but the trade-off is exactly this. Classic third-class
@@ -133,8 +133,8 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=16"></script>
-<script src="nav.js?v=16"></script>
-<script src="muscle.js?v=16"></script>
+<script src="i18n.js?v=17"></script>
+<script src="nav.js?v=17"></script>
+<script src="muscle.js?v=17"></script>
 </body>
 </html>

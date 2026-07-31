@@ -17,17 +17,24 @@ function compute(cyc, c) {
   S.drop = 12 * c * dt;
   S.lean = 11 * c * dt;
 }
+const _pl = () => window.i18n && window.i18n.lang === "pl";
+const QLABEL = {
+  controlled: { en: "controlled", pl: "kontrolowane" },
+  moderate:   { en: "moderate",   pl: "umiarkowane" },
+  marked:     { en: "marked",     pl: "wyraźne" },
+};
 function quality(v, lo, hi) {
-  if (v < lo) return { label: "controlled", cls: "q-good", col: 0x5eead4 };
-  if (v < hi) return { label: "moderate", cls: "q-mod", col: 0xffb43c };
-  return { label: "marked", cls: "q-poor", col: 0xff6f5e };
+  if (v < lo) return { label: QLABEL.controlled[_pl() ? "pl" : "en"], cls: "q-good", col: 0x5eead4 };
+  if (v < hi) return { label: QLABEL.moderate[_pl() ? "pl" : "en"], cls: "q-mod", col: 0xffb43c };
+  return { label: QLABEL.marked[_pl() ? "pl" : "en"], cls: "q-poor", col: 0xff6f5e };
 }
 const METRICS = [
-  { name: "Knee valgus (medial knee shift)", key: "valgus", max: 20, lo: 7, hi: 14 },
-  { name: "Pelvic drop (opposite hip)", key: "drop", max: 12, lo: 5, hi: 10 },
-  { name: "Trunk lean", key: "lean", max: 11, lo: 5, hi: 10 },
-  { name: "Squat depth (knee flexion)", key: "kneeFlex", max: 70, neutral: true },
+  { name: "Knee valgus (medial knee shift)", pl: "Koślawość kolana (przyśrodkowe przesunięcie)", key: "valgus", max: 20, lo: 7, hi: 14 },
+  { name: "Pelvic drop (opposite hip)", pl: "Opadanie miednicy (przeciwne biodro)", key: "drop", max: 12, lo: 5, hi: 10 },
+  { name: "Trunk lean", pl: "Pochylenie tułowia", key: "lean", max: 11, lo: 5, hi: 10 },
+  { name: "Squat depth (knee flexion)", pl: "Głębokość przysiadu (zgięcie kolana)", key: "kneeFlex", max: 70, neutral: true },
 ];
+const mName = m => (_pl() ? m.pl : m.name);
 
 // ---------------- DOM ----------------
 const stage = document.getElementById("slsStage");
@@ -43,7 +50,7 @@ function buildMetrics() {
   METRICS.forEach(m => {
     const row = document.createElement("div"); row.className = "metric-row";
     row.innerHTML =
-      `<div class="metric-main"><div class="metric-name">${m.name}</div>` +
+      `<div class="metric-main"><div class="metric-name">${mName(m)}</div>` +
       `<div class="metric-bar"><div class="metric-fill" id="fill-${m.key}"></div></div></div>` +
       `<div class="metric-val" id="val-${m.key}">0°</div>` +
       (m.neutral ? `<div style="width:66px"></div>` : `<div class="metric-quality" id="q-${m.key}">—</div>`);
@@ -251,7 +258,16 @@ document.querySelectorAll(".sls-mode").forEach(b => b.addEventListener("click", 
 
 // ---------------- controls + loop ----------------
 let cycle = 20, playing = true, lastTime = null;
-function controlLabel(c) { return c < 0.25 ? "excellent" : c < 0.5 ? "good" : c < 0.75 ? "moderate" : "poor"; }
+const CTRL_LABELS = {
+  excellent: { en: "excellent", pl: "doskonała" },
+  good:      { en: "good",      pl: "dobra" },
+  moderate:  { en: "moderate",  pl: "umiarkowana" },
+  poor:      { en: "poor",      pl: "słaba" },
+};
+function controlLabel(c) {
+  const k = c < 0.25 ? "excellent" : c < 0.5 ? "good" : c < 0.75 ? "moderate" : "poor";
+  return CTRL_LABELS[k][_pl() ? "pl" : "en"];
+}
 controlEl.addEventListener("input", () => { controlVal.textContent = controlLabel(parseFloat(controlEl.value)); });
 document.querySelectorAll(".sls-preset").forEach(b =>
   b.addEventListener("click", () => { controlEl.value = b.dataset.control; controlVal.textContent = controlLabel(parseFloat(b.dataset.control)); }));
@@ -285,6 +301,10 @@ function animate(ts) {
 
 buildMetrics();
 controlVal.textContent = controlLabel(parseFloat(controlEl.value));
+document.addEventListener("i18n:changed", () => {
+  buildMetrics();
+  controlVal.textContent = controlLabel(parseFloat(controlEl.value));
+});
 initScene();
 initRealCapture();
 requestAnimationFrame(animate);

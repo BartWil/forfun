@@ -53,6 +53,9 @@ function point(l, v, act) {
   return jsPoint(l, v, act);
 }
 
+// ---- lang helper ----
+const L = (en, pl) => (window.i18n && window.i18n.lang === "pl") ? pl : en;
+
 // ---- DOM ----
 const el = id => document.getElementById(id);
 const lenEl = el("len"), velEl = el("vel"), actEl = el("act");
@@ -141,25 +144,27 @@ function drawSarco(l) {
   const actLen = (W / 2 - zL) * 0.92;
   ctx.beginPath(); ctx.moveTo(zL, cy - 8); ctx.lineTo(zL + actLen, cy - 8); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(zR, cy + 8); ctx.lineTo(zR - actLen, cy + 8); ctx.stroke();
-  sarcoNote.textContent = l < 0.85 ? "too short — filaments collide, low force"
-    : l > 1.4 ? "too long — little overlap, low active force"
-      : (l >= 0.9 && l <= 1.15) ? "optimal filament overlap — peak force" : "reduced overlap";
+  sarcoNote.textContent = l < 0.85 ? L("too short — filaments collide, low force", "za krótki — filamenty kolidują, mała siła")
+    : l > 1.4 ? L("too long — little overlap, low active force", "za długi — małe zachodzenie, mała siła czynna")
+      : (l >= 0.9 && l <= 1.15) ? L("optimal filament overlap — peak force", "optymalne zachodzenie filamentów — szczytowa siła")
+        : L("reduced overlap", "zmniejszone zachodzenie");
 }
 
 function fmt(x) { return (x >= 0 ? "" : "") + (x * 100).toFixed(0) + "%"; }
 function updateReadouts(p) {
   readoutsEl.innerHTML =
-    row("Active force", p.active, "rv-active") +
-    row("Passive force", p.passive, "rv-passive") +
-    row("Total force", p.total, "rv-total") +
-    row("Power", p.power, "rv-power");
+    row(L("Active force", "Siła czynna"), p.active, "rv-active") +
+    row(L("Passive force", "Siła bierna"), p.passive, "rv-passive") +
+    row(L("Total force", "Siła całkowita"), p.total, "rv-total") +
+    row(L("Power", "Moc"), p.power, "rv-power");
 }
 function row(k, v, cls) { return `<div class="dyno-read"><span class="rk">${k}</span><span class="rv ${cls}">${(v * 100).toFixed(0)}%</span></div>`; }
 
 function update() {
   const l = parseFloat(lenEl.value), v = parseFloat(velEl.value), a = parseFloat(actEl.value);
   lenVal.textContent = l.toFixed(2) + " L₀";
-  velVal.textContent = Math.abs(v) < 0.02 ? "isometric" : (v > 0 ? "shortening " : "lengthening ") + Math.abs(v).toFixed(2) + " V_max";
+  velVal.textContent = Math.abs(v) < 0.02 ? L("isometric", "izometrycznie")
+    : (v > 0 ? L("shortening ", "skracanie ") : L("lengthening ", "wydłużanie ")) + Math.abs(v).toFixed(2) + " V_max";
   actVal.textContent = Math.round(a * 100) + "%";
   const p = point(l, v, a);
   updateReadouts(p);
@@ -176,6 +181,23 @@ function hl(src) {
 }
 el("rubySrc").innerHTML = hl(RUBY_SRC);
 
+// ---- engine badge (re-renderable so it can re-localize on language toggle) ----
+let engineState = "boot"; // boot | ruby | js
+function renderBadge() {
+  if (engineState === "ruby") {
+    engineBadge.className = "dyno-engine ruby";
+    engineBadge.textContent = L("💎 live: your operating point is computed in Ruby (ruby.wasm 3.3)",
+      "💎 na żywo: Twój punkt pracy jest obliczany w Ruby (ruby.wasm 3.3)");
+  } else if (engineState === "js") {
+    engineBadge.className = "dyno-engine js";
+    engineBadge.textContent = L("⚙ Ruby engine unavailable — running the identical JS model",
+      "⚙ Silnik Ruby niedostępny — działa identyczny model JS");
+  } else {
+    engineBadge.textContent = L("⏳ booting Ruby engine (ruby.wasm)…",
+      "⏳ uruchamianie silnika Ruby (ruby.wasm)…");
+  }
+}
+
 // ---- boot Ruby (async, non-blocking) ----
 async function initRuby() {
   try {
@@ -187,17 +209,17 @@ async function initRuby() {
     // smoke-test the round-trip
     vm.eval("operating_point(1.0, 0.0, 1.0)").toString();
     rvm = vm; rubyReady = true;
-    engineBadge.className = "dyno-engine ruby";
-    engineBadge.textContent = "💎 live: your operating point is computed in Ruby (ruby.wasm 3.3)";
+    engineState = "ruby"; renderBadge();
     update();
   } catch (e) {
     console.warn("ruby.wasm unavailable — using JS model:", e);
-    engineBadge.className = "dyno-engine js";
-    engineBadge.textContent = "⚙ Ruby engine unavailable — running the identical JS model";
+    engineState = "js"; renderBadge();
   }
 }
 
 [lenEl, velEl, actEl].forEach(e => e.addEventListener("input", update));
 window.addEventListener("resize", update);
+document.addEventListener("i18n:changed", () => { renderBadge(); update(); });
+renderBadge();
 update();
 initRuby();

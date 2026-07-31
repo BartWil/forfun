@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=16" />
-<link rel="stylesheet" href="sandbox.css?v=16" />
+<link rel="stylesheet" href="style.css?v=17" />
+<link rel="stylesheet" href="sandbox.css?v=17" />
 </head>
 <body>
 
@@ -36,9 +36,9 @@
 
 <header class="lab-header">
   <div class="container">
-    <div class="section-label">Cause &amp; compensation</div>
-    <h1 class="lab-title sandbox-title">Gait Lab</h1>
-    <p class="lab-sub">
+    <div class="section-label" data-i18n="sb.label">Cause &amp; compensation</div>
+    <h1 class="lab-title sandbox-title" data-i18n="sb.title">Gait Lab</h1>
+    <p class="lab-sub" data-i18n-html="sb.sub">
       Healthy walking is a chain of finely-timed events — and when one link weakens, the body
       improvises. Switch on a <b>deficit</b> and watch how the walk changes: the ghost is typical gait,
       the solid figure is <b>the same person coping with the problem</b>. The classic compensations here
@@ -54,18 +54,18 @@
     <div class="sbx-stage">
       <canvas id="figureCanvas" width="440" height="460"></canvas>
       <label class="sbx-ghost-toggle">
-        <input type="checkbox" id="ghostToggle" checked /> show typical gait (ghost)
+        <input type="checkbox" id="ghostToggle" checked /> <span data-i18n="sb.ghost">show typical gait (ghost)</span>
       </label>
     </div>
 
     <div class="sbx-info" id="diagnosis">
       <div class="sbx-cond-name" id="condName">—</div>
       <div class="sbx-block">
-        <h4>Primary deficit</h4>
+        <h4 data-i18n="sb.primary">Primary deficit</h4>
         <p id="condPrimary">—</p>
       </div>
       <div class="sbx-block sbx-comp">
-        <h4>Compensation you're seeing</h4>
+        <h4 data-i18n="sb.comp">Compensation you're seeing</h4>
         <p id="condComp">—</p>
       </div>
       <p class="sbx-note" id="condNote"></p>
@@ -77,16 +77,16 @@
     <button id="playBtn" class="transport-btn" aria-label="Play">▶</button>
     <input type="range" id="scrubber" min="0" max="1000" value="0" />
     <div class="lab-slider-group">
-      <label for="severity">Severity <span class="pv" id="sevVal">70%</span></label>
+      <label for="severity"><span data-i18n="sb.severity">Severity</span> <span class="pv" id="sevVal">70%</span></label>
       <input type="range" id="severity" min="0" max="1" step="0.05" value="0.7" />
     </div>
     <div class="lab-slider-group">
-      <label for="playbackSpeed">Playback speed</label>
+      <label for="playbackSpeed" data-i18n="ctrl.playbackSpeed">Playback speed</label>
       <input type="range" id="playbackSpeed" min="0.25" max="2" step="0.25" value="0.6" />
     </div>
   </div>
 
-  <p class="how-note" style="margin-top:26px; max-width:760px;">
+  <p class="how-note" style="margin-top:26px; max-width:760px;" data-i18n-html="sb.note">
     A teaching abstraction in the sagittal (side-on) plane: the primary deficit and its main
     compensations are modelled on the walking kinematics; side-to-side compensations
     (circumduction, pelvic drop) are described but can't be shown from this angle. Grounded in
@@ -101,12 +101,12 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=16"></script>
-<script src="nav.js?v=16"></script>
-<script src="spline.js?v=16"></script>
-<script src="data.js?v=16"></script>
-<script src="runtime.js?v=16"></script>
-<script src="figure.js?v=16"></script>
-<script src="sandbox.js?v=16"></script>
+<script src="i18n.js?v=17"></script>
+<script src="nav.js?v=17"></script>
+<script src="spline.js?v=17"></script>
+<script src="data.js?v=17"></script>
+<script src="runtime.js?v=17"></script>
+<script src="figure.js?v=17"></script>
+<script src="sandbox.js?v=17"></script>
 </body>
 </html>

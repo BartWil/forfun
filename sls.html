@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=16" />
-<link rel="stylesheet" href="sls.css?v=16" />
+<link rel="stylesheet" href="style.css?v=17" />
+<link rel="stylesheet" href="sls.css?v=17" />
 </head>
 <body>
 
@@ -36,15 +36,15 @@
 
 <header class="lab-header">
   <div class="container">
-    <div class="section-label">Frontal-plane control</div>
-    <h1 class="lab-title sls-title">The Single-Leg Squat</h1>
-    <p class="lab-sub">
+    <div class="section-label" data-i18n="sl.label">Frontal-plane control</div>
+    <h1 class="lab-title sls-title" data-i18n="sl.title">The Single-Leg Squat</h1>
+    <p class="lab-sub" data-i18n-html="sl.sub">
       Stand on one leg and slowly squat. It sounds trivial, but it's one of the most revealing
       screens in sports medicine: it exposes whether your hip, knee, and trunk stay
       <b>stacked and controlled</b> — or whether the knee caves inward into <b>dynamic valgus</b>.
       Drag the control slider and watch the collapse appear.
     </p>
-    <p class="sls-disclaimer">
+    <p class="sls-disclaimer" data-i18n-html="sl.disclaimer">
       ⚠️ Illustrative synthetic demo — the motion here is generated from idealised curves to
       <b>teach the pattern</b>. It is <b>not</b> real study data and <b>not</b> a clinical assessment.
     </p>
@@ -55,24 +55,24 @@
   <div class="sls-grid">
     <div class="sls-stage">
       <div class="sls-modes">
-        <button class="sls-mode active" data-mode="synthetic">Synthetic model</button>
-        <button class="sls-mode" data-mode="real">Real OpenCap capture 🎥</button>
+        <button class="sls-mode active" data-mode="synthetic" data-i18n="sl.mode.syn">Synthetic model</button>
+        <button class="sls-mode" data-mode="real" data-i18n="sl.mode.real">Real OpenCap capture 🎥</button>
       </div>
       <div class="sls-3d" id="slsStage">
-        <div class="sls-hint">drag to orbit · scroll to zoom</div>
+        <div class="sls-hint" data-i18n="sl.hint">drag to orbit · scroll to zoom</div>
       </div>
       <div class="sls-presets" id="presets">
-        <button class="sls-preset" data-control="0.12">Good control</button>
-        <button class="sls-preset" data-control="0.55">Moderate</button>
-        <button class="sls-preset" data-control="0.9">Valgus collapse</button>
+        <button class="sls-preset" data-control="0.12" data-i18n="sl.p.good">Good control</button>
+        <button class="sls-preset" data-control="0.55" data-i18n="sl.p.mod">Moderate</button>
+        <button class="sls-preset" data-control="0.9" data-i18n="sl.p.collapse">Valgus collapse</button>
       </div>
     </div>
 
     <div class="sls-panel">
       <div class="sls-metrics" id="metrics"></div>
       <div class="sls-real-note" id="realNote" hidden>
-        <h4>Real markerless capture</h4>
-        <p>
+        <h4 data-i18n="sl.real.h">Real markerless capture</h4>
+        <p data-i18n-html="sl.real.p">
           These are <b>real 3D joint positions</b> from an OpenCap capture — two phone videos turned
           into a moving skeleton — shown as an <b>anonymized pilot sample</b> (single-leg squat, left
           stance). It's here to show <em>what the raw motion looks like</em>, so no metrics or
@@ -82,7 +82,7 @@
       </div>
       <div class="sls-controls" id="controlWrap">
         <div class="sls-slider">
-          <label for="control">Movement control <span class="pv" id="controlVal">good → poor</span></label>
+          <label for="control"><span data-i18n="sl.ctrl">Movement control</span> <span class="pv" id="controlVal">good → poor</span></label>
           <input type="range" id="control" min="0" max="1" step="0.01" value="0.35" />
         </div>
       </div>
@@ -90,7 +90,7 @@
         <button id="playBtn" class="transport-btn" aria-label="Play">⏸</button>
         <input type="range" id="scrubber" min="0" max="1000" value="0" />
         <div class="lab-slider-group">
-          <label for="speed">Squat speed</label>
+          <label for="speed" data-i18n="sl.speed">Squat speed</label>
           <input type="range" id="speed" min="0.25" max="2" step="0.25" value="0.7" />
         </div>
       </div>
@@ -100,8 +100,8 @@
   <section class="sls-explainer">
     <div class="sls-ex-grid">
       <div class="sls-ex-card">
-        <h3>What "dynamic knee valgus" is</h3>
-        <p>
+        <h3 data-i18n="sl.c1h">What "dynamic knee valgus" is</h3>
+        <p data-i18n-html="sl.c1p">
           Watch the knee against the dashed line that runs from hip to foot. Under good control it
           tracks over the foot. Under poor control it drifts <b>medially</b> — inward, toward the other
           leg — as the hip rotates and adducts. That knee-in position, combined with a dropped pelvis and
@@ -110,8 +110,8 @@
         </p>
       </div>
       <div class="sls-ex-card">
-        <h3>The three things that give it away</h3>
-        <p>
+        <h3 data-i18n="sl.c2h">The three things that give it away</h3>
+        <p data-i18n-html="sl.c2p">
           Clinicians and biomechanists don't just eyeball it — they quantify it: the knee's
           <b>medial displacement / frontal-plane projection angle</b>, the
           <b>contralateral pelvic drop</b> (the other hip sinking), and the <b>trunk lean</b>. All three
@@ -120,8 +120,8 @@
         </p>
       </div>
       <div class="sls-ex-card">
-        <h3>How OpenCap measures it</h3>
-        <p>
+        <h3 data-i18n="sl.c3h">How OpenCap measures it</h3>
+        <p data-i18n-html="sl.c3p">
           Traditionally this needs a marker-based lab. <a href="https://www.opencap.ai/" target="_blank" rel="noopener">OpenCap</a>
           does it from <b>two ordinary phone videos</b>: it estimates body keypoints, triangulates them
           to 3D, and fits a full musculoskeletal model (Uhlrich, Falisse et&nbsp;al., 2023) — giving the
@@ -130,7 +130,7 @@
         </p>
       </div>
     </div>
-    <p class="how-note" style="max-width:780px; margin-top:20px;">
+    <p class="how-note" style="max-width:780px; margin-top:20px;" data-i18n-html="sl.note">
       The angles, pelvic drop, and trunk lean here are <b>synthetic and idealised</b> for teaching, not
       measurements of any person. The metric names (medial knee displacement, frontal-plane projection
       angle, pelvic drop, trunk lean) mirror what a real OpenCap single-leg-squat pipeline computes, but
@@ -145,8 +145,8 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=16"></script>
-<script src="nav.js?v=16"></script>
+<script src="i18n.js?v=17"></script>
+<script src="nav.js?v=17"></script>
 <script type="importmap">
 {
   "imports": {
@@ -155,6 +155,6 @@
   }
 }
 </script>
-<script type="module" src="sls.js?v=16"></script>
+<script type="module" src="sls.js?v=17"></script>
 </body>
 </html>

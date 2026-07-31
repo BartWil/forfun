@@ -33,7 +33,8 @@ function updateReadouts(s) {
   els.insertVal.textContent = s.d.toFixed(1) + " cm";
   els.forearmVal.textContent = Math.round(s.L) + " cm";
   els.rForce.textContent = Math.round(s.F) + " N";
-  els.heroUnit.textContent = "biceps force ≈ " + Math.round(s.F / G) + " kg of pull";
+  const _pl = window.i18n && window.i18n.lang === "pl";
+  els.heroUnit.textContent = (_pl ? "siła bicepsa ≈ " : "biceps force ≈ ") + Math.round(s.F / G) + (_pl ? " kg ciągu" : " kg of pull");
   els.rRatio.textContent = s.ratio.toFixed(1) + "×";
   els.rJoint.textContent = Math.round(s.R) + " N";
 }
@@ -125,4 +126,5 @@ function bracket(ctx, x1, x2, y, label) {
 
 [els.load, els.insert, els.forearm].forEach(el => el.addEventListener("input", draw));
 window.addEventListener("resize", draw);
+document.addEventListener("i18n:changed", draw);
 draw();

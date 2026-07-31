@@ -69,6 +69,42 @@ const CONDITIONS = {
 };
 const ORDER = ["typical", "footdrop", "weakquads", "stiffankle", "stiffknee"];
 
+// ---- Polish strings for the dynamic diagnosis panel + tabs ----
+const CONDITIONS_PL = {
+  typical: {
+    name: "Chód prawidłowy",
+    primary: "Zdrowy chód, pokazany dla odniesienia — kontakt pięty, kontrolowana fala zgięcia kolana przy przyjęciu obciążenia, płynne przetoczenie stawu skokowego przez fazę podporu i aktywne odbicie palcami.",
+    comp: "Żadna nie jest potrzebna — każda grupa mięśniowa włącza się na czas.",
+    note: "",
+  },
+  footdrop: {
+    name: "Opadanie stopy (słabe zginacze grzbietowe)",
+    primary: "Zginacze grzbietowe stawu skokowego (mięsień piszczelowy przedni i inne) są osłabione lub odnerwione, więc stopa nie może się unieść: palce zwisają w fazie wymachu, a przodostopie klaśnie o podłoże przy kontakcie zamiast kontaktu pięty.",
+    comp: "Chód brodzący — biodro i kolano zginają się znacznie bardziej niż normalnie w fazie wymachu, by unieść opadającą stopę i przenieść palce nad podłożem.",
+    note: "",
+  },
+  weakquads: {
+    name: "Słaby mięsień czworogłowy",
+    primary: "Mięsień czworogłowy nie może przeciwstawić się momentowi zginającemu kolano podczas przyjmowania obciążenia, więc normalne, amortyzujące zgięcie kolana spowodowałoby ugięcie kończyny.",
+    comp: "Kolano zostaje wprowadzone w pełny wyprost — a nawet przeprost ('cofanie kolana') — podczas gdy tułów pochyla się do przodu, tak że masa ciała pada przed kolano i blokuje je biernie, bez potrzeby siły czworogłowego.",
+    note: "Przez lata ten powtarzany przeprost może rozciągnąć struktury tylnej części kolana (genu recurvatum).",
+  },
+  stiffankle: {
+    name: "Sztywny / usztywniony staw skokowy",
+    primary: "Sztywny lub usztywniony staw skokowy nie może przetoczyć piszczeli do przodu nad ustawioną stopą (zgięcie grzbietowe w podporze) ani odbić się na końcu fazy podporu (zgięcie podeszwowe).",
+    comp: "Wczesne oderwanie pięty z krótszym, płaskim krokiem oraz 'wspinanie' — unoszenie się na palcach drugiej nogi — by przenieść ciało poza zablokowany staw. Kolano często przeprostowuje się, by pomóc.",
+    note: "",
+  },
+  stiffknee: {
+    name: "Sztywne kolano (nie zgina się w wymachu)",
+    primary: "Kolano pozostaje wyprostowane w fazie wymachu — z powodu nadaktywności czworogłowego lub usztywnienia stawu — pozostawiając nogę funkcjonalnie zbyt długą, by ominąć podłoże.",
+    comp: "Miednica unosi się, a ciało się wspina, albo noga zatacza łuk (odwodzi na bok), tak by długa, sztywna kończyna przeszła bez zahaczenia palcami.",
+    note: "Zataczanie łuku i opadanie miednicy to ruchy w płaszczyźnie bocznej — trudne do pokazania z tego bocznego ujęcia — więc obserwuj głównie zmniejszone zgięcie kolana i unoszenie biodra w wymachu.",
+  },
+};
+const _pl = () => window.i18n && window.i18n.lang === "pl";
+const condField = (id, f) => (_pl() && CONDITIONS_PL[id] ? CONDITIONS_PL[id][f] : CONDITIONS[id][f]);
+
 // ---- custom drawer: ghost (typical) behind, deficit in front ----
 function drawScene(canvas, def, def2, norm, norm2, showGhost) {
   const dpr = window.devicePixelRatio || 1;
@@ -142,21 +178,24 @@ function buildTabs() {
   ORDER.forEach(id => {
     const b = document.createElement("button");
     b.className = "sbx-tab" + (id === condId ? " active" : "");
-    b.textContent = CONDITIONS[id].name;
+    b.textContent = condField(id, "name");
     b.addEventListener("click", () => { condId = id; buildTabs(); updateDiagnosis(); });
     tabsEl.appendChild(b);
   });
 }
 
 function updateDiagnosis() {
-  const c = CONDITIONS[condId];
-  document.getElementById("condName").textContent = c.name;
-  document.getElementById("condPrimary").textContent = c.primary;
-  document.getElementById("condComp").textContent = c.comp;
-  document.getElementById("condNote").textContent = c.note || "";
+  document.getElementById("condName").textContent = condField(condId, "name");
+  document.getElementById("condPrimary").textContent = condField(condId, "primary");
+  document.getElementById("condComp").textContent = condField(condId, "comp");
+  document.getElementById("condNote").textContent = condField(condId, "note") || "";
   document.getElementById("condSource").textContent =
-    condId === "typical" ? "" : "Pattern per Perry & Burnfield, Gait Analysis, 2nd ed.";
+    condId === "typical" ? ""
+      : (_pl() ? "Wzorzec wg Perry & Burnfield, Gait Analysis, wyd. 2."
+               : "Pattern per Perry & Burnfield, Gait Analysis, 2nd ed.");
 }
+
+document.addEventListener("i18n:changed", () => { buildTabs(); updateDiagnosis(); });
 
 playBtn.addEventListener("click", () => { playing = !playing; playBtn.textContent = playing ? "⏸" : "▶"; lastTime = null; });
 scrubber.addEventListener("input", () => { playing = false; playBtn.textContent = "▶"; fraction = scrubber.value / 1000; });

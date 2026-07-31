@@ -45,8 +45,10 @@ steps.forEach(s => observer.observe(s));
 const introScrub = document.getElementById("introScrub");
 const freeScrub = document.getElementById("freeScrub");
 [introScrub, freeScrub].forEach(sc => sc && sc.addEventListener("input", () => setTarget(parseFloat(sc.value), true)));
-document.querySelectorAll(".goto").forEach(b =>
-  b.addEventListener("click", () => setTarget(parseFloat(b.dataset.goto))));
+document.addEventListener("click", e => {
+  const b = e.target.closest(".goto");
+  if (b) setTarget(parseFloat(b.dataset.goto));
+});
 
 // ---- phase label ----
 function phaseAt(t) {
@@ -95,7 +97,8 @@ function frame() {
   const st2 = liveState(movement, scales, currentCycle + shift);
   drawStickFigure(figCanvas, st, st2);
   drawChart(currentCycle);
-  phaseLabel.textContent = phaseAt(currentCycle);
+  const _ph = phaseAt(currentCycle);
+  phaseLabel.textContent = (window.i18n && window.i18n.t) ? window.i18n.t(_ph) : _ph;
   phasePercent.textContent = Math.round(currentCycle) + "%";
   requestAnimationFrame(frame);
 }
