@@ -56,6 +56,21 @@ const CONDITIONS = {
       return s;
     },
   },
+  antalgic: {
+    name: "Antalgic (painful limb)",
+    primary: "Not weakness at all — pain. Loading the limb hurts, so the nervous system does the one thing that reliably reduces load: it gets off that leg as fast as possible. This is the single most common gait deviation you will ever see.",
+    comp: "A markedly shortened stance time on the painful side, taken with a flat, cautious landing instead of a heel strike, a reduced push-off, and a shorter step on the opposite side because the sound limb hurries to take over. The trunk also leans toward the painful side, which shifts the body's weight line closer to the hip and cuts the force the hip abductors need to produce.",
+    note: "Because the deviation is driven by pain rather than by a fixed mechanical fault, it can change hour to hour — and it disappears when the pain does. Always ask before you attribute an antalgic pattern to weakness.",
+    transform: (s, phase, sev) => {
+      if (phase === "stance") {
+        s.kneeAngle += 6 * sev;            // held softly flexed, guarded
+        s.ankleAngle -= 6 * sev;           // flatter landing, less heel contact
+        s.trunkLean += 8 * sev;            // guarded, weight shifted over the limb
+        s.grf *= (1 - 0.28 * sev);         // deliberately unloaded
+      }
+      return s;
+    },
+  },
   stiffknee: {
     name: "Stiff knee (won't flex in swing)",
     primary: "The knee stays extended in swing — from quadriceps over-activity or a fused joint — leaving the leg functionally too long to clear the floor.",
@@ -67,7 +82,7 @@ const CONDITIONS = {
     },
   },
 };
-const ORDER = ["typical", "footdrop", "weakquads", "stiffankle", "stiffknee"];
+const ORDER = ["typical", "antalgic", "footdrop", "weakquads", "stiffankle", "stiffknee"];
 
 // ---- Polish strings for the dynamic diagnosis panel + tabs ----
 const CONDITIONS_PL = {
@@ -76,6 +91,12 @@ const CONDITIONS_PL = {
     primary: "Zdrowy chód, pokazany dla odniesienia — kontakt pięty, kontrolowana fala zgięcia kolana przy przyjęciu obciążenia, płynne przetoczenie stawu skokowego przez fazę podporu i aktywne odbicie palcami.",
     comp: "Żadna nie jest potrzebna — każda grupa mięśniowa włącza się na czas.",
     note: "",
+  },
+  antalgic: {
+    name: "Chód antalgiczny (bolesna kończyna)",
+    primary: "To wcale nie osłabienie — to ból. Obciążanie kończyny boli, więc układ nerwowy robi jedyną rzecz, która niezawodnie zmniejsza obciążenie: schodzi z tej nogi tak szybko, jak to możliwe. To najczęstsze odchylenie chodu, jakie w ogóle zobaczysz.",
+    comp: "Wyraźnie skrócony czas podporu po stronie bolesnej, z płaskim, ostrożnym lądowaniem zamiast kontaktu pięty, osłabionym odbiciem i krótszym krokiem po stronie przeciwnej, bo kończyna zdrowa spieszy się, by przejąć obciążenie. Tułów pochyla się także w stronę bolesną, co przesuwa linię ciężkości bliżej stawu biodrowego i zmniejsza siłę, jaką muszą wytworzyć odwodziciele biodra.",
+    note: "Ponieważ odchylenie wynika z bólu, a nie ze stałego uszkodzenia mechanicznego, może zmieniać się z godziny na godzinę — i znika, gdy ból ustąpi. Zawsze zapytaj, zanim przypiszesz wzorzec antalgiczny osłabieniu.",
   },
   footdrop: {
     name: "Opadanie stopy (słabe zginacze grzbietowe)",

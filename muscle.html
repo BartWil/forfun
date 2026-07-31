@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=17" />
-<link rel="stylesheet" href="muscle.css?v=17" />
+<link rel="stylesheet" href="style.css?v=19" />
+<link rel="stylesheet" href="muscle.css?v=19" />
 </head>
 <body>
 
@@ -75,7 +75,7 @@
           <input type="range" id="load" min="0.5" max="20" step="0.5" value="5" />
         </div>
         <div class="lv-slider">
-          <label for="insert"><span data-i18n="lv.s.insert">Biceps insertion from elbow</span> <span class="pv" id="insertVal">4.0 cm</span></label>
+          <label for="insert"><span data-i18n="lv.s.insert">Biceps moment arm at the elbow</span> <span class="pv" id="insertVal">4.0 cm</span></label>
           <input type="range" id="insert" min="2" max="6" step="0.1" value="4" />
         </div>
         <div class="lv-slider">
@@ -92,10 +92,12 @@
         <h3 data-i18n="lv.c1h">Why the huge force?</h3>
         <p data-i18n-html="lv.c1p">
           For the arm to hold still, the turning effect (<b>torque</b>) the muscle makes must exactly
-          balance the torque from the weight. Torque = force × its distance from the joint. The weight
-          sits ~<b>34&nbsp;cm</b> out; the biceps pulls only ~<b>4&nbsp;cm</b> from the elbow — so to
-          match the torque, its force must be about <b>34 ÷ 4 ≈ 8–10×</b> the weight. Short lever arm,
-          big force. That's the deal almost every muscle in your body makes.
+          balance the torque from the weight. Torque = force × <b>moment arm</b>, the perpendicular
+          distance from the joint axis to the line of pull. The weight sits ~<b>34&nbsp;cm</b> out; the
+          biceps pulls on a moment arm of only ~<b>4&nbsp;cm</b> — so to match the torque, its force must
+          be about <b>34 ÷ 4 ≈ 8–10×</b> the weight. Short lever arm, big force. That's the deal almost
+          every muscle in your body makes. <em>Measured biceps moment arms peak near 4.7&nbsp;cm
+          (Murray, Buchanan &amp; Delp 2000).</em>
         </p>
       </div>
       <div class="lv-ex-card">
@@ -117,12 +119,38 @@
           come in opposing pairs — one for each direction.
         </p>
       </div>
+      <div class="lv-ex-card">
+        <h3 data-i18n="lv.c4h">It is never one muscle</h3>
+        <p data-i18n-html="lv.c4p">
+          This model says "biceps" because it is easier to draw, but elbow flexion is shared by at least
+          three muscles, and they are not interchangeable. Measured on cadaver specimens
+          (Murray, Buchanan &amp; Delp 2000): <b>brachioradialis</b> has the <em>largest</em> flexion
+          moment arm of all — <b>7.7&nbsp;cm</b>, well over the biceps' 4.7&nbsp;cm — yet the smallest
+          cross-sectional area, so it is a long lever on a small motor. <b>Brachialis</b> is the opposite:
+          a moment arm of only 2.6&nbsp;cm but the largest cross-section of the flexors, a short lever on
+          a big motor. The biceps sits between them, which is why it ends up with the greatest overall
+          moment-generating capacity of the three. Real joints are always a committee.
+        </p>
+      </div>
+      <div class="lv-ex-card">
+        <h3 data-i18n="lv.c5h">And the moment arm keeps moving</h3>
+        <p data-i18n-html="lv.c5p">
+          Slide the moment arm and you are doing by hand what your elbow does automatically: moment arms
+          change with joint angle — the biceps' varies by more than 30% across the range. So joint torque
+          = muscle force × moment arm, and <em>both</em> terms move as you rotate the joint. The muscle
+          force term has its own rule, the length–tension curve, which you can play with on the
+          <a href="dyno.html">Muscle Dyno</a>. Put the two together and you have the reason a
+          muscle tests strong at one joint angle and weak at another — the single most practical fact on
+          this page for anyone doing manual muscle testing.
+        </p>
+      </div>
     </div>
     <p class="how-note" style="max-width:760px; margin-top:20px;" data-i18n-html="lv.note">
-      A simplified 2-D static model: forearm held horizontal, biceps pulling vertically, joint and
-      segment weights ignored so the lever arithmetic stays visible. Real moment arms shift with elbow
-      angle and the muscle wraps over the joint — but the trade-off is exactly this. Classic third-class
-      lever (effort between the pivot and the load).
+      A simplified 2-D static model: forearm held horizontal, a single flexor pulling vertically, joint
+      and segment weights ignored so the lever arithmetic stays visible. Real moment arms shift with elbow
+      angle, the muscle wraps over the joint, and the load is shared between several flexors — but the
+      trade-off is exactly this. Classic third-class lever (effort between the pivot and the load).
+      Moment-arm and architecture figures from Murray WM, Buchanan TS, Delp SL, <em>J Biomech</em> 33:943–952, 2000.
     </p>
   </section>
 </main>
@@ -133,8 +161,8 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=17"></script>
-<script src="nav.js?v=17"></script>
-<script src="muscle.js?v=17"></script>
+<script src="i18n.js?v=19"></script>
+<script src="nav.js?v=19"></script>
+<script src="muscle.js?v=19"></script>
 </body>
 </html>

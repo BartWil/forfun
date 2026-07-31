@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=17" />
-<link rel="stylesheet" href="lab.css?v=17" />
-<link rel="stylesheet" href="gait3d.css?v=17" />
+<link rel="stylesheet" href="style.css?v=19" />
+<link rel="stylesheet" href="lab.css?v=19" />
+<link rel="stylesheet" href="gait3d.css?v=19" />
 </head>
 <body class="lab-body">
 
@@ -97,14 +97,24 @@
         <p data-i18n-html="gx.c2.p">
           Joint angles say how the limbs bend but not where the body <em>is</em> in space — that pelvis
           motion isn't in the angle data. So the walking is reconstructed with <b>foot-locking</b>: the
-          foot in contact is pinned to the ground and the body is carried over it, which recovers real
-          overground progression (≈0.8&nbsp;m per stride here). The camera rides along, so the figure
-          looks in place while the ground slides past and the feet stay genuinely planted.
+          foot in contact is pinned to the ground and the body is carried over it. The camera rides
+          along, so the figure looks in place while the ground slides past and the feet stay genuinely
+          planted.
         </p>
         <p class="gx-small" data-i18n-html="gx.c2.small">
+          <b>Where that reconstruction falls short — and why it's worth knowing.</b> Foot-locking gets you
+          about <b>0.8&nbsp;m of travel per gait cycle</b>, but a real adult walking at this speed covers
+          roughly <b>1.4&nbsp;m</b> per cycle. The missing half comes from everything that <em>isn't</em> a
+          sagittal hip, knee or ankle angle: pelvic rotation in the transverse plane, pelvic tilt and list,
+          and the way the foot rolls from heel to toe rather than pivoting about a point. Sagittal angles
+          alone can never reproduce stride length — which is exactly why gait labs measure the pelvis too.
+          Treat the forward speed here as illustrative; the <b>joint angles</b> are the measured part.
+        </p>
+        <p class="gx-small" data-i18n-html="gx.c2.small2">
           The body itself is a generic rigged mannequin (three.js “Xbot”). The <b>data</b> driving it is
-          real; the mesh is just the canvas. Sagittal plane only — the measured out-of-plane rotations
-          are small and left out for clarity.
+          real; the mesh is just the canvas. Sagittal plane only. Note too that the 42-subject average
+          pools 24 young and 18 older adults, so it is a composite of two age groups rather than a
+          picture of any one walker.
         </p>
       </div>
     </div>
@@ -125,8 +135,8 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=17"></script>
-<script src="nav.js?v=17"></script>
+<script src="i18n.js?v=19"></script>
+<script src="nav.js?v=19"></script>
 <script type="importmap">
 {
   "imports": {
@@ -135,6 +145,6 @@
   }
 }
 </script>
-<script type="module" src="gait3d.js?v=17"></script>
+<script type="module" src="gait3d.js?v=19"></script>
 </body>
 </html>

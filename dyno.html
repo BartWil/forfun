@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=17" />
-<link rel="stylesheet" href="dyno.css?v=17" />
+<link rel="stylesheet" href="style.css?v=19" />
+<link rel="stylesheet" href="dyno.css?v=19" />
 </head>
 <body>
 
@@ -119,17 +119,26 @@
         <h3 data-i18n="dy.c3h">Why a clinician cares</h3>
         <p data-i18n-html="dy.c3p">
           Manual muscle testing and strengthening depend on <b>joint angle</b>, because angle sets muscle
-          length. A muscle tested in its shortened range tests weak even when healthy. Eccentric strength
-          being highest underlies eccentric rehab (tendinopathy, hamstring injury). Position is not a
-          detail — it's the whole curve.
+          length — and, as the <a href="muscle.html">Levers</a> page shows, angle also sets the moment
+          arm. A muscle tested in its shortened range can test weak even when it is perfectly healthy.
+          Eccentric loading programmes (Alfredson's for Achilles tendinopathy, the Nordic curl for
+          hamstrings) are genuinely effective, but be careful <em>why</em>: it is not simply "eccentric
+          force is highest". The better-supported explanations are tendon remodelling under sustained
+          mechanical load, and — for the hamstrings — an increase in <b>fascicle length</b>, which shifts
+          the whole length–tension curve so that peak force is produced at a <em>longer</em> muscle
+          length, exactly where the injury happens. Position is not a detail; it's the whole curve.
         </p>
       </div>
     </div>
     <p class="how-note" style="max-width:780px; margin-top:20px;" data-i18n-html="dy.note">
       A normalised Hill-type model for teaching (force in multiples of maximum isometric force F₀,
       velocity in multiples of V_max). Curve shapes follow the classic length–tension and force–velocity
-      relationships; exact numbers are illustrative. The Ruby engine downloads ~16&nbsp;MB once; if it
-      can't load, an identical JavaScript model takes over so the page still works.
+      relationships; exact numbers are illustrative. <b>One honest caveat about the eccentric side:</b>
+      this curve plateaus near 1.6&nbsp;F₀, which is what isolated muscle does — but a person contracting
+      <em>voluntarily</em> usually cannot express that, producing only a little above their isometric
+      maximum, because the nervous system limits it. The gap between what muscle can do and what you can
+      volitionally ask it to do is itself a real finding. The Ruby engine downloads ~16&nbsp;MB once; if
+      it can't load, an identical JavaScript model takes over so the page still works.
     </p>
   </section>
 </main>
@@ -140,8 +149,8 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=17"></script>
-<script src="nav.js?v=17"></script>
-<script type="module" src="dyno.js?v=17"></script>
+<script src="i18n.js?v=19"></script>
+<script src="nav.js?v=19"></script>
+<script type="module" src="dyno.js?v=19"></script>
 </body>
 </html>

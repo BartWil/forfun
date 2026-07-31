@@ -89,13 +89,16 @@ const MOVEMENTS = {
     label: "Running",
     cycleLabel: "stride cycle — foot strike to next foot strike (single limb)",
     contralateralShift: 50,
+    // Phase boundaries follow Novacheck 1998 and are pinned to this data set's own vGRF:
+    // the limb is loaded until ~38% of the stride (vGRF is 0.09 BW by 35% and zero by 40%),
+    // so toe-off — not 30% — is where stance ends. Stance splits at the vGRF peak (~15%)
+    // into absorption and propulsion.
     phases: [
-      [0, 5, "Initial contact"],
-      [5, 30, "Stance / propulsion"],
-      [30, 55, "Early swing (recovery)"],
-      [55, 75, "Peak knee flexion"],
-      [75, 95, "Leg swings forward"],
-      [95, 100, "Preparing to land"],
+      [0, 15, "Absorption"],
+      [15, 38, "Propulsion"],
+      [38, 60, "Initial swing"],
+      [60, 80, "Mid swing"],
+      [80, 100, "Terminal swing"],
     ],
     // vGRF + sagittal hip/knee/ankle: 39-subject grand average, treadmill running at
     // 3.5 m/s, from Fukuchi, Fukuchi & Duarte 2017 (PeerJ 5:e3298; figshare 4543435).
@@ -155,7 +158,7 @@ const MOVEMENTS = {
       cycleDuration: v => 820 - 220 * v,
       grfScale: () => 1, angleScale: () => 1, hipDropScale: () => 1, muscleScale: () => 1,
     },
-    blurb: "Running trades walking's double-hump force for a single, much larger peak — typically 2-3x body weight, versus ~1.15x for walking — because there's no double-support phase to share the load. Notice the knee folds up far more (past 100° of flexion) than in walking: a shorter, lighter swinging leg is a more efficient pendulum at speed. Slide from 2.5 to 4.5 m/s and watch the impact peak grow and the knee fold up further — blended from real motion capture at three measured speeds."
+    blurb: "Running trades walking's double-hump force for a single, much larger peak — around 2.5× body weight here, versus ~1.1× for walking. The reason is timing, not effort: across a whole stride the ground has to supply one body weight of support on average, but in running the foot is only down for about a third of the stride instead of nearly two thirds. A shorter contact has to push proportionally harder. Add the flight phase — the body falls further and arrives moving faster — and the peak climbs further still. Notice too that the knee folds up past 100° of flexion, far more than in walking: tucking the leg pulls its mass closer to the hip, making it a quicker pendulum to swing through at speed. Slide from 2.5 to 4.5 m/s and watch both effects grow — blended from real motion capture at three measured speeds."
   },
 
   jump: {
@@ -166,12 +169,17 @@ const MOVEMENTS = {
       [0, 10, "Quiet stance"],
       [10, 25, "Unweighting"],
       [25, 45, "Braking (eccentric)"],
-      [45, 68, "Propulsion (concentric)"],
-      [68, 87, "Flight"],
+      [45, 71, "Propulsion (concentric)"],
+      [71, 87, "Flight"],
       [87, 96, "Landing impact"],
       [96, 100, "Stabilization"],
     ],
-    grf: [[0,1.0],[8,0.85],[15,0.5],[22,0.3],[30,0.5],[38,0.9],[45,1.5],[52,1.75],[60,2.05],[66,1.5],[70,0.5],[72,0.05],[80,0],[87,0],[90,0.3],[92,3.2],[94,2.1],[96,1.3],[98,1.05]],
+    // vGRF shape follows the standard countermovement-jump force–time curve: force falls below
+    // body weight as the body accelerates downward (unweighting), rises steeply to its PEAK at the
+    // bottom of the dip — the eccentric→concentric transition, where downward velocity is arrested
+    // — then DECAYS through the propulsion phase as the legs extend and the body accelerates
+    // upward, reaching zero at take-off. Flight is zero; landing is the largest spike of all.
+    grf: [[0,1.0],[8,0.92],[15,0.55],[22,0.35],[30,0.62],[38,1.35],[44,2.05],[48,2.12],[54,1.95],[60,1.5],[65,0.85],[68,0.25],[71,0],[80,0],[86,0],[89,0.9],[91,3.2],[93,2.4],[95,1.5],[97,1.1],[99,1.02]],
     hip: [[0,5],[15,15],[25,35],[35,55],[45,75],[55,50],[62,20],[68,0],[70,-5],[75,-3],[85,5],[90,20],[93,45],[96,35],[98,15]],
     knee: [[0,5],[15,20],[25,45],[35,70],[45,100],[55,70],[62,30],[68,8],[70,5],[80,10],[85,15],[90,25],[93,75],[96,85],[98,40]],
     ankle: [[0,0],[15,8],[25,15],[35,22],[45,28],[55,10],[62,-15],[68,-38],[70,-42],[78,-25],[85,-8],[90,5],[93,20],[96,24],[98,8]],
@@ -198,7 +206,7 @@ const MOVEMENTS = {
       hipDropScale: v => 0.5 + 0.9 * v,
       muscleScale: v => 0.6 + 0.6 * v,
     },
-    blurb: "One complete countermovement jump — quiet stance, a dip to pre-stretch the leg extensors (the countermovement), the braking and concentric drive, take-off and flight, then the landing. The dip lets the extensors build force before the push-off, so braking force can rival the propulsive peak; the hip, knee and ankle extend almost together (\"triple extension\") right at take-off, and the landing spike at the end is often the single highest force of the whole movement. Increase jump effort and watch the dip deepen and every peak grow."
+    blurb: "One complete countermovement jump — quiet stance, a dip to pre-stretch the leg extensors (the countermovement), the braking and concentric drive, take-off and flight, then the landing. Watch where the force peaks: at the <em>bottom</em> of the dip, as the downward motion is arrested, not during the push. From there force decays all the way to zero at take-off, because a body accelerating upward needs less and less force as the legs run out of extension. The joints then extend in a proximal-to-distal sequence — hip, then knee, then ankle last (Bobbert &amp; van Ingen Schenau) — which is what \"triple extension\" actually looks like in time. The landing spike is usually the single largest force of the whole movement. Increase jump effort and watch the dip deepen and every peak grow."
   },
 
   squat: {
@@ -210,7 +218,10 @@ const MOVEMENTS = {
       [50, 52, "Bottom position"],
       [52, 100, "Ascent (concentric)"],
     ],
-    grf: [[0,1.0],[15,0.97],[30,0.95],[42,1.05],[50,1.1],[58,1.15],[70,1.22],[85,1.05],[95,1.0]],
+    // Same physics as the jump, just gentler: force dips BELOW body weight to start the descent
+    // (accelerating down), rises above it to arrest the descent and drive out of the bottom, then
+    // dips below body weight again near the top as the upward motion is decelerated to a stop.
+    grf: [[0,1.0],[10,0.93],[22,0.90],[35,1.05],[45,1.16],[52,1.18],[62,1.14],[72,1.05],[84,0.94],[92,0.97],[97,1.0]],
     hip: [[0,5],[10,20],[20,40],[30,62],[40,82],[50,100],[60,82],[70,62],[80,40],[90,20],[97,7]],
     knee: [[0,5],[10,25],[20,50],[30,75],[40,100],[50,122],[60,100],[70,75],[80,50],[90,25],[97,7]],
     ankle: [[0,0],[10,5],[20,12],[30,20],[40,27],[50,32],[60,27],[70,20],[80,12],[90,5],[97,1]],
@@ -237,7 +248,7 @@ const MOVEMENTS = {
       hipDropScale: v => 0.3 + 0.8 * v,
       muscleScale: v => 0.65 + 0.45 * v,
     },
-    blurb: "The squat is the most \"quasi-static\" movement here — ground reaction force barely leaves the neighborhood of body weight, because the whole body's center of mass moves slowly and under control. What changes dramatically with depth is joint range and muscle demand: quadriceps and gluteal activation both climb steadily as the knee and hip flex further, peaking near the transition from descent to drive out of the bottom."
+    blurb: "The squat is the most \"quasi-static\" movement here — ground reaction force barely leaves the neighbourhood of body weight, because the centre of mass moves slowly and under control. Look closely and the small wobbles still obey the same rule as the jump: force dips below body weight to <em>start</em> the descent, rises above it to stop the descent and drive back up, and dips below again as you decelerate near the top. What changes dramatically with depth is joint range and muscle demand: quadriceps and gluteal activation climb steadily as the knee and hip flex further, peaking around the transition out of the bottom, where the moment arms of body weight about the knee and hip are longest."
   },
 };
 
