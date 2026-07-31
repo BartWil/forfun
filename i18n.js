@@ -211,7 +211,7 @@
     "ls.s6p": "Kolano się prostuje, a noga sięga do przodu, hamując tak, by pięta mogła miękko wylądować. W chwili zetknięcia z podłożem pętla zaczyna się od nowa — a <em>druga</em> noga robi to wszystko dokładnie pół cyklu z tyłu.",
     "ls.s7h": "Teraz Ty prowadzisz",
     "ls.s7p": "To jeden krok. Przejdź od razu do dowolnego momentu — <button class=\"goto\" data-goto=\"6\">przyjęcie obciążenia</button> <button class=\"goto\" data-goto=\"30\">środek podporu</button> <button class=\"goto\" data-goto=\"50\">odbicie</button> <button class=\"goto\" data-goto=\"73\">wymach</button> — albo sam przewiń cały cykl i patrz, jak siła i kolano poruszają się razem:",
-    "ls.s7hint": "Chcesz tych samych danych jako wykresy, cząstki fizyki lub prawdziwe ciało 3-D? Wypróbuj <a href=\"index.html#explorer\">Eksplorator</a>, <a href=\"lab.html\">Kuźnię</a> lub <a href=\"gait3d.html\">Prawdziwy chód</a>.",
+    "ls.s7hint": "Chcesz tych samych danych jako wykresy, cząstki fizyki lub prawdziwe ciało 3-D? Wypróbuj <a href=\"explorer.html#explorer\">Eksplorator</a>, <a href=\"lab.html\">Kuźnię</a> lub <a href=\"gait3d.html\">Prawdziwy chód</a>.",
 
     // === Gait Lab (sandbox) ===
     "sb.label": "Przyczyna i kompensacja",
@@ -265,6 +265,23 @@
     "dy.c3h": "Dlaczego obchodzi to klinicystę",
     "dy.c3p": "Manualne testowanie mięśni i wzmacnianie zależą od <b>kąta stawu</b>, ponieważ kąt ustala długość mięśnia — a jak pokazuje strona <a href=\"muscle.html\">Dźwignie</a>, kąt ustala też ramię momentu. Mięsień testowany w skróconym zakresie może wypaść słabo, nawet będąc całkowicie zdrowym. Programy obciążeń ekscentrycznych (protokół Alfredsona w tendinopatii ścięgna Achillesa, Nordic curl dla mięśni kulszowo-goleniowych) są rzeczywiście skuteczne, ale uważaj <em>dlaczego</em>: nie chodzi po prostu o to, że „siła ekscentryczna jest największa”. Lepiej udokumentowane wyjaśnienia to przebudowa ścięgna pod wpływem długotrwałego obciążenia mechanicznego oraz — w przypadku mięśni kulszowo-goleniowych — wydłużenie <b>pęczków mięśniowych</b>, które przesuwa całą krzywą długość–napięcie tak, że szczyt siły powstaje przy <em>większej</em> długości mięśnia, czyli dokładnie tam, gdzie dochodzi do urazu. Pozycja to nie szczegół — to cała krzywa.",
     "dy.note": "Znormalizowany model typu Hilla do celów dydaktycznych (siła w wielokrotnościach maksymalnej siły izometrycznej F₀, prędkość w wielokrotnościach V_max). Kształty krzywych odpowiadają klasycznym zależnościom długość–napięcie i siła–prędkość; dokładne liczby są poglądowe. <b>Jedno uczciwe zastrzeżenie co do strony ekscentrycznej:</b> ta krzywa osiąga plateau w okolicy 1,6&nbsp;F₀, co odpowiada zachowaniu izolowanego mięśnia — ale osoba napinająca mięsień <em>dowolnie</em> zwykle nie jest w stanie tego wyrazić i osiąga tylko nieco powyżej swojego maksimum izometrycznego, ponieważ ogranicza to układ nerwowy. Sama różnica między tym, co mięsień potrafi, a tym, o co potrafisz go świadomie poprosić, jest realnym zjawiskiem. Silnik Ruby pobiera jednorazowo ~16&nbsp;MB; jeśli nie może się załadować, identyczny model JavaScript przejmuje rolę, więc strona nadal działa.",
+
+    // === Landing page ===
+    "lp.badge": "Interaktywna biomechanika",
+    "lp.title1": "MOTION",
+    "lp.title2": "LAB",
+    "lp.sub": "Dziesięć stacji mapujących mechanikę ludzkiego ciała — od pojedynczego kroku po ciśnienie wewnątrz krążka lędźwiowego. Rzeczywiste dane pomiarowe, stworzone do <b>eksperymentowania</b>.",
+    "lp.cta.map": "Otwórz mapę",
+    "lp.cta.new": "Jesteś tu nowy? Zacznij od kroku →",
+    "lp.scroll": "Przewiń",
+    "lp.map.label": "Mapa stacji",
+    "lp.map.title": "Wybierz, gdzie wylądować",
+    "lp.map.lead": "Każdy panel poniżej działa na żywo — wszystkie używają tych samych danych i tego samego silnika co stacja, którą otwierają.",
+    "lp.path.label": "Sugerowana trasa",
+    "lp.path.title": "Jeśli uczysz z tego materiału",
+    "lp.eng.title": "A propos tego gwiezdnego tła",
+    "lp.eng.body": "Gwiazdy dryfujące za tytułem i satelity krążące pomiędzy nimi to nie animacja CSS. To <b>prawdziwe orbity newtonowskie</b>, całkowane w każdej klatce przez moduł WebAssembly, który został <b>złożony ręcznie, bajt po bajcie</b> — nagłówki sekcji LEB128, instrukcja po instrukcji — bez kompilatora i bez żadnych narzędzi w całym procesie. Ma <b id=\"engineBytes\">780</b> bajtów, osadzonych bezpośrednio w stronie, więc drzwi wejściowe nie mają czego pobierać ani co mogłoby zawieść. Prędkości wyliczane są z <span class=\"lp-mono\">v = √(GM/r)</span>; nie ma tam ani jednej funkcji trygonometrycznej.",
+    "lp.eng.show": "Pokaż mi kod źródłowy",
 
     // Shared: nav + footer + common controls
     "nav.explore": "Odkrywaj",
@@ -320,9 +337,9 @@
     // lab.html (The Forge)
     "lab.label": "Te same dane, inna fizyka",
     "lab.title": "Kuźnia",
-    "lab.sub": "Tu nie ma osi wykresów. Siła reakcji podłoża zostaje wyrzucona jako prawdziwy rozprysk cząstek — symulowany przez <b>Rapier2D</b>, silnik fizyki ciał sztywnych napisany w Rust i uruchamiany w przeglądarce jako WebAssembly — więc większa siła <em>dosłownie</em> odrzuca materię dalej pod działaniem prawdziwej grawitacji i oporu. Aktywacja mięśni unosi się znad każdego brzuśca mięśnia jak żarzące się iskry, jaśniejsze i gęstsze im ciężej pracuje dany mięsień. Te same oparte na literaturze krzywe co na stronie <a href=\"index.html#explorer\">Eksplorator</a>, przedstawione jako siły działające na obiekty, a nie linie na wykresie.",
+    "lab.sub": "Tu nie ma osi wykresów. Siła reakcji podłoża zostaje wyrzucona jako prawdziwy rozprysk cząstek — symulowany przez <b>Rapier2D</b>, silnik fizyki ciał sztywnych napisany w Rust i uruchamiany w przeglądarce jako WebAssembly — więc większa siła <em>dosłownie</em> odrzuca materię dalej pod działaniem prawdziwej grawitacji i oporu. Aktywacja mięśni unosi się znad każdego brzuśca mięśnia jak żarzące się iskry, jaśniejsze i gęstsze im ciężej pracuje dany mięsień. Te same oparte na literaturze krzywe co na stronie <a href=\"explorer.html#explorer\">Eksplorator</a>, przedstawione jako siły działające na obiekty, a nie linie na wykresie.",
     "lab.status": "ładowanie silnika fizyki…",
-    "lab.note": "Wysokość i gęstość rozprysku cząstek to bezpośrednie, dosłowne odwzorowanie chwilowej krzywej siły reakcji podłoża — nic tu nie jest animowane ręcznie. Zobacz <a href=\"index.html#sources\">Źródła</a>, na czym oparte są krzywe.",
+    "lab.note": "Wysokość i gęstość rozprysku cząstek to bezpośrednie, dosłowne odwzorowanie chwilowej krzywej siły reakcji podłoża — nic tu nie jest animowane ręcznie. Zobacz <a href=\"explorer.html#sources\">Źródła</a>, na czym oparte są krzywe.",
 
     // body3d.html (The Anatomy)
     "anat.label": "Te same dane, w trzech wymiarach",

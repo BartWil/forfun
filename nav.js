@@ -5,7 +5,8 @@
 (function () {
   "use strict";
   const NAV = [
-    { href: "index.html", en: "Explorer", pl: "Eksplorator" },
+    { href: "index.html", en: "Home ✦", pl: "Start ✦" },
+    { href: "explorer.html", en: "Explorer", pl: "Eksplorator" },
     {
       g: { en: "Movement", pl: "Ruch" }, items: [
         { href: "lab.html", en: "The Forge ⚡", pl: "Kuźnia ⚡" },
