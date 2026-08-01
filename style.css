@@ -95,7 +95,15 @@ section{ padding:clamp(56px, 8vw, 84px) 0; position:relative; }
   position:absolute; top:calc(100% + 10px); left:50%; transform:translateX(-50%); min-width:190px;
   background:var(--panel-2); border:1px solid var(--hairline); border-radius:12px; box-shadow:var(--shadow-pop); z-index:120;
 }
-.nav-group:hover .nav-dropdown{ display:flex; }
+/* Bridge the 10px visual gap between the button and the panel. Without this the pointer
+   leaves .nav-group on the way down, :hover drops, and the menu closes before you can
+   reach an item — which made the whole dropdown unusable with a mouse. */
+.nav-dropdown::before{
+  content:""; position:absolute; left:0; right:0; top:-12px; height:12px;
+}
+.nav-group:hover .nav-dropdown,
+.nav-group:focus-within .nav-dropdown,
+.nav-group.open .nav-dropdown{ display:flex; }
 .nav-dropdown li a{ display:block; padding:8px 12px; border-radius:8px; white-space:nowrap; font-size:.9rem; }
 .nav-dropdown li a:hover{ background:rgba(255,255,255,.05); color:var(--text); }
 .nav-dropdown a.active, .nav-links > li > a.active{ color:var(--accent); }

@@ -45,8 +45,16 @@
         li.className = "nav-group" + (node.items.some(it => isActive(it.href)) ? " active-group" : "");
         const btn = document.createElement("button");
         btn.type = "button"; btn.className = "nav-group-btn";
+        btn.setAttribute("aria-haspopup", "true");
+        btn.setAttribute("aria-expanded", "false");
         btn.innerHTML = node.g[L] + ' <span class="nav-caret">▾</span>';
-        btn.addEventListener("click", () => li.classList.toggle("open"));
+        btn.addEventListener("click", e => {
+          e.stopPropagation();
+          const open = !li.classList.contains("open");
+          closeGroups();                       // only one menu open at a time
+          li.classList.toggle("open", open);
+          btn.setAttribute("aria-expanded", String(open));
+        });
         const dd = document.createElement("ul"); dd.className = "nav-dropdown";
         node.items.forEach(it => {
           const dli = document.createElement("li");
@@ -64,10 +72,23 @@
     });
   }
 
+  function closeGroups() {
+    document.querySelectorAll(".nav-group.open").forEach(g => {
+      g.classList.remove("open");
+      const b = g.querySelector(".nav-group-btn");
+      if (b) b.setAttribute("aria-expanded", "false");
+    });
+  }
+
   function wireToggle() {
     const t = document.getElementById("navToggle"), ul = document.getElementById("navLinks");
     if (t) t.addEventListener("click", () => ul.classList.toggle("open"));
-    if (ul) ul.addEventListener("click", e => { if (e.target.tagName === "A") ul.classList.remove("open"); });
+    if (ul) ul.addEventListener("click", e => {
+      if (e.target.closest("a")) { ul.classList.remove("open"); closeGroups(); }
+    });
+    // click anywhere else, or press Escape, to dismiss an open menu
+    document.addEventListener("click", e => { if (!e.target.closest(".nav-group")) closeGroups(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeGroups(); });
   }
 
   function boot() { build(); wireToggle(); }
