@@ -130,9 +130,11 @@
       canvas.width = Math.round(W * d); canvas.height = Math.round(H * d);
       ctx.setTransform(d, 0, 0, d, 0, 0);
 
-      S = H * 0.80;                       // body height in px
+      // Body height. Capped against width too: the arms span ±0.30·S, so on a short wide
+      // canvas an unbounded height would push the hands off the sides.
+      S = Math.min(H * (opts.fill ? 0.74 : 0.80), W * 1.35);
       ox = W / 2;
-      oy = H * 0.94 - 0.95 * S;           // put the feet just above the baseline
+      oy = H / 2 - 0.42 * S;              // centred on the canvas rather than sat on a floor
 
       pts = {};
       for (const k in N) {

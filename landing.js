@@ -521,6 +521,7 @@ function initBody() {
   const hint = document.getElementById("grabHint");
   bodyRig = window.TensegrityHero.create(el, {
     ambient: !reduceMotion,
+    fill: true,                              // canvas is the whole hero, so leave headroom
     onGrab() { if (hint) hint.classList.add("gone"); },
   });
   bodyRig.settle(260);                       // reach equilibrium before the first paint
