@@ -78,6 +78,7 @@
     let pts = {}, links = [], W = 0, H = 0, S = 1, ox = 0, oy = 0;
     let grabbed = null, px = -999, py = -999, pointerIn = false;
     let severed = 0, home = null;
+    let heldFor = 0, holdFired = false;      // how long the current grab has lasted
 
     function centroid() {
       let x = 0, y = 0, n = 0;
@@ -178,6 +179,11 @@
       if (grabbed) {
         const p = pts[grabbed];
         p.x = px; p.y = py; p.px = px; p.py = py;
+        // keep hold of it long enough and something is waiting
+        heldFor += dt;
+        if (!holdFired && heldFor >= (opts.holdSeconds || 2) && opts.onHold) {
+          holdFired = true; opts.onHold();
+        }
       } else if (pointerIn && opts.ambient !== false) {
         // ambient life: the body leans very slightly away from the cursor, so it feels
         // alive before you ever click it
@@ -288,7 +294,7 @@
       const p = local(e); px = p.x; py = p.y; pointerIn = true;
       if (grabbed && e.cancelable) e.preventDefault();
     };
-    const onUp = () => { grabbed = null; canvas.style.cursor = "grab"; };
+    const onUp = () => { grabbed = null; heldFor = 0; canvas.style.cursor = "grab"; };
 
     canvas.addEventListener("mousedown", onDown);
     canvas.addEventListener("touchstart", onDown, { passive: false });

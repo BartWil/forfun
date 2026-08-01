@@ -513,6 +513,29 @@ const sky = document.getElementById("starfield");
 const skyCtx = sky.getContext("2d");
 let core = null, skyW = 0, skyH = 0;
 
+// ---- the dedication, hidden inside the body ----
+//
+// Three ways to find it, in descending order of how much you have to be paying attention:
+// hold on to the skeleton for two seconds, open the console, or read the page source.
+function revealDedication() {
+  const d = document.getElementById("dedication");
+  if (!d || !d.hidden) return;
+  d.hidden = false;
+  requestAnimationFrame(() => d.classList.add("in"));
+}
+
+function dedicationConsole() {
+  const pl = PL();
+  try {
+    console.log("%c  " + (pl ? "dla moich wspaniałych studentów" : "for my lovely students") + "  ",
+      "background:#ff6f5e;color:#0a0e17;font-weight:700;padding:7px 12px;border-radius:7px;font-size:13px");
+    console.log("%c" + (pl
+      ? "— to Wy jesteście napięciem, które to wszystko spina.\n\n  Jeszcze tu jesteś? Chwyć szkielet i przytrzymaj przez dwie sekundy."
+      : "— you are the tension that holds all of this together.\n\n  Still here? Grab the skeleton and hold on for two seconds."),
+      "color:#93a1bd;line-height:1.6");
+  } catch (e) { /* console unavailable — no matter */ }
+}
+
 // ---- the draggable biotensegrity body ----
 let bodyRig = null;
 function initBody() {
@@ -522,7 +545,9 @@ function initBody() {
   bodyRig = window.TensegrityHero.create(el, {
     ambient: !reduceMotion,
     fill: true,                              // canvas is the whole hero, so leave headroom
+    holdSeconds: 2,
     onGrab() { if (hint) hint.classList.add("gone"); },
+    onHold() { revealDedication(); },
   });
   bodyRig.settle(260);                       // reach equilibrium before the first paint
 }
@@ -652,6 +677,7 @@ document.addEventListener("i18n:changed", () => { buildGrid(); buildPath(); if (
   sizeSky();
   initEngineCard();
   core.step(0.016, skyW, skyH);
+  dedicationConsole();
   if (reduceMotion) drawOnce();
   requestAnimationFrame(frame);   // always runs: the body must stay draggable
 })();

@@ -281,6 +281,8 @@
     "lp.title2": "LAB",
     "lp.sub": "Kości pływają. Nic w ciele nie jest ułożone jak cegły — szkielet wisi wewnątrz ciągłej sieci napięcia. <b>Pociągnij i zobacz sam.</b>",
     "lp.grab": "chwyć bark albo kolano i pociągnij",
+    "lp.ded.main": "dla moich wspaniałych studentów",
+    "lp.ded.sub": "to Wy jesteście napięciem, które to wszystko spina",
     "lp.cta.map": "Otwórz mapę",
     "lp.cta.new": "Jesteś tu nowy? Zacznij od kroku →",
     "lp.scroll": "Przewiń",
