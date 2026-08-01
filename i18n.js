@@ -266,6 +266,15 @@
     "dy.c3p": "Manualne testowanie mięśni i wzmacnianie zależą od <b>kąta stawu</b>, ponieważ kąt ustala długość mięśnia — a jak pokazuje strona <a href=\"muscle.html\">Dźwignie</a>, kąt ustala też ramię momentu. Mięsień testowany w skróconym zakresie może wypaść słabo, nawet będąc całkowicie zdrowym. Programy obciążeń ekscentrycznych (protokół Alfredsona w tendinopatii ścięgna Achillesa, Nordic curl dla mięśni kulszowo-goleniowych) są rzeczywiście skuteczne, ale uważaj <em>dlaczego</em>: nie chodzi po prostu o to, że „siła ekscentryczna jest największa”. Lepiej udokumentowane wyjaśnienia to przebudowa ścięgna pod wpływem długotrwałego obciążenia mechanicznego oraz — w przypadku mięśni kulszowo-goleniowych — wydłużenie <b>pęczków mięśniowych</b>, które przesuwa całą krzywą długość–napięcie tak, że szczyt siły powstaje przy <em>większej</em> długości mięśnia, czyli dokładnie tam, gdzie dochodzi do urazu. Pozycja to nie szczegół — to cała krzywa.",
     "dy.note": "Znormalizowany model typu Hilla do celów dydaktycznych (siła w wielokrotnościach maksymalnej siły izometrycznej F₀, prędkość w wielokrotnościach V_max). Kształty krzywych odpowiadają klasycznym zależnościom długość–napięcie i siła–prędkość; dokładne liczby są poglądowe. <b>Jedno uczciwe zastrzeżenie co do strony ekscentrycznej:</b> ta krzywa osiąga plateau w okolicy 1,6&nbsp;F₀, co odpowiada zachowaniu izolowanego mięśnia — ale osoba napinająca mięsień <em>dowolnie</em> zwykle nie jest w stanie tego wyrazić i osiąga tylko nieco powyżej swojego maksimum izometrycznego, ponieważ ogranicza to układ nerwowy. Sama różnica między tym, co mięsień potrafi, a tym, o co potrafisz go świadomie poprosić, jest realnym zjawiskiem. Silnik Ruby pobiera jednorazowo ~16&nbsp;MB; jeśli nie może się załadować, identyczny model JavaScript przejmuje rolę, więc strona nadal działa.",
 
+    // === Glossary ===
+    "gs.label": "Prostym językiem",
+    "gs.title": "Słownik pojęć",
+    "gs.sub": "Każdy termin, którego znajomość reszta tej strony po cichu zakłada. Definicja słowna jest prawie bezużyteczna dla pojęcia przestrzennego — dlatego wszędzie tam, gdzie obraz pomaga, hasło zawiera <b>żywą ilustrację</b> działającą na tych samych danych co same stacje.",
+    "gs.books.label": "Gdzie czytać dalej",
+    "gs.books.title": "Polecane książki",
+    "gs.books.lead": "Pogrupowane według tego, ile wiedzy zakładają, z notatką o tym, do <em>czego</em> każda właściwie służy — bo listy „polecanej literatury” złożone z samych cytowań nikomu nie pomagają zdecydować, co otworzyć najpierw.",
+    "gs.note": "Definicje napisano dla celów dydaktycznych, a nie jako kryteria diagnostyczne, i świadomie wymieniono część precyzji na zrozumiałość. Tam, gdzie termin bywa sporny albo używany różnie w różnych dziedzinach, hasło o tym mówi. Do każdego terminu można odesłać bezpośrednio — na przykład <span class=\"lp-mono\">glossary.html#vgrf</span>.",
+
     // === Landing page ===
     "lp.badge": "Interaktywna biomechanika",
     "lp.title1": "MOTION",

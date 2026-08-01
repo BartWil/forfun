@@ -27,7 +27,12 @@
         { href: "spine.html", en: "Spine 🩻", pl: "Kręgosłup 🩻" },
       ]
     },
-    { href: "lesson.html", en: "Learn 📖", pl: "Nauka 📖" },
+    {
+      g: { en: "Learn", pl: "Nauka" }, items: [
+        { href: "lesson.html", en: "Anatomy of a Step 📖", pl: "Anatomia kroku 📖" },
+        { href: "glossary.html", en: "Glossary 📗", pl: "Słownik pojęć 📗" },
+      ]
+    },
   ];
 
   const file = (location.pathname.split("/").pop() || "index.html").toLowerCase() || "index.html";

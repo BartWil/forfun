@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glossary — Motion Lab</title>
+<meta name="description" content="Every biomechanics term this site assumes you know — ground reaction force, moment arm, eccentric contraction, the gait cycle — each one with a live illustration, plus an annotated reading list." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=39" />
+<link rel="stylesheet" href="glossary.css?v=39" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks"></ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label" data-i18n="gs.label">Plain language</div>
+    <h1 class="lab-title gs-title" data-i18n="gs.title">Glossary</h1>
+    <p class="lab-sub" data-i18n-html="gs.sub">
+      Every term the rest of this site quietly assumes you already know. A definition in
+      words is close to useless for a spatial idea — so wherever a picture helps, the entry
+      carries a <b>live illustration</b> running on the same data as the stations themselves.
+    </p>
+  </div>
+</header>
+
+<main class="container">
+  <div class="gs-tools">
+    <input type="search" id="gsSearch" class="gs-search" placeholder="Search a term…" aria-label="Search glossary" />
+    <div class="gs-cats" id="gsCats"></div>
+    <span class="gs-count" id="gsCount"></span>
+  </div>
+
+  <div class="gs-list" id="gsList"></div>
+
+  <section class="gs-books-wrap">
+    <div class="section-label" data-i18n="gs.books.label">Where to read more</div>
+    <h2 class="gs-books-title" data-i18n="gs.books.title">Recommended books</h2>
+    <p class="gs-books-lead" data-i18n-html="gs.books.lead">
+      Grouped by how much background they assume, with a note on what each is actually
+      <em>for</em> — because "recommended reading" lists that are only citations help nobody
+      decide what to open first.
+    </p>
+    <div class="gs-books" id="gsBooks"></div>
+  </section>
+
+  <p class="how-note" style="max-width:780px; margin-top:34px;" data-i18n-html="gs.note">
+    Definitions here are written for teaching, not as diagnostic criteria, and deliberately
+    trade some precision for clarity. Where a term is contested or used differently between
+    fields, the entry says so. Any term can be linked to directly — for example
+    <span class="lp-mono">glossary.html#vgrf</span>.
+  </p>
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p data-i18n="footer.tagline">Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=39"></script>
+<script src="nav.js?v=39"></script>
+<script src="spline.js?v=39"></script>
+<script src="data.js?v=39"></script>
+<script src="runtime.js?v=39"></script>
+<script src="glossary.js?v=39"></script>
+</body>
+</html>
