@@ -309,6 +309,7 @@
       },
       restore() { links.forEach(l => l.alive = true); severed = 0; },
       nodes() { return pts; },
+      grabbedKey() { return grabbed; },
       dragTo(key, x, y) { grabbed = key; px = x; py = y; },
       release() { grabbed = null; },
       get severed() { return severed; },

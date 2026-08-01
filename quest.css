@@ -1,0 +1,111 @@
+/* "Wake the body" — the three unlock puzzles */
+
+.lp-gate{ padding:96px 0 40px; background:linear-gradient(180deg,#05070d 0%,var(--bg) 30%,var(--bg) 100%); }
+.lp-gate .lp-sec-lead{ max-width:640px; }
+.lp-gate.cleared{ opacity:.42; transition:opacity .6s; }
+.lp-gate.cleared:hover{ opacity:1; }
+
+.q-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:18px; margin-top:38px; }
+
+.q-card{
+  position:relative; background:var(--panel); border:1px solid var(--hairline);
+  border-radius:16px; padding:20px 20px 22px; box-shadow:var(--shadow-card);
+  display:flex; flex-direction:column; gap:10px; min-width:0;
+  transition:border-color .3s, box-shadow .3s;
+}
+.q-card::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:2px; border-radius:16px 16px 0 0;
+  background:linear-gradient(90deg,transparent,var(--c,var(--accent)),transparent); opacity:.55;
+}
+.q-card.done{ border-color:color-mix(in srgb,var(--accent) 42%,transparent);
+  box-shadow:var(--shadow-card),0 0 40px -24px var(--accent); }
+
+.q-head{ display:flex; align-items:center; gap:10px; }
+.q-num{
+  font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--c,var(--accent));
+  border:1px solid color-mix(in srgb,var(--c,var(--accent)) 40%,transparent);
+  border-radius:6px; padding:2px 7px;
+}
+.q-name{
+  font-family:var(--font-display); font-size:.68rem; font-weight:600; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--text-dimmer);
+}
+.q-tick{
+  margin-left:auto; font-family:var(--font-display); font-size:.62rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); opacity:0; transition:opacity .35s;
+}
+.q-card.done .q-tick{ opacity:1; }
+
+.q-task{ font-family:var(--font-display); font-size:1.06rem; font-weight:600; color:var(--text); margin:0; }
+.q-hint{ font-size:.85rem; line-height:1.6; color:var(--text-dim); margin:0; }
+.q-done{ font-size:.87rem; line-height:1.65; color:var(--text-dim); margin:0; }
+.q-body{ display:flex; flex-direction:column; gap:12px; min-width:0; }
+
+.q-stage{ position:relative; border-radius:12px; background:#080c15; border:1px solid var(--hairline); overflow:hidden; }
+.q-canvas{ display:block; width:100%; height:230px; touch-action:none; cursor:grab; }
+.q-canvas:active{ cursor:grabbing; }
+
+.q-read{
+  font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--text-dim);
+  padding:0 2px; min-height:1.1em;
+}
+.q-stage .q-read{ position:absolute; left:10px; bottom:8px; }
+
+/* seal 01 — three candidate walkers */
+.q-three{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.q-cell{
+  position:relative; padding:0; cursor:pointer; border-radius:10px; overflow:hidden;
+  background:#080c15; border:1px solid var(--hairline);
+  transition:border-color .2s, transform .2s, box-shadow .2s;
+}
+.q-cell canvas{ display:block; width:100%; height:150px; }
+.q-cell:hover{ border-color:rgba(124,155,255,.55); transform:translateY(-2px); }
+.q-cell:focus-visible{ outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(94,234,212,.4); }
+.q-cell-tag{
+  position:absolute; top:6px; left:8px; font-family:'JetBrains Mono',monospace;
+  font-size:.66rem; color:var(--text-dimmer);
+}
+.q-cell.right{ border-color:var(--accent); box-shadow:0 0 30px -14px var(--accent); }
+.q-cell.wrong{ border-color:var(--accent-2); animation:q-shake .34s; }
+@keyframes q-shake{ 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+
+.q-ctrl{ display:flex; flex-direction:column; gap:7px; }
+.q-ctrl label{
+  font-family:var(--font-display); font-size:.76rem; color:var(--text-dim);
+  display:flex; justify-content:space-between; gap:10px;
+}
+.q-ctrl label b{ color:var(--accent); font-weight:600; }
+.q-ctrl input[type=range]{ width:100%; accent-color:var(--accent-2); cursor:pointer; }
+
+.q-order{ flex-direction:row; flex-wrap:wrap; gap:8px; }
+.q-joint, .q-reset{
+  font-family:var(--font-display); font-size:.78rem; font-weight:600; cursor:pointer;
+  padding:8px 14px; border-radius:999px; color:var(--text-dim);
+  background:var(--panel-2); border:1px solid var(--panel-border);
+  transition:border-color .2s,color .2s,background .2s,opacity .2s;
+}
+.q-joint:hover:not(:disabled){ color:var(--accent); border-color:rgba(94,234,212,.5); background:rgba(94,234,212,.07); }
+.q-joint.picked{ color:var(--accent); border-color:rgba(94,234,212,.55); background:rgba(94,234,212,.1); }
+.q-joint:disabled{ cursor:default; opacity:.65; }
+.q-reset{ margin-left:auto; font-size:.7rem; padding:8px 12px; }
+
+.q-skip{ margin:30px 0 0; }
+.q-skip a{ font-size:.8rem; color:var(--text-dimmer); text-decoration:none; border-bottom:1px dotted var(--panel-border); }
+.q-skip a:hover{ color:var(--accent); border-color:var(--accent); }
+
+.q-cleared{
+  border:1px solid color-mix(in srgb,var(--accent) 34%,transparent);
+  background:rgba(94,234,212,.05); border-radius:16px; padding:22px 24px; margin:0 0 8px;
+}
+.q-cleared h3{ font-family:var(--font-display); font-size:1.2rem; margin:0 0 6px; color:var(--accent); }
+.q-cleared p{ margin:0 0 10px; color:var(--text-dim); font-size:.92rem; }
+.q-cleared a{ font-size:.78rem; color:var(--text-dimmer); text-decoration:none; border-bottom:1px dotted var(--panel-border); }
+.q-cleared a:hover{ color:var(--accent); border-color:var(--accent); }
+
+/* the soft gate: the map is hidden until the seals are cleared, or skipped */
+.lp-stations.locked{ display:none; }
+
+@media (prefers-reduced-motion: reduce){
+  .lp-gate.cleared{ transition:none; }
+  .q-card, .q-tick{ transition:none; }
+}

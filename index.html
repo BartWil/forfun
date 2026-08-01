@@ -8,8 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=32" />
-<link rel="stylesheet" href="landing.css?v=32" />
+<link rel="stylesheet" href="style.css?v=35" />
+<link rel="stylesheet" href="landing.css?v=35" />
+<link rel="stylesheet" href="quest.css?v=35" />
 </head>
 <body class="landing-body">
 
@@ -64,9 +65,31 @@
   </div>
 </header>
 
-<!-- ============ STATION MAP ============ -->
+<!-- ============ THE QUEST ============ -->
 <main>
-<section id="stations" class="lp-stations">
+<section id="gate" class="lp-gate">
+  <div class="container">
+    <div class="section-label" data-qi18n="label">Three systems offline</div>
+    <h2 class="lp-sec-title" data-qi18n="title">Wake the body</h2>
+    <p class="lp-sec-lead" data-qi18n="lead">
+      The map is asleep. Three quick things will start it — none needs any prior
+      knowledge, and each one is a real result you can check for yourself.
+    </p>
+    <div class="q-grid" id="qGrid"></div>
+    <p class="q-skip"><a href="#stations" id="qSkip">skip — just show me the map</a></p>
+  </div>
+</section>
+
+<div class="container">
+  <div class="q-cleared" id="qDone" hidden>
+    <h3 id="qDoneTitle">The body is awake</h3>
+    <p id="qDoneText">All three systems online.</p>
+    <a href="#gate" id="qReplay">run the puzzles again</a>
+  </div>
+</div>
+
+<!-- ============ STATION MAP ============ -->
+<section id="stations" class="lp-stations locked">
   <div class="container">
     <div class="lp-sec-head">
       <div class="section-label" data-i18n="lp.map.label">Station map</div>
@@ -136,13 +159,14 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=32"></script>
-<script src="nav.js?v=32"></script>
-<script src="spline.js?v=32"></script>
-<script src="data.js?v=32"></script>
-<script src="runtime.js?v=32"></script>
-<script src="orbit-wasm.js?v=32"></script>
-<script src="tensegrity.js?v=32"></script>
-<script src="landing.js?v=32"></script>
+<script src="i18n.js?v=35"></script>
+<script src="nav.js?v=35"></script>
+<script src="spline.js?v=35"></script>
+<script src="data.js?v=35"></script>
+<script src="runtime.js?v=35"></script>
+<script src="orbit-wasm.js?v=35"></script>
+<script src="tensegrity.js?v=35"></script>
+<script src="landing.js?v=35"></script>
+<script src="quest.js?v=35"></script>
 </body>
 </html>
