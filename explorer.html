@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=48" />
+<link rel="stylesheet" href="style.css?v=49" />
 </head>
 <body>
 
@@ -83,7 +83,7 @@
       <div class="how-card">
         <div class="how-icon">⚡</div>
         <h4 data-i18n="how.card3.h">Muscle activation</h4>
-        <p data-i18n="how.card3.p">Which muscle groups switch on and off, and how hard, to control and power the movement. Drawn from classic EMG findings.</p>
+        <p data-i18n="how.card3.p">Which muscle groups switch on and off, and when. Each muscle is scaled to its own peak in the cycle, so these curves carry timing, not effort.</p>
       </div>
     </div>
     <p class="how-note" data-i18n-html="how.note">
@@ -152,6 +152,12 @@
           <h4 data-i18n="chart.muscle.h">Muscle activation</h4>
           <span class="source-badge" id="muscleSource"></span>
           <div id="muscleRows" class="muscle-rows"></div>
+          <p class="chart-caution" data-i18n-html="chart.muscle.caution">
+            <b>Read these as timing.</b> Every muscle is normalised to its own peak, so 1.0 means
+            "this muscle's busiest moment", not "fully activated". A quadriceps at 0.8 is not
+            working harder than a hamstring at 0.5: the two scales are unrelated. Surface EMG
+            amplitude cannot be compared between muscles, and it is not a measure of force.
+          </p>
         </div>
       </div>
 
@@ -167,9 +173,24 @@
     <div class="section-label" data-i18n="compare.label">Compare</div>
     <h2 class="section-title" data-i18n="compare.title">Put two movements side by side</h2>
     <p class="lead" style="max-width:640px;" data-i18n="compare.lead">
-      Overlay any two movement/parameter combinations to see how, say, running loads the joints
-      differently from walking, or how a deep squat compares to a shallow one.
+      Overlay any two movement and parameter combinations to put their force traces and knee
+      angles side by side, say running against walking, or a deep squat against a shallow one.
     </p>
+
+    <div class="compare-caution" data-i18n-html="compare.caution">
+      <b>One thing these traces do not show: joint load.</b> The ground reaction force is what the
+      floor pushes the whole body with. It is not what any single joint carries, and a bigger peak
+      under the foot does not by itself mean a bigger force in the knee. Getting from one to the
+      other takes four steps, and this site walks the first two:
+      <span class="chain-steps">
+        <b>external force</b> <i>&rarr;</i>
+        <a href="dynamics.html">net joint moment</a> <i>&rarr;</i>
+        <span class="chain-todo">muscle force</span> <i>&rarr;</i>
+        <span class="chain-todo">joint contact force</span>
+      </span>
+      Each arrow needs assumptions the one before it did not. The last two require a full
+      musculoskeletal model, which is what <a href="dynamics.html#tools">OpenSim</a> is for.
+    </div>
 
     <div class="compare-controls">
       <div class="compare-select-group">
@@ -245,14 +266,14 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<script src="i18n.js?v=48"></script>
-<script src="nav.js?v=48"></script>
-<script src="spline.js?v=48"></script>
-<script src="data.js?v=48"></script>
-<script src="runtime.js?v=48"></script>
-<script src="figure.js?v=48"></script>
-<script src="charts.js?v=48"></script>
-<script src="app.js?v=48"></script>
-<script src="abbr.js?v=48"></script>
+<script src="i18n.js?v=49"></script>
+<script src="nav.js?v=49"></script>
+<script src="spline.js?v=49"></script>
+<script src="data.js?v=49"></script>
+<script src="runtime.js?v=49"></script>
+<script src="figure.js?v=49"></script>
+<script src="charts.js?v=49"></script>
+<script src="app.js?v=49"></script>
+<script src="abbr.js?v=49"></script>
 </body>
 </html>

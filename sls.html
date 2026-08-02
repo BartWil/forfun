@@ -4,12 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Single-Leg Squat · BioLab Play</title>
-<meta name="description" content="How a single-leg squat screens knee control through dynamic knee valgus, pelvic drop and trunk lean, and how markerless motion capture (OpenCap) measures it. Illustrative demo." />
+<meta name="description" content="How the single-leg squat makes frontal-plane knee control visible through dynamic valgus, pelvic drop and trunk lean, and how markerless motion capture (OpenCap) measures it. Illustrative demo." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=48" />
-<link rel="stylesheet" href="sls.css?v=48" />
+<link rel="stylesheet" href="style.css?v=49" />
+<link rel="stylesheet" href="sls.css?v=49" />
 </head>
 <body>
 
@@ -39,10 +39,10 @@
     <div class="section-label" data-i18n="sl.label">Frontal-plane control</div>
     <h1 class="lab-title sls-title" data-i18n="sl.title">The Single-Leg Squat</h1>
     <p class="lab-sub" data-i18n-html="sl.sub">
-      Stand on one leg and slowly squat. It sounds trivial, but it is one of the most revealing
-      screens in sports medicine. It shows whether your hip, knee and trunk stay
-      <b>stacked and controlled</b>, or whether the knee caves inward into <b>dynamic valgus</b>.
-      Drag the control slider and watch the collapse appear.
+      Stand on one leg and slowly squat. It sounds trivial, but it makes frontal-plane control
+      unusually easy to see: whether your hip, knee and trunk stay <b>stacked</b>, or whether the
+      knee caves inward into <b>dynamic valgus</b>. Drag the control slider and watch the collapse
+      appear.
     </p>
     <p class="sls-disclaimer" data-i18n-html="sl.disclaimer">
       ⚠️ Illustrative synthetic demo. The motion here is generated from idealised curves to
@@ -105,9 +105,12 @@
         <p data-i18n-html="sl.c1p">
           Watch the knee against the dashed line that runs from hip to foot. Under good control it
           tracks over the foot. Under poor control it drifts <b>medially</b>, inward toward the other
-          leg, as the hip rotates and adducts. That knee-in position, combined with a dropped pelvis and
-          a leaning trunk, is the pattern linked in the literature with higher knee-injury risk
-          (ACL, patellofemoral pain).
+          leg, as the hip rotates and adducts. That knee-in position, combined with a dropped pelvis
+          and a leaning trunk, has been <b>associated with knee-injury outcomes such as anterior
+          cruciate ligament rupture and patellofemoral pain</b> in some studies and some
+          populations. Read that as a movement characteristic worth describing, not as a screening
+          test: association in a group does not let you predict injury in the person in front of
+          you, and the findings are not consistent across sexes, sports and age groups.
         </p>
       </div>
       <div class="sls-ex-card">
@@ -125,9 +128,14 @@
         <p data-i18n-html="sl.c3p">
           Traditionally this needs a marker-based lab. <a href="https://www.opencap.ai/" target="_blank" rel="noopener">OpenCap</a>
           does it from <b>two ordinary phone videos</b>. It estimates body keypoints, triangulates them
-          to 3D, and fits a full musculoskeletal model (Uhlrich, Falisse et&nbsp;al., 2023), which yields
-          the same hip, knee and trunk angles a lab would. That is what puts screening like this within
-          reach of a clinic or a school hall.
+          to 3D, and fits a full musculoskeletal model (Uhlrich, Falisse et&nbsp;al., 2023). That puts
+          three-dimensional analysis within reach of a clinic or a school hall, which is genuinely new.
+          <b>It does not make it equivalent to a marker-based laboratory.</b> Agreement is best for
+          <b>sagittal-plane</b> angles, the flexion and extension you see from the side. Accuracy is
+          poorer and less consistent <b>out of plane</b>, in the frontal and transverse rotations.
+          That caveat lands squarely on this page, because frontal-plane control is exactly what a
+          single-leg squat is used to look at. Trust the shape of the movement more than the last
+          degree of any frontal-plane number.
         </p>
       </div>
     </div>
@@ -135,8 +143,9 @@
       The angles, pelvic drop and trunk lean here are <b>synthetic and idealised</b> for teaching. They
       are not measurements of any person. The metric names (medial knee displacement, frontal-plane
       projection angle, pelvic drop, trunk lean) mirror what a real OpenCap single-leg-squat pipeline
-      computes, but any thresholds shown are illustrative and carry no diagnostic weight. Not medical
-      advice.
+      computes, but any thresholds shown are illustrative and carry no diagnostic weight. Markerless
+      accuracy is plane-dependent, so frontal-plane values from any markerless system deserve more
+      caution than sagittal ones. Not medical advice.
     </p>
   </section>
 </main>
@@ -147,8 +156,8 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=48"></script>
-<script src="nav.js?v=48"></script>
+<script src="i18n.js?v=49"></script>
+<script src="nav.js?v=49"></script>
 <script type="importmap">
 {
   "imports": {
@@ -157,7 +166,7 @@
   }
 }
 </script>
-<script type="module" src="sls.js?v=48"></script>
-<script src="abbr.js?v=48"></script>
+<script type="module" src="sls.js?v=49"></script>
+<script src="abbr.js?v=49"></script>
 </body>
 </html>

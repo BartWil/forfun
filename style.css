@@ -331,3 +331,30 @@ input[type=range]:hover::-moz-range-thumb{ transform:scale(1.18); box-shadow:0 0
   .nav-group-btn{ opacity:.6; cursor:default; font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; }
   .nav-caret{ display:none; }
 }
+
+/* ---- audit corrections: caution panels ------------------------------------
+   A caution has to be readable without being a warning banner: students stop
+   seeing red boxes. These are quiet, bordered, and sit next to the thing they
+   qualify rather than at the top of the page. */
+.chart-caution { margin-top: 12px; padding: 10px 12px; border-left: 2px solid rgba(255,209,102,.5);
+  background: rgba(255,209,102,.05); border-radius: 0 8px 8px 0;
+  color: var(--text-dim); font-size: .78rem; line-height: 1.6; }
+.chart-caution b { color: #ffd166; font-weight: 600; }
+
+.compare-caution { margin: 4px 0 26px; padding: 16px 18px; border-radius: 13px;
+  border: 1px solid rgba(255,209,102,.28); background: rgba(255,209,102,.04);
+  color: var(--text-dim); font-size: .9rem; line-height: 1.7; max-width: 78ch; }
+.compare-caution b { color: var(--text); font-weight: 600; }
+.compare-caution a { color: var(--accent); }
+.chain-steps { display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  margin: 12px 0; padding: 11px 13px; border-radius: 10px; background: rgba(0,0,0,.28);
+  font-family: 'Space Grotesk', sans-serif; font-size: .82rem; }
+.chain-steps i { color: var(--text-muted); font-style: normal; }
+.chain-steps b { color: #5eead4; }
+.chain-steps a { color: #7c9bff; text-decoration: none; border-bottom: 1px solid rgba(124,155,255,.4); }
+.chain-todo { color: var(--text-muted); opacity: .75; }
+
+.lp-engine-flag { margin-bottom: 16px; padding: 14px 16px; border-radius: 12px;
+  border: 1px solid rgba(255,209,102,.30); background: rgba(255,209,102,.05);
+  color: var(--text-dim); font-size: .88rem; line-height: 1.7; }
+.lp-engine-flag b { color: #ffd166; font-weight: 600; }
