@@ -31,6 +31,7 @@
       g: { en: "Learn", pl: "Nauka" }, items: [
         { href: "lesson.html", en: "Anatomy of a Step 📖", pl: "Anatomia kroku 📖" },
         { href: "glossary.html", en: "Glossary 📗", pl: "Słownik pojęć 📗" },
+        { href: "isb.html", en: "The ISB Standard 📐", pl: "Standard ISB 📐" },
       ]
     },
   ];

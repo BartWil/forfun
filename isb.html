@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The ISB Standard — Motion Lab</title>
+<meta name="description" content="Why 3-D joint angles need a shared definition, and how the ISB joint coordinate system works — an interactive walk through Wu et al. 2002 and 2005." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=43" />
+<link rel="stylesheet" href="isb.css?v=43" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks"></ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label" data-i18n="isb.label">One shared language</div>
+    <h1 class="lab-title isb-title" data-i18n="isb.title">The ISB Standard</h1>
+    <p class="lab-sub" data-i18n-html="isb.sub">
+      Before these two papers, every laboratory could measure the same knee, the same
+      shoulder, the same walk — and publish different numbers, because each had chosen its
+      own axes and its own order of rotations. The ISB recommendations fixed the definitions.
+      Almost every motion-capture result you will ever read sits on top of them.
+      <b>Hover any underlined phrase to see exactly what the papers say.</b>
+    </p>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ============ 1. the problem ============ -->
+  <section class="isb-sec">
+    <div class="section-label" data-i18n="isb.s1.label">The problem</div>
+    <h2 class="isb-h2" data-i18n="isb.s1.h">Same movement, different numbers</h2>
+    <p class="isb-p" data-i18n-html="isb.s1.p">
+      A joint angle is not a thing you measure directly. It is a number you <em>calculate</em>,
+      and the calculation needs three decisions: which bony points define each segment, which
+      way the axes point, and in which order the rotations are applied. Change any one and the
+      number changes — while the patient does exactly the same thing. In 1993 the International
+      Society of Biomechanics set up a committee because
+      <span class="q" data-q="nostandard">there was no standard at all</span>, and the
+      consequence was blunt:
+      <span class="q" data-q="impossible">studies could barely be compared</span>.
+    </p>
+    <p class="isb-p" data-i18n-html="isb.s1.p2">
+      Their answer was to adopt the <b>Joint Coordinate System</b> of Grood and Suntay, built
+      for the knee in 1983, and extend it to the whole body — partly because
+      <span class="q" data-q="clinical">it reports motion in terms clinicians already use</span>.
+    </p>
+  </section>
+
+  <!-- ============ 2. order matters ============ -->
+  <section class="isb-sec isb-feature">
+    <div class="section-label" data-i18n="isb.s2.label">See it for yourself</div>
+    <h2 class="isb-h2" data-i18n="isb.s2.h">Rotations do not commute</h2>
+    <p class="isb-p" data-i18n-html="isb.s2.p">
+      This is the heart of it. Below, one identical segment gets the <b>same two rotations</b>
+      — one about Z, one about X — applied in the two possible orders. Drag the slider and
+      watch the two ends of the movement drift apart. The papers put it plainly:
+      <span class="q" data-q="order">flexion then abduction is not abduction then flexion</span>.
+      When Karduna and colleagues tested every possible sequence for scapular motion, they
+      reported <span class="q" data-q="karduna">differences of up to 50° for some angles</span>
+      — from nothing but the order.
+    </p>
+    <div id="isbOrder" class="isb-demo"></div>
+    <p class="isb-foot" data-i18n-html="isb.s2.foot">
+      This is also why the standard is careful to say that
+      <span class="q" data-q="seqindep">the JCS itself does not depend on sequence, while Euler and Cardan angles do</span>.
+      Choosing a convention is not pedantry — it is the difference between two labs agreeing
+      and two labs silently disagreeing.
+    </p>
+  </section>
+
+  <!-- ============ 3. conventions ============ -->
+  <section class="isb-sec">
+    <div class="section-label" data-i18n="isb.s3.label">Before the standard</div>
+    <h2 class="isb-h2" data-i18n="isb.s3.h">Three conventions, one vertebra</h2>
+    <p class="isb-p" data-i18n-html="isb.s3.p">
+      The spine is where this was worst, and Part I says so directly:
+      <span class="q" data-q="othercon">other axis conventions have been described</span>.
+      Here are the three the paper lists, on the same bone. Nothing about the vertebra changes
+      — only the labels. A number reported as "rotation about Z" means three different
+      movements depending on whose paper you are holding.
+    </p>
+    <div id="isbConv" class="isb-demo"></div>
+  </section>
+
+  <!-- ============ 4. how a JCS is built ============ -->
+  <section class="isb-sec">
+    <div class="section-label" data-i18n="isb.s4.label">The recipe</div>
+    <h2 class="isb-h2" data-i18n="isb.s4.h">How a joint coordinate system is built</h2>
+    <ol class="isb-steps">
+      <li>
+        <span class="isb-step-n">1</span>
+        <div>
+          <h3 data-i18n="isb.s4.a.h">Give every bone its own axes</h3>
+          <p data-i18n-html="isb.s4.a.p">
+            Each segment gets a Cartesian system defined from
+            <span class="q" data-q="landmarks">bony points you can palpate or find on an X-ray</span>.
+            That constraint is deliberate — a definition you cannot locate on a living person is
+            useless in a gait lab. Where a point is not palpable, such as the hip centre, the
+            paper says how to estimate it and
+            <span class="q" data-q="palpable">keeps to landmarks reachable in vivo</span>.
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="isb-step-n">2</span>
+        <div>
+          <h3 data-i18n="isb.s4.b.h">Build the joint system from two bones</h3>
+          <p data-i18n-html="isb.s4.b.p">
+            The JCS uses one axis fixed in the proximal bone (<b>e1</b>), one fixed in the distal
+            bone (<b>e3</b>), and a third that belongs to neither:
+            <span class="q" data-q="floating">two axes are body fixed, one “floats”</span>.
+            The floating axis <b>e2</b> is simply the common perpendicular of the other two, so it
+            moves as the joint moves.
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="isb-step-n">3</span>
+        <div>
+          <h3 data-i18n="isb.s4.c.h">Read the three rotations off those axes</h3>
+          <p data-i18n-html="isb.s4.c.p">
+            Rotation about e1 is flexion/extension, about the floating e2 is abduction/adduction
+            or lateral bending, about e3 is axial rotation. Three translations come with them.
+            The point of the whole exercise is that
+            <span class="q" data-q="communication">everyone then means the same thing</span>.
+          </p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ============ 5. explorer ============ -->
+  <section class="isb-sec isb-feature">
+    <div class="section-label" data-i18n="isb.s5.label">Joint by joint</div>
+    <h2 class="isb-h2" data-i18n="isb.s5.h">What the standard actually says</h2>
+    <p class="isb-p" data-i18n-html="isb.s5.p">
+      Pick a joint. The animation cycles through e1, e2 and e3 in turn so you can see which
+      axis carries which movement, and the table gives the definition as published.
+      <span class="isb-badge">I</span> marks the 2002 paper (ankle, hip, spine),
+      <span class="isb-badge">II</span> the 2005 paper (shoulder, elbow, wrist, hand).
+    </p>
+    <div id="isbJoints" class="isb-demo"></div>
+  </section>
+
+  <!-- ============ 6. practical ============ -->
+  <section class="isb-sec">
+    <div class="section-label" data-i18n="isb.s6.label">In practice</div>
+    <h2 class="isb-h2" data-i18n="isb.s6.h">Three things worth remembering</h2>
+    <div class="isb-cards">
+      <div class="isb-card">
+        <h3 data-i18n="isb.s6.a.h">Left limbs need mirroring</h3>
+        <p data-i18n-html="isb.s6.a.p">
+          The shoulder standard is written for the right side only.
+          <span class="q" data-q="leftshoulder">Left shoulders should be mirrored about the sagittal plane before the definitions are applied</span>.
+          Forget this and every rotation sign flips.
+        </p>
+      </div>
+      <div class="isb-card">
+        <h3 data-i18n="isb.s6.b.h">The shoulder is the odd one out</h3>
+        <p data-i18n-html="isb.s6.b.p">
+          <span class="q" data-q="gheuler">The glenohumeral joint is the only one built on a true Euler sequence</span>
+          (Y–X–Y), because e1 and e3 start out parallel. The usual floating-axis equations do
+          not apply there — an Euler decomposition is used instead.
+        </p>
+      </div>
+      <div class="isb-card">
+        <h3 data-i18n="isb.s6.c.h">Always report your convention</h3>
+        <p data-i18n-html="isb.s6.c.p">
+          Even now, a joint angle without a stated coordinate system and rotation order is not
+          reproducible. Naming the standard you followed — and the version — costs one sentence
+          in a methods section and saves the reader from guessing.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <p class="how-note" style="max-width:820px; margin-top:40px;" data-i18n-html="isb.note">
+    <b>Sources.</b> Wu G, Cavanagh PR. ISB recommendations for standardization in the reporting
+    of kinematic data. <em>J Biomech</em> 28:1257–1261, 1995. · Wu G et&nbsp;al. ISB recommendation
+    on definitions of joint coordinate system of various joints… <b>Part I: ankle, hip, and
+    spine</b>. <em>J Biomech</em> 35:543–548, 2002. · Wu G et&nbsp;al. …<b>Part II: shoulder, elbow,
+    wrist and hand</b>. <em>J Biomech</em> 38:981–992, 2005. · Grood ES, Suntay WJ. A joint
+    coordinate system for the clinical description of three-dimensional motions: application to
+    the knee. <em>J Biomech Eng</em> 105:136–144, 1983.
+    <br><br>
+    Every diagram on this page was drawn from the papers' written definitions of the axes; the
+    figures in the papers themselves are under Elsevier copyright and are not reproduced here.
+    Quotations are short, shown in quotation marks, and attributed to paper and page. In Polish
+    the translation is shown first and the English original underneath it, because a translated
+    quotation is a translation and should say so.
+  </p>
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p data-i18n="footer.tagline">Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=43"></script>
+<script src="nav.js?v=43"></script>
+<script src="isb.js?v=43"></script>
+</body>
+</html>
