@@ -358,3 +358,79 @@ input[type=range]:hover::-moz-range-thumb{ transform:scale(1.18); box-shadow:0 0
   border: 1px solid rgba(255,209,102,.30); background: rgba(255,209,102,.05);
   color: var(--text-dim); font-size: .88rem; line-height: 1.7; }
 .lp-engine-flag b { color: #ffd166; font-weight: 600; }
+
+/* ---- scientific contract panel (contract-panel.js) -------------------------
+   Rendered from stations.js on every page. Collapsible, because a reader who
+   already trusts the page should be able to fold it away, but open by default,
+   because the whole point is that the limits are not hidden. */
+.sci-contract { max-width: 1180px; margin: 64px auto 8px; padding: 0 24px; }
+.sc-wrap { border: 1px solid var(--border); border-radius: 18px;
+  background: linear-gradient(180deg, rgba(124,155,255,.04), rgba(0,0,0,.22)); overflow: hidden; }
+.sc-head { cursor: pointer; list-style: none; padding: 16px 22px; display: flex;
+  flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid transparent; transition: background .15s ease; }
+.sc-head::-webkit-details-marker { display: none; }
+.sc-head:hover { background: rgba(255,255,255,.025); }
+details[open] .sc-head { border-bottom-color: var(--border); }
+.sc-title { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600;
+  color: var(--text); letter-spacing: .01em; }
+.sc-title::before { content: "§ "; color: var(--accent); }
+.sc-meta { display: flex; gap: 7px; flex-wrap: wrap; }
+.sc-chip { font-family: 'Space Grotesk', sans-serif; font-size: .68rem; letter-spacing: .05em;
+  padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border);
+  color: var(--text-muted); white-space: nowrap; }
+.sc-track { color: var(--tc); border-color: color-mix(in srgb, var(--tc) 45%, transparent);
+  background: color-mix(in srgb, var(--tc) 10%, transparent); }
+.sc-verified { color: #5eead4; border-color: rgba(94,234,212,.4); }
+.sc-reconstructed { color: #ffd166; border-color: rgba(255,209,102,.4); }
+.sc-synthetic { color: #ff9384; border-color: rgba(255,111,94,.4); }
+.sc-reference { color: #7c9bff; border-color: rgba(124,155,255,.4); }
+
+.sc-body { padding: 20px 22px 24px; }
+.sc-lede { color: var(--text-muted); font-size: .84rem; margin-bottom: 18px; }
+.sc-goal { padding: 14px 16px; border-radius: 12px; background: rgba(94,234,212,.06);
+  border: 1px solid rgba(94,234,212,.22); margin-bottom: 20px; }
+.sc-goal-l { display: block; font-family: 'Space Grotesk', sans-serif; font-size: .66rem;
+  letter-spacing: .11em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+.sc-goal p { color: var(--text); font-size: .93rem; line-height: 1.6; }
+
+.sc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 14px; margin-bottom: 20px; }
+.sc-col { padding: 13px 15px; border-radius: 12px; background: rgba(0,0,0,.24);
+  border: 1px solid var(--border); border-top-width: 2px; }
+.sc-measured { border-top-color: #5eead4; }
+.sc-calculated { border-top-color: #7c9bff; }
+.sc-modelled { border-top-color: #ffd166; }
+.sc-col h4 { font-family: 'Space Grotesk', sans-serif; font-size: .82rem; font-weight: 600;
+  color: var(--text); margin-bottom: 9px; }
+.sc-col h4 em { display: block; font-style: normal; font-size: .66rem; font-weight: 400;
+  color: var(--text-muted); letter-spacing: .02em; margin-top: 2px; }
+.sc-col ul, .sc-assume ul, .sc-cannot ul, .sc-src ul { list-style: none; padding: 0;
+  display: flex; flex-direction: column; gap: 7px; }
+.sc-col li, .sc-assume li, .sc-cannot li { position: relative; padding-left: 14px;
+  color: var(--text-dim); font-size: .8rem; line-height: 1.55; }
+.sc-col li::before, .sc-assume li::before { content: "–"; position: absolute; left: 0;
+  color: var(--text-muted); }
+.sc-empty { opacity: .5; font-style: italic; }
+.sc-empty::before { content: "" !important; }
+
+.sc-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px; margin-bottom: 20px; }
+.sc-assume, .sc-cannot { padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); }
+.sc-cannot { border-color: rgba(255,111,94,.3); background: rgba(255,111,94,.045); }
+.sc-assume h4, .sc-cannot h4, .sc-src h4 { font-family: 'Space Grotesk', sans-serif;
+  font-size: .8rem; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+.sc-cannot h4 { color: #ff9384; }
+.sc-cannot li::before { content: "×"; position: absolute; left: 0; color: #ff6f5e; font-weight: 700; }
+.sc-src { padding-top: 4px; }
+.sc-src li { color: var(--text-muted); font-size: .76rem; line-height: 1.5;
+  font-family: 'JetBrains Mono', monospace; }
+.sc-src a { color: var(--accent); text-decoration: none; }
+.sc-src a:hover { text-decoration: underline; }
+
+@media (max-width: 640px) {
+  .sci-contract { padding: 0 16px; margin-top: 44px; }
+  .sc-head { padding: 14px 16px; }
+  .sc-body { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .sc-head { transition: none; } }

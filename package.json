@@ -1,0 +1,11 @@
+{
+  "name": "biolab-play",
+  "version": "0.1.0",
+  "description": "An interactive biomechanics laboratory for students and curious clinicians.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/science.test.mjs"
+  },
+  "keywords": ["biomechanics", "education", "gait-analysis", "open-educational-resources"]
+}
