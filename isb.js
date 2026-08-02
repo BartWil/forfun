@@ -479,7 +479,8 @@
         '<div class="isb-jseg"><b>' + (isPL() ? "Bliższy" : "Proximal") + ":</b> " + j.prox[lang] +
         "<br><b>" + (isPL() ? "Dalszy" : "Distal") + ":</b> " + j.dist[lang] + "</div>" +
         '<div class="isb-jorigin"><b>' + (isPL() ? "Początek układu" : "Origin") + ":</b> " + j.origin[lang] + "</div>" +
-        '<div class="isb-jmarks"><b>' + (isPL() ? "Punkty kostne" : "Landmarks") + ":</b> <code>" + marks + "</code></div>" +
+        '<div class="isb-jmarks"><b>' + (isPL() ? "Punkty kostne" : "Landmarks") +
+          ':</b> <code data-abbr="on">' + marks + "</code></div>" +
         "<table class=\"isb-jtable\"><thead><tr><th></th><th>" + (isPL() ? "oś" : "axis") + "</th><th>" +
           (isPL() ? "ruch" : "motion") + "</th></tr></thead><tbody>" +
         row("e1", j.e1, "#ff6f5e") + row("e2", j.e2, "#5eead4") + row("e3", j.e3, "#7c9bff") +
