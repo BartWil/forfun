@@ -1,4 +1,4 @@
-// Muscle Levers — the elbow as a third-class lever. Static 2-D torque balance:
+// Muscle Levers: the elbow as a third-class lever. Static 2-D torque balance:
 // the biceps (short lever arm d) must balance the weight (long lever arm L) about the elbow,
 // so its force F = W·L/d. Self-contained: no shared data, just arithmetic + a canvas diagram.
 
@@ -76,7 +76,7 @@ function draw() {
   ctx.strokeStyle = "#c7d0e0"; ctx.lineWidth = 12;
   ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(handX, ey); ctx.stroke();
 
-  // biceps (agonist) — thickness hints at force
+  // biceps (agonist): thickness hints at force
   ctx.strokeStyle = "#ff6f5e"; ctx.lineWidth = Math.min(16, 4 + s.F / 60);
   ctx.beginPath(); ctx.moveTo(shoulder.x + 4, shoulder.y + 18); ctx.lineTo(insX, ey); ctx.stroke();
   ctx.fillStyle = "#ff6f5e"; ctx.font = "600 12px 'Space Grotesk', sans-serif";
@@ -89,7 +89,7 @@ function draw() {
   ctx.strokeStyle = "#7c9bff"; ctx.fillStyle = "#7c9bff";
   bracket(ctx, ex, handX, by + 8, "L = " + Math.round(s.L) + " cm");
 
-  // force arrows — lengths encode the ratio (muscle ≈ ratio × weight), both grow with load
+  // force arrows: lengths encode the ratio (muscle ≈ ratio × weight), both grow with load
   const muscleLen = Math.min(W_cap(H), s.W * 2.4);
   const weightLen = muscleLen * s.d / s.L;
   arrow(ctx, insX, ey - 14, -muscleLen, "#ff6f5e", 3);          // biceps pull (up)

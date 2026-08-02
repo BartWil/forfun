@@ -1,10 +1,10 @@
-// The ISB standard — an interactive walk through the two papers that gave biomechanics
+// The ISB standard: an interactive walk through the two papers that gave biomechanics
 // a shared language for 3-D joint angles.
 //
-//   Wu G, Cavanagh PR (1995) J Biomech 28:1257–1261  — reporting standard
-//   Wu G et al. (2002)  J Biomech 35:543–548  — Part I: ankle, hip, spine
-//   Wu G et al. (2005)  J Biomech 38:981–992  — Part II: shoulder, elbow, wrist, hand
-//   Grood ES, Suntay WJ (1983) J Biomech Eng 105:136–144 — the JCS itself
+//   Wu G, Cavanagh PR (1995) J Biomech 28:1257–1261 : reporting standard
+//   Wu G et al. (2002)  J Biomech 35:543–548 : Part I: ankle, hip, spine
+//   Wu G et al. (2005)  J Biomech 38:981–992 : Part II: shoulder, elbow, wrist, hand
+//   Grood ES, Suntay WJ (1983) J Biomech Eng 105:136–144: the JCS itself
 //
 // Every diagram here is drawn from the papers' TEXTUAL definitions of the axes. The figures
 // in the papers are Elsevier copyright and are not reproduced; short quotations appear in
@@ -18,7 +18,7 @@
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // ============================================================
-  //  quotations — short, attributed, shown on hover
+  //  quotations: short, attributed, shown on hover
   // ============================================================
   const Q = {
     nostandard: {
@@ -156,7 +156,7 @@
       y: m[3]*v.x + m[4]*v.y + m[5]*v.z,
       z: m[6]*v.x + m[7]*v.y + m[8]*v.z }),
     T: m => [m[0],m[3],m[6], m[1],m[4],m[7], m[2],m[5],m[8]],
-    // angle of the rotation taking A onto B — the honest "how different are these?" number
+    // angle of the rotation taking A onto B: the honest "how different are these?" number
     angleBetween: (a, b) => {
       const d = M.mul(a, M.T(b));
       const tr = d[0] + d[4] + d[8];
@@ -200,7 +200,7 @@
     const shaft = [V(0,0,0), V(0,1.15,0)];
     line(ctx, P, p(shaft[0]), p(shaft[1]), col, 7);
     line(ctx, P, p(V(-0.34,0.72,0)), p(V(0.34,0.72,0)), col, 4);
-    // the flag makes axial rotation visible — without it a bar looks identical when twisted
+    // the flag makes axial rotation visible: without it a bar looks identical when twisted
     ctx.fillStyle = "rgba(255,180,60,.85)";
     const f = [p(V(0,1.15,0)), p(V(0.42,1.02,0)), p(V(0.42,0.80,0)), p(V(0,0.93,0))].map(P);
     ctx.beginPath(); ctx.moveTo(f[0][0], f[0][1]);
@@ -221,7 +221,7 @@
   }
 
   // ============================================================
-  //  DEMO 1 — order matters
+  //  DEMO 1: order matters
   // ============================================================
   function demoOrder() {
     const host = document.getElementById("isbOrder");
@@ -285,7 +285,7 @@
   }
 
   // ============================================================
-  //  DEMO 2 — three conventions, one vertebra
+  //  DEMO 2: three conventions, one vertebra
   // ============================================================
   const CONVENTIONS = [
     { id: "isb", name: { en: "ISB (Wu et al.)", pl: "ISB (Wu i wsp.)" },
@@ -362,7 +362,7 @@
   }
 
   // ============================================================
-  //  DEMO 3 — the JCS explorer
+  //  DEMO 3: the JCS explorer
   // ============================================================
   const JOINTS = [
     { id: "hip", part: "I",
@@ -387,8 +387,8 @@
       e1: { ax: { en: "tibia/fibula Z", pl: "Z piszczeli / strzałki" }, r: { en: "dorsiflexion (+) / plantarflexion (−)", pl: "zgięcie grzbietowe (+) / podeszwowe (−)" } },
       e2: { ax: { en: "floating", pl: "pływająca" }, r: { en: "inversion (+) / eversion (−)", pl: "inwersja (+) / ewersja (−)" } },
       e3: { ax: { en: "calcaneus y", pl: "y kości piętowej" }, r: { en: "internal (+) / external (−) rotation", pl: "rotacja wewnętrzna (+) / zewnętrzna (−)" } },
-      note: { en: "This is deliberately the whole ankle complex — talocrural plus subtalar — because external landmarks cannot separate the two.",
-              pl: "To celowo cały kompleks skokowy — staw skokowo-goleniowy wraz ze skokowo-piętowym — ponieważ zewnętrzne punkty kostne nie pozwalają ich rozdzielić." } },
+      note: { en: "This is deliberately the whole ankle complex, talocrural plus subtalar, because external landmarks cannot separate the two.",
+              pl: "To celowo cały kompleks skokowy, staw skokowo-goleniowy wraz ze skokowo-piętowym, ponieważ zewnętrzne punkty kostne nie pozwalają ich rozdzielić." } },
 
     { id: "spine", part: "I",
       n: { en: "Intervertebral", pl: "Międzykręgowy" },
@@ -399,8 +399,8 @@
       e1: { ax: { en: "proximal vertebra Z", pl: "Z kręgu bliższego" }, r: { en: "flexion / extension", pl: "zgięcie / wyprost" } },
       e2: { ax: { en: "floating", pl: "pływająca" }, r: { en: "lateral bending", pl: "zgięcie boczne" } },
       e3: { ax: { en: "distal vertebra y", pl: "y kręgu dalszego" }, r: { en: "axial rotation", pl: "rotacja osiowa" } },
-      note: { en: "The spine is where competing conventions were worst — the paper explicitly lists three different ones still in use.",
-              pl: "Kręgosłup to obszar, w którym konkurencyjne konwencje były najbardziej rozbieżne — praca wprost wymienia trzy różne, wciąż stosowane." },
+      note: { en: "The spine is where competing conventions were worst. The paper explicitly lists three different ones still in use.",
+              pl: "Kręgosłup to obszar, w którym konkurencyjne konwencje były najbardziej rozbieżne. Praca wprost wymienia trzy różne, wciąż stosowane." },
       q: "othercon" },
 
     { id: "gh", part: "II",
@@ -427,7 +427,7 @@
       e2: { ax: { en: "floating", pl: "pływająca" }, r: { en: "carrying angle", pl: "kąt odwiedzenia przedramienia (carrying angle)" } },
       e3: { ax: { en: "forearm Yꜱ", pl: "Yꜱ przedramienia" }, r: { en: "pronation (+) / supination (−)", pl: "pronacja (+) / supinacja (−)" } },
       order: "Z–X–Y",
-      note: { en: "The carrying angle here is a passive consequence of elbow flexion rather than something you can drive, so it is rarely reported.",
+      note: { en: "The carrying angle here is a passive consequence of elbow flexion, not something you can drive, so it is rarely reported.",
               pl: "Kąt odwiedzenia przedramienia jest tu biernym następstwem zgięcia łokcia, a nie ruchem, który da się wykonać dowolnie, dlatego rzadko się go raportuje." } },
 
     { id: "thorax", part: "II",

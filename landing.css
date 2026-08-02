@@ -1,5 +1,5 @@
 /* ===========================================================
-   Motion Lab — landing page.
+   BioLab Play landing page.
    Deep-space chrome over the existing biomechanics palette.
    =========================================================== */
 
@@ -62,7 +62,7 @@
 }
 
 /* The copy floats over the body and is click-through, so you can grab the skeleton
-   anywhere — including straight through the headline. Only the buttons take clicks. */
+   anywhere, including straight through the headline. Only the buttons take clicks. */
 .lp-hero-inner{
   position:relative; z-index:2; text-align:center; max-width:660px;
   animation:lp-rise .9s cubic-bezier(.2,.8,.25,1) both;

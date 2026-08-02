@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Muscle Levers — Motion Lab</title>
-<meta name="description" content="Why your muscles pull with hundreds of newtons to hold a light weight — an interactive lever-and-torque demo of the elbow." />
+<title>Muscle Levers · BioLab Play</title>
+<meta name="description" content="Why your muscles pull with hundreds of newtons to hold a light weight. An interactive lever-and-torque demo of the elbow." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=46" />
-<link rel="stylesheet" href="muscle.css?v=46" />
+<link rel="stylesheet" href="style.css?v=47" />
+<link rel="stylesheet" href="muscle.css?v=47" />
 </head>
 <body>
 
 <nav id="navbar">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
@@ -39,10 +39,10 @@
     <div class="section-label" data-i18n="lv.label">Force × distance</div>
     <h1 class="lab-title lever-title" data-i18n="lv.title">Muscle Levers</h1>
     <p class="lab-sub" data-i18n-html="lv.sub">
-      Hold a 5&nbsp;kg dumbbell and your biceps doesn't pull with 5&nbsp;kg of force — it pulls with
-      more like <b>50</b>. Muscles attach right next to the joints they move, so they work on a tiny
-      lever arm and pay for it in force. Drag the sliders and watch the trade-off: <b>a joint is a
-      lever, and torque is force × distance</b>.
+      Hold a 5&nbsp;kg dumbbell and your biceps pulls with more like <b>50&nbsp;kg</b> of force.
+      Muscles attach right next to the joints they move, so they work on a tiny lever arm and pay for it
+      in force. Drag the sliders and watch the trade-off: <b>a joint is a lever, and torque is force ×
+      distance</b>.
     </p>
   </div>
 </header>
@@ -56,15 +56,15 @@
     <div class="lv-panel">
       <div class="lv-readouts">
         <div class="lv-read lv-read-hero">
-          <span class="lv-num" id="rForce">—</span>
+          <span class="lv-num" id="rForce">…</span>
           <span class="lv-unit">biceps force</span>
         </div>
         <div class="lv-read">
-          <span class="lv-num lv-ratio" id="rRatio">—</span>
+          <span class="lv-num lv-ratio" id="rRatio">…</span>
           <span class="lv-unit" data-i18n="lv.u.ratio">mechanical disadvantage (pull ÷ load)</span>
         </div>
         <div class="lv-read">
-          <span class="lv-num" id="rJoint">—</span>
+          <span class="lv-num" id="rJoint">…</span>
           <span class="lv-unit" data-i18n="lv.u.joint">force squeezing the elbow joint</span>
         </div>
       </div>
@@ -94,7 +94,7 @@
           For the arm to hold still, the turning effect (<b>torque</b>) the muscle makes must exactly
           balance the torque from the weight. Torque = force × <b>moment arm</b>, the perpendicular
           distance from the joint axis to the line of pull. The weight sits ~<b>34&nbsp;cm</b> out; the
-          biceps pulls on a moment arm of only ~<b>4&nbsp;cm</b> — so to match the torque, its force must
+          biceps pulls on a moment arm of only ~<b>4&nbsp;cm</b>, so to match the torque its force must
           be about <b>34 ÷ 4 ≈ 8–10×</b> the weight. Short lever arm, big force. That's the deal almost
           every muscle in your body makes. <em>Measured biceps moment arms peak near 4.7&nbsp;cm
           (Murray, Buchanan &amp; Delp 2000).</em>
@@ -106,7 +106,7 @@
           Losing force buys <b>speed and range</b>: a muscle shortening a couple of centimetres near the
           joint whips the hand through a big, fast arc. The same short lever that costs force lets you
           throw, kick, and sprint. It also keeps limbs slim and light near the body. The price is joint
-          load — notice the third number climb: most of that muscle force ends up <b>compressing the
+          load. Watch the third number climb: most of that muscle force ends up <b>compressing the
           joint</b>.
         </p>
       </div>
@@ -116,7 +116,7 @@
           Curling up, the <b style="color:#ff6f5e">biceps</b> is the <b>agonist</b> (the mover) while the
           triceps on the back of the arm is the <b>antagonist</b>, relaxing and paying out to let the
           motion happen. Straighten the arm against a load and the roles swap. Muscles only pull, so they
-          come in opposing pairs — one for each direction.
+          come in opposing pairs, one for each direction.
         </p>
       </div>
       <div class="lv-ex-card">
@@ -125,31 +125,31 @@
           This model says "biceps" because it is easier to draw, but elbow flexion is shared by at least
           three muscles, and they are not interchangeable. Measured on cadaver specimens
           (Murray, Buchanan &amp; Delp 2000): <b>brachioradialis</b> has the <em>largest</em> flexion
-          moment arm of all — <b>7.7&nbsp;cm</b>, well over the biceps' 4.7&nbsp;cm — yet the smallest
-          cross-sectional area, so it is a long lever on a small motor. <b>Brachialis</b> is the opposite:
-          a moment arm of only 2.6&nbsp;cm but the largest cross-section of the flexors, a short lever on
-          a big motor. The biceps sits between them, which is why it ends up with the greatest overall
-          moment-generating capacity of the three. Real joints are always a committee.
+          moment arm of all at <b>7.7&nbsp;cm</b>, well over the biceps' 4.7&nbsp;cm, yet it has the
+          smallest cross-sectional area. It is a long lever on a small motor. <b>Brachialis</b> is the
+          opposite: a moment arm of only 2.6&nbsp;cm but the largest cross-section of the flexors, a short
+          lever on a big motor. The biceps sits between them, which is why it ends up with the greatest
+          overall moment-generating capacity of the three. Real joints are always a committee.
         </p>
       </div>
       <div class="lv-ex-card">
         <h3 data-i18n="lv.c5h">And the moment arm keeps moving</h3>
         <p data-i18n-html="lv.c5p">
           Slide the moment arm and you are doing by hand what your elbow does automatically: moment arms
-          change with joint angle — the biceps' varies by more than 30% across the range. So joint torque
-          = muscle force × moment arm, and <em>both</em> terms move as you rotate the joint. The muscle
-          force term has its own rule, the length–tension curve, which you can play with on the
-          <a href="dyno.html">Muscle Dyno</a>. Put the two together and you have the reason a
-          muscle tests strong at one joint angle and weak at another — the single most practical fact on
-          this page for anyone doing manual muscle testing.
+          change with joint angle, and the biceps' varies by more than 30% across the range. So joint
+          torque = muscle force × moment arm, and <em>both</em> terms move as you rotate the joint. The
+          muscle force term has its own rule, the length–tension curve, which you can play with on the
+          <a href="dyno.html">Muscle Dyno</a>. Put the two together and you have the reason a muscle tests
+          strong at one joint angle and weak at another. For anyone doing manual muscle testing that is
+          the most practical fact on this page.
         </p>
       </div>
     </div>
     <p class="how-note" style="max-width:760px; margin-top:20px;" data-i18n-html="lv.note">
       A simplified 2-D static model: forearm held horizontal, a single flexor pulling vertically, joint
       and segment weights ignored so the lever arithmetic stays visible. Real moment arms shift with elbow
-      angle, the muscle wraps over the joint, and the load is shared between several flexors — but the
-      trade-off is exactly this. Classic third-class lever (effort between the pivot and the load).
+      angle, the muscle wraps over the joint, and the load is shared between several flexors. The
+      trade-off itself is exactly this. Classic third-class lever (effort between the pivot and the load).
       Moment-arm and architecture figures from Murray WM, Buchanan TS, Delp SL, <em>J Biomech</em> 33:943–952, 2000.
     </p>
   </section>
@@ -157,13 +157,13 @@
 
 <footer id="footer">
   <div class="container footer-inner">
-    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+    <p>BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
   </div>
 </footer>
 
-<script src="i18n.js?v=46"></script>
-<script src="nav.js?v=46"></script>
-<script src="muscle.js?v=46"></script>
-<script src="abbr.js?v=46"></script>
+<script src="i18n.js?v=47"></script>
+<script src="nav.js?v=47"></script>
+<script src="muscle.js?v=47"></script>
+<script src="abbr.js?v=47"></script>
 </body>
 </html>

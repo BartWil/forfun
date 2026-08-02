@@ -1,4 +1,4 @@
-// The Anatomy — a 3D articulated figure driven by the SAME data as every other page
+// The Anatomy: a 3D articulated figure driven by the SAME data as every other page
 // (MOVEMENTS/computeScales/liveState/muscleActivationAt from data.js + runtime.js, loaded as
 // classic scripts before this module). Bones and muscles are stylised procedural volumes for now;
 // the scene graph is arranged so a real anatomical mesh can be swapped in later without touching
@@ -144,7 +144,7 @@ function buildFigure() {
   head.position.set(0.02, L.trunk + L.headR + 0.06, 0);
   trunkGroup.add(head);
 
-  // arms — swing is applied per frame (see applyArms)
+  // arms: swing is applied per frame (see applyArms)
   [1, -1].forEach(side => {
     const armGroup = new THREE.Group();
     armGroup.position.set(0, L.trunk, side * L.shoulderHalf);
@@ -309,7 +309,7 @@ function updateGrfArrow(st, movement, scales, tPercent) {
 // ================= 2D EMG heatmap (body-muscles UMD, window.BodyMuscles) =================
 // Maps our six modelled muscles onto the library's anatomical region IDs and paints them from the
 // SAME activation curves: right-side regions get the primary limb, left-side regions the
-// contralateral (phase-shifted) limb — matching the 3D figure. Front view carries quads + tibialis;
+// contralateral (phase-shifted) limb: matching the 3D figure. Front view carries quads + tibialis;
 // back view carries glutes, hamstrings, calves, and the erectors.
 let mmFront = null, mmBack = null, mmLastF = "", mmLastB = "";
 const MM_FRONT = { "Quadriceps": ["quads"], "Tibialis Anterior": ["tibialis-anterior"] };

@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The ISB Standard — Motion Lab</title>
-<meta name="description" content="Why 3-D joint angles need a shared definition, and how the ISB joint coordinate system works — an interactive walk through Wu et al. 2002 and 2005." />
+<title>The ISB Standard · BioLab Play</title>
+<meta name="description" content="Why 3-D joint angles need a shared definition, and how the ISB joint coordinate system works. An interactive walk through Wu et al. 2002 and 2005." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=46" />
-<link rel="stylesheet" href="isb.css?v=46" />
+<link rel="stylesheet" href="style.css?v=47" />
+<link rel="stylesheet" href="isb.css?v=47" />
 </head>
 <body>
 
 <nav id="navbar">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
@@ -29,7 +29,7 @@
     <h1 class="lab-title isb-title" data-i18n="isb.title">The ISB Standard</h1>
     <p class="lab-sub" data-i18n-html="isb.sub">
       Before these two papers, every laboratory could measure the same knee, the same
-      shoulder, the same walk — and publish different numbers, because each had chosen its
+      shoulder, the same walk, then publish different numbers, because each had chosen its
       own axes and its own order of rotations. The ISB recommendations fixed the definitions.
       Almost every motion-capture result you will ever read sits on top of them.
       <b>Hover any underlined phrase to see exactly what the papers say.</b>
@@ -47,7 +47,7 @@
       A joint angle is not a thing you measure directly. It is a number you <em>calculate</em>,
       and the calculation needs three decisions: which bony points define each segment, which
       way the axes point, and in which order the rotations are applied. Change any one and the
-      number changes — while the patient does exactly the same thing. In 1993 the International
+      number changes, while the patient does exactly the same thing. In 1993 the International
       Society of Biomechanics set up a committee because
       <span class="q" data-q="nostandard">there was no standard at all</span>, and the
       consequence was blunt:
@@ -55,7 +55,7 @@
     </p>
     <p class="isb-p" data-i18n-html="isb.s1.p2">
       Their answer was to adopt the <b>Joint Coordinate System</b> of Grood and Suntay, built
-      for the knee in 1983, and extend it to the whole body — partly because
+      for the knee in 1983, and extend it to the whole body, partly because
       <span class="q" data-q="clinical">it reports motion in terms clinicians already use</span>.
     </p>
   </section>
@@ -65,20 +65,20 @@
     <div class="section-label" data-i18n="isb.s2.label">See it for yourself</div>
     <h2 class="isb-h2" data-i18n="isb.s2.h">Rotations do not commute</h2>
     <p class="isb-p" data-i18n-html="isb.s2.p">
-      This is the heart of it. Below, one identical segment gets the <b>same two rotations</b>
-      — one about Z, one about X — applied in the two possible orders. Drag the slider and
+      This is the heart of it. Below, one identical segment gets the <b>same two rotations</b>,
+      one about Z and one about X, applied in the two possible orders. Drag the slider and
       watch the two ends of the movement drift apart. The papers put it plainly:
       <span class="q" data-q="order">flexion then abduction is not abduction then flexion</span>.
       When Karduna and colleagues tested every possible sequence for scapular motion, they
-      reported <span class="q" data-q="karduna">differences of up to 50° for some angles</span>
-      — from nothing but the order.
+      reported <span class="q" data-q="karduna">differences of up to 50° for some angles</span>,
+      from nothing but the order.
     </p>
     <div id="isbOrder" class="isb-demo"></div>
     <p class="isb-foot" data-i18n-html="isb.s2.foot">
       This is also why the standard is careful to say that
       <span class="q" data-q="seqindep">the JCS itself does not depend on sequence, while Euler and Cardan angles do</span>.
-      Choosing a convention is not pedantry — it is the difference between two labs agreeing
-      and two labs silently disagreeing.
+      Choosing a convention is what stands between two labs agreeing and two labs silently
+      disagreeing.
     </p>
   </section>
 
@@ -89,9 +89,9 @@
     <p class="isb-p" data-i18n-html="isb.s3.p">
       The spine is where this was worst, and Part I says so directly:
       <span class="q" data-q="othercon">other axis conventions have been described</span>.
-      Here are the three the paper lists, on the same bone. Nothing about the vertebra changes
-      — only the labels. A number reported as "rotation about Z" means three different
-      movements depending on whose paper you are holding.
+      Here are the three the paper lists, on the same bone. Only the labels change, never the
+      vertebra. A number reported as "rotation about Z" means three different movements
+      depending on whose paper you are holding.
     </p>
     <div id="isbConv" class="isb-demo"></div>
   </section>
@@ -108,8 +108,8 @@
           <p data-i18n-html="isb.s4.a.p">
             Each segment gets a Cartesian system defined from
             <span class="q" data-q="landmarks">bony points you can palpate or find on an X-ray</span>.
-            That constraint is deliberate — a definition you cannot locate on a living person is
-            useless in a gait lab. Where a point is not palpable, such as the hip centre, the
+            That constraint is deliberate, because a definition you cannot locate on a living person
+            is useless in a gait lab. Where a point is not palpable, such as the hip centre, the
             paper says how to estimate it and
             <span class="q" data-q="palpable">keeps to landmarks reachable in vivo</span>.
           </p>
@@ -174,15 +174,15 @@
         <p data-i18n-html="isb.s6.b.p">
           <span class="q" data-q="gheuler">The glenohumeral joint is the only one built on a true Euler sequence</span>
           (Y–X–Y), because e1 and e3 start out parallel. The usual floating-axis equations do
-          not apply there — an Euler decomposition is used instead.
+          not apply there, so an Euler decomposition is used instead.
         </p>
       </div>
       <div class="isb-card">
         <h3 data-i18n="isb.s6.c.h">Always report your convention</h3>
         <p data-i18n-html="isb.s6.c.p">
           Even now, a joint angle without a stated coordinate system and rotation order is not
-          reproducible. Naming the standard you followed — and the version — costs one sentence
-          in a methods section and saves the reader from guessing.
+          reproducible. Naming the standard you followed, and its version, costs one sentence in a
+          methods section and saves the reader from guessing.
         </p>
       </div>
     </div>
@@ -207,13 +207,13 @@
 
 <footer id="footer">
   <div class="container footer-inner">
-    <p data-i18n="footer.tagline">Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+    <p data-i18n="footer.tagline">BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
   </div>
 </footer>
 
-<script src="i18n.js?v=46"></script>
-<script src="nav.js?v=46"></script>
-<script src="isb.js?v=46"></script>
-<script src="abbr.js?v=46"></script>
+<script src="i18n.js?v=47"></script>
+<script src="nav.js?v=47"></script>
+<script src="isb.js?v=47"></script>
+<script src="abbr.js?v=47"></script>
 </body>
 </html>

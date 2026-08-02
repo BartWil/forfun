@@ -1,4 +1,4 @@
-// Spine Under Load — lumbar disc pressure across postures, from BOTH classic in-vivo studies.
+// Spine Under Load: lumbar disc pressure across postures, from BOTH classic in-vivo studies.
 //
 // Two data sets, deliberately shown side by side because they disagree:
 //
@@ -10,7 +10,7 @@
 //   Wilke et al. (Spine 24(8):755-762, 1999)
 //     Absolute nucleus pressure in MPa at L4/5, telemetered over ~24 h. n = 1 (a 45-year-old,
 //     70 kg male volunteer with a non-degenerated disc). Wilke's own conclusion: "the intradiscal
-//     pressure during sitting may in fact be LESS than that in erect standing" — the opposite of
+//     pressure during sitting may in fact be LESS than that in erect standing", the opposite of
 //     the classic teaching point.
 //
 // Both are tiny samples. The robust lesson is the RANKING of gross mechanical effects
@@ -36,9 +36,9 @@ const POSTURES = [
     J: { head: [.50, .16], shoulder: [.50, .30], hip: [.50, .56], knee: [.58, .75], ankle: [.63, .90], hand: [.55, .50], disc: [.50, .52] } },
   { id: "bend", name: "Standing, bent forward", n: 150, w: 1.10,
     J: { head: [.69, .31], shoulder: [.62, .40], hip: [.44, .56], knee: [.44, .76], ankle: [.44, .90], hand: [.70, .62], disc: [.47, .52] } },
-  { id: "liftGood", name: "Lifting 20 kg — knees bent, back straight", n: null, w: 1.70, load: 20,
+  { id: "liftGood", name: "Lifting 20 kg, knees bent, back straight", n: null, w: 1.70, load: 20,
     J: { head: [.62, .33], shoulder: [.56, .42], hip: [.40, .60], knee: [.55, .73], ankle: [.50, .90], hand: [.58, .70], disc: [.43, .55] } },
-  { id: "liftBad", name: "Lifting 20 kg — round back, knees straight", n: 220, w: 2.30, load: 20, curved: true,
+  { id: "liftBad", name: "Lifting 20 kg, round back, knees straight", n: 220, w: 2.30, load: 20, curved: true,
     J: { head: [.76, .42], shoulder: [.68, .48], hip: [.46, .56], knee: [.46, .76], ankle: [.46, .90], hand: [.73, .74], disc: [.49, .53] } },
 ];
 
@@ -50,8 +50,8 @@ const PL_NAMES = {
   stand: "Stanie wyprostowane",
   walk: "Chód",
   bend: "Stanie, pochylenie do przodu",
-  liftGood: "Podnoszenie 20 kg — zgięte kolana, proste plecy",
-  liftBad: "Podnoszenie 20 kg — zaokrąglone plecy, wyprostowane kolana",
+  liftGood: "Podnoszenie 20 kg, zgięte kolana, proste plecy",
+  liftBad: "Podnoszenie 20 kg, zaokrąglone plecy, wyprostowane kolana",
 };
 
 const isPL = () => window.i18n && window.i18n.lang === "pl";
@@ -103,7 +103,7 @@ function buildBars() {
     const pct = pctOf(p);
     const row = document.createElement("div");
     row.className = "spine-bar-row" + (i === sel ? " active" : "") + (pct == null ? " unmeasured" : "");
-    const val = pct == null ? "—"
+    const val = pct == null ? "·"
       : (dataset === "wilke" ? p.w.toFixed(2) + " MPa" : pct + "%");
     // dashed marker at 100% (= this study's own standing value) so "above or below standing?"
     // stays readable even where the two bars differ by only a few per cent
@@ -127,7 +127,7 @@ function render() {
   const big = document.getElementById("pctVal");
   const sub = document.getElementById("mpaVal");
   if (pct == null) {
-    big.textContent = "—";
+    big.textContent = "·";
     big.style.color = "#647092";
     sub.textContent = T("not measured in this study", "nie mierzono w tym badaniu");
   } else {
@@ -190,7 +190,7 @@ function drawFigure(p, pct) {
   // joints
   [J.hip, J.knee, J.ankle, J.shoulder].forEach(q => { ctx.beginPath(); ctx.arc(q[0], q[1], 4, 0, 7); ctx.fill(); });
 
-  // the lumbar disc — glowing by pressure
+  // the lumbar disc, glowing by pressure
   const col = pct == null ? "#647092" : pctColor(pct);
   ctx.save();
   ctx.shadowColor = col; ctx.shadowBlur = 6 + (pct || 0) / 20;

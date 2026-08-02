@@ -1,4 +1,4 @@
-// nav.js — single source of truth for the site nav. Builds a grouped, bilingual (EN/PL) menu into
+// nav.js: single source of truth for the site nav. Builds a grouped, bilingual (EN/PL) menu into
 // #navLinks on every page, marks the active item, and wires the mobile hamburger + dropdowns.
 // Loaded after i18n.js so it can read window.i18n.lang and rebuild on language change.
 

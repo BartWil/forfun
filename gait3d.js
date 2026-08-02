@@ -1,4 +1,4 @@
-// Real Gait — a realistically-proportioned rigged human (three.js "Xbot" mannequin) walking on
+// Real Gait: a realistically-proportioned rigged human (three.js "Xbot" mannequin) walking on
 // REAL motion-capture joint angles. No baked clip: the hip / knee / ankle bones are driven directly
 // from grand-average sagittal joint angles measured in the Fukuchi et al. 2018 open walking data set
 // (42 adults, overground comfortable-speed walking; PeerJ 6:e4640, figshare 5722711). The angles are
@@ -59,7 +59,7 @@ let fraction = 0, playing = true, lastTime = null;
 let lockSide = null, lockX = 0, lockZ = 0;
 const prevPos = new THREE.Vector3();
 let followInit = false;
-const WRAP = 8;   // teleport back every 8 m (multiple of the 1 m grid → seamless)
+const WRAP = 8;   // teleport back every 8 m (multiple of the 1 m grid, so no visible jump)
 
 function initScene() {
   const w = stageWrap.clientWidth, h = stageWrap.clientHeight;
@@ -201,7 +201,7 @@ function animate(ts) {
     updatePhase(tPercent);
     applyPose(tPercent);
 
-    // camera follows the walker (it appears in place; the ground slides by — treadmill look,
+    // camera follows the walker (it appears in place; the ground slides by: treadmill look,
     // but the feet are genuinely planted). Seamless wrap keeps coordinates bounded.
     if (!followInit) { prevPos.copy(model.position); followInit = true; }
     if (model.position.z - prevPos.z > WRAP) {

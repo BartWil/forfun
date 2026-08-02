@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Real Gait — Motion Lab</title>
+<title>Real Gait · BioLab Play</title>
 <meta name="description" content="A realistic rigged human body walking on real motion-capture joint angles, in the browser." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=46" />
-<link rel="stylesheet" href="lab.css?v=46" />
-<link rel="stylesheet" href="gait3d.css?v=46" />
+<link rel="stylesheet" href="style.css?v=47" />
+<link rel="stylesheet" href="lab.css?v=47" />
+<link rel="stylesheet" href="gait3d.css?v=47" />
 </head>
 <body class="lab-body">
 
 <nav id="navbar">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
@@ -40,9 +40,9 @@
     <div class="section-label" data-i18n="gait.label">A real body on real data</div>
     <h1 class="lab-title gait-title" data-i18n="gait.title">Real Gait</h1>
     <p class="lab-sub" data-i18n-html="gait.sub">
-      A properly rigged, realistically-proportioned human body — walking on <b>real motion-capture
-      joint angles</b> averaged from an open gait dataset. No canned animation: every hip, knee, and
-      ankle rotation you see is measured data, retargeted onto the skeleton in real time with
+      A properly rigged, realistically-proportioned human body, walking on <b>real motion-capture
+      joint angles</b> averaged from an open gait dataset. Nothing here is canned animation. Every hip,
+      knee and ankle rotation you see is measured data, retargeted onto the skeleton as you watch with
       <b>three.js</b>.
     </p>
   </div>
@@ -52,7 +52,7 @@
   <div class="gait-stage" id="stageWrap">
     <div class="lab-hud">
       <div class="lab-phase">
-        <span id="phaseLabel">—</span>
+        <span id="phaseLabel">…</span>
         <span id="phasePercent">0%</span>
       </div>
       <div class="lab-status" id="webglStatus">loading model…</div>
@@ -76,7 +76,7 @@
         <h3 data-i18n-html="gx.c1.h">The motion is <em>measured</em>, not animated by hand</h3>
         <p data-i18n-html="gx.c1.p">
           The hip, knee, and ankle rotations come from the <b>Fukuchi et&nbsp;al. 2018</b> open walking
-          data set — 3D motion capture of <b>42 healthy adults</b> walking overground at a comfortable
+          data set: 3D motion capture of <b>42 healthy adults</b> walking overground at a comfortable
           speed. We took the grand-average sagittal joint angles (averaged over every subject and both
           legs, <b>84 gait curves</b>) and retargeted them straight onto the skeleton. Nothing here is a
           canned game animation.
@@ -86,35 +86,37 @@
           <div class="gx-swing" data-i18n-html="gx.swing">Swing ~62–100% <span>foot in the air</span></div>
         </div>
         <p class="gx-small" data-i18n-html="gx.c1.small">
-          The timeline is one <b>gait cycle</b> — one foot's ground contact to that same foot's next
-          contact — rescaled to 0–100%. In walking the foot is down ~62% of the cycle (there's no flight
-          phase, unlike running). The other leg runs exactly half a cycle behind.
+          The timeline is one <b>gait cycle</b>, running from one foot's ground contact to that same
+          foot's next contact, rescaled to 0–100%. In walking the foot is down ~62% of the cycle, since
+          walking has no flight phase the way running does. The other leg runs exactly half a cycle
+          behind.
         </p>
       </div>
 
       <div class="gx-card">
         <h3 data-i18n="gx.c2.h">How a body walks from angles alone</h3>
         <p data-i18n-html="gx.c2.p">
-          Joint angles say how the limbs bend but not where the body <em>is</em> in space — that pelvis
-          motion isn't in the angle data. So the walking is reconstructed with <b>foot-locking</b>: the
+          Joint angles say how the limbs bend, but they say nothing about where the body <em>is</em> in
+          space, and that pelvis motion is absent from the angle data. So the walking is reconstructed
+          with <b>foot-locking</b>: the
           foot in contact is pinned to the ground and the body is carried over it. The camera rides
           along, so the figure looks in place while the ground slides past and the feet stay genuinely
           planted.
         </p>
         <p class="gx-small" data-i18n-html="gx.c2.small">
-          <b>Where that reconstruction falls short — and why it's worth knowing.</b> Foot-locking gets you
+          <b>Where that reconstruction falls short, and why it is worth knowing.</b> Foot-locking gets you
           about <b>0.8&nbsp;m of travel per gait cycle</b>, but a real adult walking at this speed covers
-          roughly <b>1.4&nbsp;m</b> per cycle. The missing half comes from everything that <em>isn't</em> a
-          sagittal hip, knee or ankle angle: pelvic rotation in the transverse plane, pelvic tilt and list,
-          and the way the foot rolls from heel to toe rather than pivoting about a point. Sagittal angles
-          alone can never reproduce stride length — which is exactly why gait labs measure the pelvis too.
-          Treat the forward speed here as illustrative; the <b>joint angles</b> are the measured part.
+          roughly <b>1.4&nbsp;m</b> per cycle. The missing half comes from everything outside the sagittal
+          hip, knee and ankle angles: pelvic rotation in the transverse plane, pelvic tilt and list, and
+          the way the foot rolls from heel to toe instead of pivoting about a point. Sagittal angles alone
+          can never reproduce stride length, and that is why gait labs measure the pelvis too. Treat the
+          forward speed here as illustrative. The <b>joint angles</b> are the measured part.
         </p>
         <p class="gx-small" data-i18n-html="gx.c2.small2">
           The body itself is a generic rigged mannequin (three.js “Xbot”). The <b>data</b> driving it is
-          real; the mesh is just the canvas. Sagittal plane only. Note too that the 42-subject average
-          pools 24 young and 18 older adults, so it is a composite of two age groups rather than a
-          picture of any one walker.
+          real and the mesh is just the canvas. Sagittal plane only. Note too that the 42-subject average
+          pools 24 young and 18 older adults, so it is a composite of two age groups and not a picture of
+          any one walker.
         </p>
       </div>
     </div>
@@ -124,19 +126,19 @@
       <a href="https://peerj.com/articles/4640/" target="_blank" rel="noopener">PeerJ 6:e4640</a> /
       <a href="https://doi.org/10.6084/m9.figshare.5722711" target="_blank" rel="noopener">figshare 5722711</a>.
       Rendering: <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>. Educational
-      visualisation — not a clinical or individual assessment.
+      visualisation. Not a clinical or individual assessment.
     </p>
   </section>
 </main>
 
 <footer id="footer">
   <div class="container footer-inner">
-    <p data-i18n="footer.tagline">Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+    <p data-i18n="footer.tagline">BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
   </div>
 </footer>
 
-<script src="i18n.js?v=46"></script>
-<script src="nav.js?v=46"></script>
+<script src="i18n.js?v=47"></script>
+<script src="nav.js?v=47"></script>
 <script type="importmap">
 {
   "imports": {
@@ -145,7 +147,7 @@
   }
 }
 </script>
-<script type="module" src="gait3d.js?v=46"></script>
-<script src="abbr.js?v=46"></script>
+<script type="module" src="gait3d.js?v=47"></script>
+<script src="abbr.js?v=47"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-// Single-Leg Squat — an orbitable 3D skeleton doing a single-leg squat, driven entirely by SYNTHETIC
+// Single-Leg Squat: an orbitable 3D skeleton doing a single-leg squat, driven entirely by SYNTHETIC
 // idealised kinematics (NOT measured data). The stance leg is posed with 2-link IK from a planted
 // foot; poor "control" adds medial knee valgus, contralateral pelvic drop, and trunk lean. Metric
 // names mirror a real OpenCap SLS pipeline (medial knee displacement / FPPA, pelvic drop, trunk lean)
@@ -53,7 +53,7 @@ function buildMetrics() {
       `<div class="metric-main"><div class="metric-name">${mName(m)}</div>` +
       `<div class="metric-bar"><div class="metric-fill" id="fill-${m.key}"></div></div></div>` +
       `<div class="metric-val" id="val-${m.key}">0°</div>` +
-      (m.neutral ? `<div style="width:66px"></div>` : `<div class="metric-quality" id="q-${m.key}">—</div>`);
+      (m.neutral ? `<div style="width:66px"></div>` : `<div class="metric-quality" id="q-${m.key}">·</div>`);
     metricsEl.appendChild(row);
   });
 }

@@ -1,4 +1,4 @@
-// Muscle Dyno — a normalised Hill-type muscle model you can drag. The model is written in Ruby and
+// Muscle Dyno: a normalised Hill-type muscle model you can drag. The model is written in Ruby and
 // executed live in the browser via ruby.wasm (CRuby compiled to WebAssembly); an identical JS model
 // is the fallback so the page always works. Grounded in the length–tension and force–velocity
 // relationships (Neumann; Nordin & Frankel; Enoka; Hill 1938). Normalised units: force in F0, v in Vmax.
@@ -144,9 +144,9 @@ function drawSarco(l) {
   const actLen = (W / 2 - zL) * 0.92;
   ctx.beginPath(); ctx.moveTo(zL, cy - 8); ctx.lineTo(zL + actLen, cy - 8); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(zR, cy + 8); ctx.lineTo(zR - actLen, cy + 8); ctx.stroke();
-  sarcoNote.textContent = l < 0.85 ? L("too short — filaments collide, low force", "za krótki — filamenty kolidują, mała siła")
-    : l > 1.4 ? L("too long — little overlap, low active force", "za długi — małe zachodzenie, mała siła czynna")
-      : (l >= 0.9 && l <= 1.15) ? L("optimal filament overlap — peak force", "optymalne zachodzenie filamentów — szczytowa siła")
+  sarcoNote.textContent = l < 0.85 ? L("too short, filaments collide, low force", "za krótki, filamenty kolidują, mała siła")
+    : l > 1.4 ? L("too long, little overlap, low active force", "za długi, małe zachodzenie, mała siła czynna")
+      : (l >= 0.9 && l <= 1.15) ? L("optimal filament overlap, peak force", "optymalne zachodzenie filamentów, szczytowa siła")
         : L("reduced overlap", "zmniejszone zachodzenie");
 }
 
@@ -190,8 +190,8 @@ function renderBadge() {
       "💎 na żywo: Twój punkt pracy jest obliczany w Ruby (ruby.wasm 3.3)");
   } else if (engineState === "js") {
     engineBadge.className = "dyno-engine js";
-    engineBadge.textContent = L("⚙ Ruby engine unavailable — running the identical JS model",
-      "⚙ Silnik Ruby niedostępny — działa identyczny model JS");
+    engineBadge.textContent = L("⚙ Ruby engine unavailable, running the identical JS model",
+      "⚙ Silnik Ruby niedostępny, działa identyczny model JS");
   } else {
     engineBadge.textContent = L("⏳ booting Ruby engine (ruby.wasm)…",
       "⏳ uruchamianie silnika Ruby (ruby.wasm)…");
@@ -212,7 +212,7 @@ async function initRuby() {
     engineState = "ruby"; renderBadge();
     update();
   } catch (e) {
-    console.warn("ruby.wasm unavailable — using JS model:", e);
+    console.warn("ruby.wasm unavailable, using JS model:", e);
     engineState = "js"; renderBadge();
   }
 }

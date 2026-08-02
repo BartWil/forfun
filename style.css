@@ -9,9 +9,9 @@
   --text: #e8edf7;
   --text-dim: #93a1bd;
   --text-dimmer: #647092;
-  --accent: #5eead4;       /* teal/lime — force & energy */
-  --accent-2: #ff6f5e;     /* coral — muscle activity */
-  --accent-3: #7c9bff;     /* blue — joint kinematics */
+  --accent: #5eead4;       /* teal/lime: force & energy */
+  --accent-2: #ff6f5e;     /* coral: muscle activity */
+  --accent-3: #7c9bff;     /* blue: joint kinematics */
   --accent-soft: rgba(94,234,212,0.12);
   --radius: 14px;
   /* Elevation via light-from-above + soft drop shadow (Refactoring UI / dark-mode depth) */
@@ -97,7 +97,7 @@ section{ padding:clamp(56px, 8vw, 84px) 0; position:relative; }
 }
 /* Bridge the 10px visual gap between the button and the panel. Without this the pointer
    leaves .nav-group on the way down, :hover drops, and the menu closes before you can
-   reach an item — which made the whole dropdown unusable with a mouse. */
+   reach an item, which made the whole dropdown unusable with a mouse. */
 .nav-dropdown::before{
   content:""; position:absolute; left:0; right:0; top:-12px; height:12px;
 }

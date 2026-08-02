@@ -1,4 +1,4 @@
-/* "Wake the body" — the three unlock puzzles */
+/* "Wake the body": the three unlock puzzles */
 
 .lp-gate{ padding:96px 0 40px; background:linear-gradient(180deg,#05070d 0%,var(--bg) 30%,var(--bg) 100%); }
 .lp-gate .lp-sec-lead{ max-width:640px; }
@@ -51,7 +51,7 @@
 }
 .q-stage .q-read{ position:absolute; left:10px; bottom:8px; }
 
-/* seal 01 — three candidate walkers */
+/* seal 01: three candidate walkers */
 .q-three{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
 .q-cell{
   position:relative; padding:0; cursor:pointer; border-radius:10px; overflow:hidden;

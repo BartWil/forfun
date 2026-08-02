@@ -1,4 +1,4 @@
-// The Forge — same MOVEMENTS data as the dashboard (data.js/runtime.js/figure.js, all loaded
+// The Forge: same MOVEMENTS data as the dashboard (data.js/runtime.js/figure.js, all loaded
 // as classic scripts before this module), rendered as physics instead of charts:
 //   - Ground reaction force -> a real particle spray, simulated by Rapier2D (a Rust physics
 //     engine, compiled to WebAssembly, loaded here straight from a CDN with no build step).
@@ -161,7 +161,7 @@ function drawForceParticles(ctx) {
     ctx.arc(x, y, r * 2.2, 0, Math.PI * 2);
     ctx.fill();
 
-    // arrowhead + short stem along the velocity vector — this is the force direction made visible.
+    // arrowhead + short stem along the velocity vector: this is the force direction made visible.
     if (speed > 0.3) {
       const ang = Math.atan2(vy, vx);
       const len = 9 + alpha * 6;
@@ -383,7 +383,7 @@ document.addEventListener("i18n:changed", () => {
   buildLegend();
 });
 
-// Cached once here and only refreshed on actual resize — calling setupCanvasDPR() (which
+// Cached once here and only refreshed on actual resize: calling setupCanvasDPR() (which
 // resets canvas.width/height, clearing the bitmap) every frame would wipe out the
 // trail-glow persistence the render loop relies on.
 let cachedCtx = null, cachedW = 0, cachedH = 0;
@@ -466,6 +466,6 @@ function frameInner(timestamp) {
   resizeCanvas();
   physicsStatusEl.textContent = useRapier
     ? i18n.t("Rapier2D (Rust → WASM) physics: live")
-    : i18n.t("Physics CDN unavailable — showing manual projectile motion instead");
+    : i18n.t("Physics CDN unavailable, showing manual projectile motion instead");
   requestAnimationFrame(frame);
 })();

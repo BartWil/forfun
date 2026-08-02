@@ -1,4 +1,4 @@
-// Gait Lab — introduce a deficit into normal walking and watch the compensation emerge.
+// Gait Lab: introduce a deficit into normal walking and watch the compensation emerge.
 // Reuses the shared engine: MOVEMENTS/computeScales/liveState (data.js + runtime.js) for the
 // baseline walking kinematics, and computeSkeleton/SEG (figure.js) for geometry. Each condition
 // is a transform on the per-frame joint-angle state, applied to the near (affected) leg only;
@@ -19,15 +19,15 @@ const phaseOf = (st) => (st.grf > 0.06 ? "stance" : "swing");
 const CONDITIONS = {
   typical: {
     name: "Typical gait",
-    primary: "Healthy walking, shown for reference — heel strike, a controlled knee-flexion wave at loading, a smooth ankle rocker through stance, and an active toe-off push.",
-    comp: "None needed — every muscle group fires on time.",
+    primary: "Healthy walking, shown for reference: heel strike, a controlled knee-flexion wave at loading, a smooth ankle rocker through stance, and an active toe-off push.",
+    comp: "None needed. Every muscle group fires on time.",
     note: "",
     transform: (s) => s,
   },
   footdrop: {
     name: "Foot drop (weak dorsiflexors)",
     primary: "The ankle dorsiflexors (tibialis anterior & co.) are weak or denervated, so the foot can't lift: the toes hang down through swing and the forefoot slaps the floor at contact instead of a heel strike.",
-    comp: "Steppage gait — the hip and knee flex much more than normal in swing to hoist the dropped foot up and clear the toes over the ground.",
+    comp: "Steppage gait. The hip and knee flex much more than normal in swing to hoist the dropped foot up and clear the toes over the ground.",
     note: "",
     transform: (s, phase, sev) => {
       if (phase === "swing") { s.ankleAngle -= 26 * sev; s.hipAngle += 12 * sev; s.kneeAngle += 24 * sev; }
@@ -38,7 +38,7 @@ const CONDITIONS = {
   weakquads: {
     name: "Weak quadriceps",
     primary: "The quadriceps can't resist the knee-flexion moment during weight acceptance, so the normal shock-absorbing knee bend would buckle the limb.",
-    comp: "The knee is thrown into full extension — even hyperextension ('back-kneeing') — while the trunk leans forward, so body weight falls ahead of the knee and locks it passively, no quad force required.",
+    comp: "The knee is thrown into full extension, sometimes into hyperextension ('back-kneeing'), while the trunk leans forward, so body weight falls ahead of the knee and locks it passively with no quad force required.",
     note: "Over years this repeated hyperextension can stretch the posterior knee structures (genu recurvatum).",
     transform: (s, phase, sev) => {
       if (phase === "stance") { s.kneeAngle = clamp(s.kneeAngle * (1 - sev) - 6 * sev, -9, 90); s.trunkLean += 11 * sev; }
@@ -48,7 +48,7 @@ const CONDITIONS = {
   stiffankle: {
     name: "Stiff / fused ankle",
     primary: "A stiff or fused ankle can't roll the tibia forward over the planted foot (stance dorsiflexion) or push off at the end of stance (plantarflexion).",
-    comp: "Early heel-off with a shorter, flatter step, and 'vaulting' — rising onto the toes of the other leg — to carry the body past the locked ankle. The knee often hyperextends to help.",
+    comp: "Early heel-off with a shorter, flatter step, plus 'vaulting', which means rising onto the toes of the other leg to carry the body past the locked ankle. The knee often hyperextends to help.",
     note: "",
     transform: (s, phase, sev) => {
       s.ankleAngle = s.ankleAngle * (1 - 0.85 * sev);
@@ -58,9 +58,9 @@ const CONDITIONS = {
   },
   antalgic: {
     name: "Antalgic (painful limb)",
-    primary: "Not weakness at all — pain. Loading the limb hurts, so the nervous system does the one thing that reliably reduces load: it gets off that leg as fast as possible. This is the single most common gait deviation you will ever see.",
+    primary: "The cause here is pain, not weakness. Loading the limb hurts, so the nervous system does the one thing that reliably reduces load: it gets off that leg as fast as possible. This is the single most common gait deviation you will ever see.",
     comp: "A markedly shortened stance time on the painful side, taken with a flat, cautious landing instead of a heel strike, a reduced push-off, and a shorter step on the opposite side because the sound limb hurries to take over. The trunk also leans toward the painful side, which shifts the body's weight line closer to the hip and cuts the force the hip abductors need to produce.",
-    note: "Because the deviation is driven by pain rather than by a fixed mechanical fault, it can change hour to hour — and it disappears when the pain does. Always ask before you attribute an antalgic pattern to weakness.",
+    note: "Because the deviation is driven by pain and not by a fixed mechanical fault, it can change hour to hour, and it disappears when the pain does. Always ask before you attribute an antalgic pattern to weakness.",
     transform: (s, phase, sev) => {
       if (phase === "stance") {
         s.kneeAngle += 6 * sev;            // held softly flexed, guarded
@@ -73,9 +73,9 @@ const CONDITIONS = {
   },
   stiffknee: {
     name: "Stiff knee (won't flex in swing)",
-    primary: "The knee stays extended in swing — from quadriceps over-activity or a fused joint — leaving the leg functionally too long to clear the floor.",
+    primary: "The knee stays extended in swing, either from quadriceps over-activity or from a fused joint, leaving the leg functionally too long to clear the floor.",
     comp: "The pelvis hikes and the body vaults, or the leg circumducts (swings out to the side), so the long, stiff limb passes through without catching the toe.",
-    note: "Circumduction and pelvic drop are side-to-side motions — hard to show from this side-on view — so watch mainly the reduced knee bend and the hip hiking up in swing.",
+    note: "Circumduction and pelvic drop are side-to-side motions and hard to show from this side-on view, so watch mainly the reduced knee bend and the hip hiking up in swing.",
     transform: (s, phase, sev) => {
       if (phase === "swing") { s.kneeAngle *= (1 - 0.8 * sev); s.hipDrop -= 3 * sev; }
       return s;
@@ -88,39 +88,39 @@ const ORDER = ["typical", "antalgic", "footdrop", "weakquads", "stiffankle", "st
 const CONDITIONS_PL = {
   typical: {
     name: "Chód prawidłowy",
-    primary: "Zdrowy chód, pokazany dla odniesienia — kontakt pięty, kontrolowana fala zgięcia kolana przy przyjęciu obciążenia, płynne przetoczenie stawu skokowego przez fazę podporu i aktywne odbicie palcami.",
-    comp: "Żadna nie jest potrzebna — każda grupa mięśniowa włącza się na czas.",
+    primary: "Zdrowy chód, pokazany dla odniesienia: kontakt pięty, kontrolowana fala zgięcia kolana przy przyjęciu obciążenia, płynne przetoczenie stawu skokowego przez fazę podporu i aktywne odbicie palcami.",
+    comp: "Żadna nie jest potrzebna. Każda grupa mięśniowa włącza się na czas.",
     note: "",
   },
   antalgic: {
     name: "Chód antalgiczny (bolesna kończyna)",
-    primary: "To wcale nie osłabienie — to ból. Obciążanie kończyny boli, więc układ nerwowy robi jedyną rzecz, która niezawodnie zmniejsza obciążenie: schodzi z tej nogi tak szybko, jak to możliwe. To najczęstsze odchylenie chodu, jakie w ogóle zobaczysz.",
+    primary: "Przyczyną jest ból, a nie osłabienie. Obciążanie kończyny boli, więc układ nerwowy robi jedyną rzecz, która niezawodnie zmniejsza obciążenie: schodzi z tej nogi tak szybko, jak to możliwe. To najczęstsze odchylenie chodu, jakie w ogóle zobaczysz.",
     comp: "Wyraźnie skrócony czas podporu po stronie bolesnej, z płaskim, ostrożnym lądowaniem zamiast kontaktu pięty, osłabionym odbiciem i krótszym krokiem po stronie przeciwnej, bo kończyna zdrowa spieszy się, by przejąć obciążenie. Tułów pochyla się także w stronę bolesną, co przesuwa linię ciężkości bliżej stawu biodrowego i zmniejsza siłę, jaką muszą wytworzyć odwodziciele biodra.",
-    note: "Ponieważ odchylenie wynika z bólu, a nie ze stałego uszkodzenia mechanicznego, może zmieniać się z godziny na godzinę — i znika, gdy ból ustąpi. Zawsze zapytaj, zanim przypiszesz wzorzec antalgiczny osłabieniu.",
+    note: "Ponieważ odchylenie wynika z bólu, a nie ze stałego uszkodzenia mechanicznego, może zmieniać się z godziny na godzinę i znika, gdy ból ustąpi. Zawsze zapytaj, zanim przypiszesz wzorzec antalgiczny osłabieniu.",
   },
   footdrop: {
     name: "Opadanie stopy (słabe zginacze grzbietowe)",
     primary: "Zginacze grzbietowe stawu skokowego (mięsień piszczelowy przedni i inne) są osłabione lub odnerwione, więc stopa nie może się unieść: palce zwisają w fazie wymachu, a przodostopie klaśnie o podłoże przy kontakcie zamiast kontaktu pięty.",
-    comp: "Chód brodzący — biodro i kolano zginają się znacznie bardziej niż normalnie w fazie wymachu, by unieść opadającą stopę i przenieść palce nad podłożem.",
+    comp: "Chód brodzący. Biodro i kolano zginają się znacznie bardziej niż normalnie w fazie wymachu, by unieść opadającą stopę i przenieść palce nad podłożem.",
     note: "",
   },
   weakquads: {
     name: "Słaby mięsień czworogłowy",
     primary: "Mięsień czworogłowy nie może przeciwstawić się momentowi zginającemu kolano podczas przyjmowania obciążenia, więc normalne, amortyzujące zgięcie kolana spowodowałoby ugięcie kończyny.",
-    comp: "Kolano zostaje wprowadzone w pełny wyprost — a nawet przeprost ('cofanie kolana') — podczas gdy tułów pochyla się do przodu, tak że masa ciała pada przed kolano i blokuje je biernie, bez potrzeby siły czworogłowego.",
+    comp: "Kolano zostaje wprowadzone w pełny wyprost, czasem wręcz w przeprost ('cofanie kolana'), podczas gdy tułów pochyla się do przodu, tak że masa ciała pada przed kolano i blokuje je biernie, bez potrzeby siły czworogłowego.",
     note: "Przez lata ten powtarzany przeprost może rozciągnąć struktury tylnej części kolana (genu recurvatum).",
   },
   stiffankle: {
     name: "Sztywny / usztywniony staw skokowy",
     primary: "Sztywny lub usztywniony staw skokowy nie może przetoczyć piszczeli do przodu nad ustawioną stopą (zgięcie grzbietowe w podporze) ani odbić się na końcu fazy podporu (zgięcie podeszwowe).",
-    comp: "Wczesne oderwanie pięty z krótszym, płaskim krokiem oraz 'wspinanie' — unoszenie się na palcach drugiej nogi — by przenieść ciało poza zablokowany staw. Kolano często przeprostowuje się, by pomóc.",
+    comp: "Wczesne oderwanie pięty z krótszym, płaskim krokiem oraz 'wspinanie', czyli unoszenie się na palcach drugiej nogi, by przenieść ciało poza zablokowany staw. Kolano często przeprostowuje się, by pomóc.",
     note: "",
   },
   stiffknee: {
     name: "Sztywne kolano (nie zgina się w wymachu)",
-    primary: "Kolano pozostaje wyprostowane w fazie wymachu — z powodu nadaktywności czworogłowego lub usztywnienia stawu — pozostawiając nogę funkcjonalnie zbyt długą, by ominąć podłoże.",
+    primary: "Kolano pozostaje wyprostowane w fazie wymachu, z powodu nadaktywności czworogłowego albo usztywnienia stawu, przez co noga jest funkcjonalnie zbyt długa, by ominąć podłoże.",
     comp: "Miednica unosi się, a ciało się wspina, albo noga zatacza łuk (odwodzi na bok), tak by długa, sztywna kończyna przeszła bez zahaczenia palcami.",
-    note: "Zataczanie łuku i opadanie miednicy to ruchy w płaszczyźnie bocznej — trudne do pokazania z tego bocznego ujęcia — więc obserwuj głównie zmniejszone zgięcie kolana i unoszenie biodra w wymachu.",
+    note: "Zataczanie łuku i opadanie miednicy to ruchy w płaszczyźnie bocznej, trudne do pokazania z tego bocznego ujęcia, więc obserwuj głównie zmniejszone zgięcie kolana i unoszenie biodra w wymachu.",
   },
 };
 const _pl = () => window.i18n && window.i18n.lang === "pl";

@@ -88,7 +88,7 @@ function switchMovement(id) {
   document.querySelectorAll(".movement-tab").forEach(btn => {
     btn.classList.toggle("active", btn.dataset.movement === id);
   });
-  movementBlurbEl.innerHTML = `<b>${i18n.t(m.label)}</b> — ${i18n.t(m.blurb)}`;
+  movementBlurbEl.innerHTML = `<b>${i18n.t(m.label)}.</b> ${i18n.t(m.blurb)}`;
 
   buildParamSlider();
   refreshMovementData();
@@ -249,7 +249,7 @@ renderCompare();
 // the current parameter value or playback position).
 document.addEventListener("i18n:changed", () => {
   const m = MOVEMENTS[currentMovementId];
-  movementBlurbEl.innerHTML = `<b>${i18n.t(m.label)}</b> — ${i18n.t(m.blurb)}`;
+  movementBlurbEl.innerHTML = `<b>${i18n.t(m.label)}.</b> ${i18n.t(m.blurb)}`;
   buildParamSlider();
   refreshMovementData(); // rebuilds muscle-row labels
   updateSourceBadges();

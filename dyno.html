@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Muscle Dyno — Motion Lab</title>
-<meta name="description" content="Length–tension and force–velocity of skeletal muscle — a Hill model you can drag, with the physiology running as real Ruby in your browser (ruby.wasm)." />
+<title>Muscle Dyno · BioLab Play</title>
+<meta name="description" content="Length–tension and force–velocity of skeletal muscle. A Hill model you can drag, with the physiology running as real Ruby in your browser (ruby.wasm)." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=46" />
-<link rel="stylesheet" href="dyno.css?v=46" />
+<link rel="stylesheet" href="style.css?v=47" />
+<link rel="stylesheet" href="dyno.css?v=47" />
 </head>
 <body>
 
 <nav id="navbar">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
@@ -39,10 +39,10 @@
     <div class="section-label" data-i18n="dy.label">How a muscle makes force</div>
     <h1 class="lab-title dyno-title" data-i18n="dy.title">Muscle Dyno</h1>
     <p class="lab-sub" data-i18n-html="dy.sub">
-      A muscle's force isn't a fixed number — it depends on <b>how long it is</b> and <b>how fast it's
-      changing length</b>. Drag the sliders and watch the two rules every kinesiology text drills into
-      you: the <b>length–tension</b> curve and the <b>force–velocity</b> curve. The twist:
-      <b>the muscle model itself runs as real Ruby in your browser</b>, compiled to WebAssembly.
+      A muscle's force is not a fixed number. It depends on <b>how long the muscle is</b> and <b>how
+      fast it is changing length</b>. Drag the sliders and watch the two rules every kinesiology text
+      drills into you: the <b>length–tension</b> curve and the <b>force–velocity</b> curve. The twist is
+      that <b>the muscle model itself runs as real Ruby in your browser</b>, compiled to WebAssembly.
     </p>
     <div class="dyno-engine" id="engineBadge">⏳ booting Ruby engine (ruby.wasm)…</div>
   </div>
@@ -98,60 +98,60 @@
   <section class="sls-explainer">
     <div class="sls-ex-grid">
       <div class="sls-ex-card">
-        <h3 data-i18n="dy.c1h">Length–tension: it's about overlap</h3>
+        <h3 data-i18n="dy.c1h">Length–tension comes down to overlap</h3>
         <p data-i18n-html="dy.c1p">
           Active force comes from myosin heads pulling on actin. Too <b>short</b> and the filaments jam
-          into each other; too <b>long</b> and they barely overlap — either way, fewer working
-          cross-bridges, less force. Peak force sits at <b>optimal length (L₀)</b>. Past that, stretched
+          into each other. Too <b>long</b> and they barely overlap. Either way you get fewer working
+          cross-bridges and less force. Peak force sits at <b>optimal length (L₀)</b>. Past that, stretched
           connective tissue adds <b>passive</b> tension (the rising tail). <em>Neumann; Nordin &amp; Frankel.</em>
         </p>
       </div>
       <div class="sls-ex-card">
         <h3 data-i18n="dy.c2h">Force–velocity: slow is strong, eccentric stronger</h3>
         <p data-i18n-html="dy.c2p">
-          Shorten fast and force collapses (the Hill hyperbola) — that's why you can't lift a heavy load
-          quickly. But <b>lengthening</b> under load (eccentric) produces <em>more</em> force than
-          holding still, for less effort. Notice <b>power</b> (force × velocity) peaks at an intermediate
-          speed — the basis of optimal-load training. <em>Enoka; Hill 1938.</em>
+          Shorten fast and force collapses along the Hill hyperbola, which is why you cannot lift a heavy
+          load quickly. But <b>lengthening</b> under load (eccentric) produces <em>more</em> force than
+          holding still, for less effort. Notice that <b>power</b> (force × velocity) peaks at an
+          intermediate speed. That is the basis of optimal-load training. <em>Enoka; Hill 1938.</em>
         </p>
       </div>
       <div class="sls-ex-card">
         <h3 data-i18n="dy.c3h">Why a clinician cares</h3>
         <p data-i18n-html="dy.c3p">
           Manual muscle testing and strengthening depend on <b>joint angle</b>, because angle sets muscle
-          length — and, as the <a href="muscle.html">Levers</a> page shows, angle also sets the moment
-          arm. A muscle tested in its shortened range can test weak even when it is perfectly healthy.
+          length, and as the <a href="muscle.html">Levers</a> page shows, angle also sets the moment arm.
+          A muscle tested in its shortened range can test weak even when it is perfectly healthy.
           Eccentric loading programmes (Alfredson's for Achilles tendinopathy, the Nordic curl for
-          hamstrings) are genuinely effective, but be careful <em>why</em>: it is not simply "eccentric
-          force is highest". The better-supported explanations are tendon remodelling under sustained
-          mechanical load, and — for the hamstrings — an increase in <b>fascicle length</b>, which shifts
-          the whole length–tension curve so that peak force is produced at a <em>longer</em> muscle
-          length, exactly where the injury happens. Position is not a detail; it's the whole curve.
+          hamstrings) are genuinely effective, but be careful about <em>why</em>. The reason is more than
+          "eccentric force is highest". The better-supported explanations are tendon remodelling under
+          sustained mechanical load and, for the hamstrings, an increase in <b>fascicle length</b>. That
+          shifts the whole length–tension curve, so peak force is produced at a <em>longer</em> muscle
+          length, exactly where the injury happens. Position is the whole curve.
         </p>
       </div>
     </div>
     <p class="how-note" style="max-width:780px; margin-top:20px;" data-i18n-html="dy.note">
       A normalised Hill-type model for teaching (force in multiples of maximum isometric force F₀,
       velocity in multiples of V_max). Curve shapes follow the classic length–tension and force–velocity
-      relationships; exact numbers are illustrative. <b>One honest caveat about the eccentric side:</b>
-      this curve plateaus near 1.6&nbsp;F₀, which is what isolated muscle does — but a person contracting
+      relationships, and exact numbers are illustrative. <b>One caveat about the eccentric side.</b>
+      This curve plateaus near 1.6&nbsp;F₀, which is what isolated muscle does. A person contracting
       <em>voluntarily</em> usually cannot express that, producing only a little above their isometric
       maximum, because the nervous system limits it. The gap between what muscle can do and what you can
-      volitionally ask it to do is itself a real finding. The Ruby engine downloads ~16&nbsp;MB once; if
-      it can't load, an identical JavaScript model takes over so the page still works.
+      volitionally ask it to do is itself a real finding. The Ruby engine downloads ~16&nbsp;MB once. If
+      it cannot load, an identical JavaScript model takes over so the page still works.
     </p>
   </section>
 </main>
 
 <footer id="footer">
   <div class="container footer-inner">
-    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+    <p>BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
   </div>
 </footer>
 
-<script src="i18n.js?v=46"></script>
-<script src="nav.js?v=46"></script>
-<script type="module" src="dyno.js?v=46"></script>
-<script src="abbr.js?v=46"></script>
+<script src="i18n.js?v=47"></script>
+<script src="nav.js?v=47"></script>
+<script type="module" src="dyno.js?v=47"></script>
+<script src="abbr.js?v=47"></script>
 </body>
 </html>

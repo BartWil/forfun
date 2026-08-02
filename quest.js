@@ -1,4 +1,4 @@
-// "Wake the body" — three biomechanics puzzles that unlock the station map.
+// "Wake the body": three biomechanics puzzles that unlock the station map.
 //
 // Deliberately a SOFT gate. It hides only the map on this page: every station has a
 // working direct URL, progress is remembered, and there is always a skip link. A puzzle
@@ -18,12 +18,12 @@
   const COPY = {
     label:   { en: "Three systems offline", pl: "Trzy układy nieaktywne" },
     title:   { en: "Wake the body", pl: "Obudź ciało" },
-    lead:    { en: "The map is asleep. Three quick things will start it — none needs any prior knowledge, and each one is a real result you can check for yourself.",
-               pl: "Mapa śpi. Uruchomią ją trzy szybkie zadania — żadne nie wymaga wcześniejszej wiedzy, a każde to prawdziwy wynik, który możesz sam sprawdzić." },
-    skip:    { en: "skip — just show me the map", pl: "pomiń — po prostu pokaż mapę" },
+    lead:    { en: "The map is asleep. Three short puzzles will start it. None of them needs prior knowledge, and each one turns on a result you can check for yourself.",
+               pl: "Mapa śpi. Uruchomią ją trzy krótkie zadania. Żadne nie wymaga wcześniejszej wiedzy, a każde odsłania wynik, który możesz sam sprawdzić." },
+    skip:    { en: "skip the puzzles, show me the map", pl: "pomiń zadania, pokaż mapę" },
     doneT:   { en: "The body is awake", pl: "Ciało się obudziło" },
-    doneP:   { en: "All three systems online. The map below is open — and it stays open next time.",
-               pl: "Wszystkie trzy układy aktywne. Mapa poniżej jest otwarta — i pozostanie otwarta następnym razem." },
+    doneP:   { en: "All three systems online. The map below is open, and it stays open next time.",
+               pl: "Wszystkie trzy układy aktywne. Mapa poniżej jest otwarta i pozostanie otwarta następnym razem." },
     replay:  { en: "run the puzzles again", pl: "zagraj w zagadki ponownie" },
     solvedTag: { en: "solved", pl: "rozwiązane" },
   };
@@ -36,24 +36,24 @@
               pl: "Jedna z tych trzech jest fizycznie niemożliwa" },
       hint: { en: "Each panel shows a walker frozen mid-stride, with the arrow marking the force between foot and ground. Two of them could happen. One cannot. Click it.",
               pl: "Każdy panel pokazuje chód zatrzymany w połowie kroku, a strzałka oznacza siłę między stopą a podłożem. Dwa z nich mogłyby się zdarzyć. Jeden nie. Kliknij go." },
-      done: { en: "Ground reaction force only exists while something is touching the ground. A foot in mid-swing carries none — which is why the force trace sits flat at zero for a third of every walking cycle, and why a force plate can tell you exactly when contact began without watching the foot at all.",
-              pl: "Siła reakcji podłoża istnieje tylko wtedy, gdy coś dotyka podłoża. Stopa w fazie wymachu nie przenosi żadnej — dlatego wykres siły leży płasko na zerze przez jedną trzecią każdego cyklu chodu i dlatego platforma dynamometryczna potrafi dokładnie wskazać początek kontaktu, w ogóle nie patrząc na stopę." } },
+      done: { en: "Ground reaction force only exists while something is touching the ground. A foot in mid-swing carries none, which is why the force trace sits flat at zero for a third of every walking cycle, and why a force plate can tell you exactly when contact began without watching the foot at all.",
+              pl: "Siła reakcji podłoża istnieje tylko wtedy, gdy coś dotyka podłoża. Stopa w fazie wymachu nie przenosi żadnej, dlatego wykres siły leży płasko na zerze przez jedną trzecią każdego cyklu chodu i dlatego platforma dynamometryczna potrafi dokładnie wskazać początek kontaktu, w ogóle nie patrząc na stopę." } },
 
     { id: "muscle", n: "02", c: "#ff6f5e",
       name: { en: "Force", pl: "Siła" },
       task: { en: "Balance the forearm", pl: "Zrównoważ przedramię" },
       hint: { en: "An 8 kg load sits 34 cm from the elbow. Your muscle can pull with 400 N, no more. Slide its attachment until the two turning effects cancel and the beam sits level.",
               pl: "Ciężar 8 kg znajduje się 34 cm od łokcia. Twój mięsień może ciągnąć z siłą 400 N, nie więcej. Przesuwaj jego przyczep, aż oba momenty się zniosą, a belka się wypoziomuje." },
-      done: { en: "Torque is force times moment arm, and the muscle's arm is tiny — which is why holding 8 kg costs the elbow hundreds of newtons.",
-              pl: "Moment to siła razy ramię, a ramię mięśnia jest maleńkie — dlatego utrzymanie 8 kg kosztuje łokieć setki niutonów." } },
+      done: { en: "Torque is force times moment arm, and the muscle's arm is tiny, which is why holding 8 kg costs the elbow hundreds of newtons.",
+              pl: "Moment to siła razy ramię, a ramię mięśnia jest maleńkie, dlatego utrzymanie 8 kg kosztuje łokieć setki niutonów." } },
 
     { id: "control", n: "03", c: "#5eead4",
       name: { en: "Timing", pl: "Czas" },
       task: { en: "Make it jump", pl: "Spraw, by podskoczyło" },
       hint: { en: "Three joints extend to launch a jump, but only one order works. Pick it. Getting it wrong is worth doing at least once.",
               pl: "Trzy stawy prostują się przy wybiciu, ale działa tylko jedna kolejność. Wybierz ją. Warto choć raz pomylić się celowo." },
-      done: { en: "Proximal to distal — hip, then knee, then ankle last. Each segment launches off the one already moving beneath it. That is what \"triple extension\" means in time.",
-              pl: "Od bliższych do dalszych — biodro, potem kolano, a staw skokowy na końcu. Każdy segment odbija się od tego, który już się porusza pod nim. To właśnie znaczy „potrójne wyprostowanie” w czasie." } },
+      done: { en: "Proximal to distal: hip, then knee, then ankle last. Each segment launches off the one already moving beneath it. That is what \"triple extension\" means in time.",
+              pl: "Od bliższych do dalszych: biodro, potem kolano, a staw skokowy na końcu. Każdy segment odbija się od tego, który już się porusza pod nim. To właśnie znaczy „potrójne wyprostowanie” w czasie." } },
   ];
 
   const gridEl = () => document.getElementById("qGrid");
@@ -77,9 +77,9 @@
   //
   // Static frames on purpose. Two panels show a foot in contact with a ground reaction
   // force; the third shows a foot clearly in mid-swing that still has one. Nothing here
-  // depends on tuning a physics threshold — the answer is either right or it isn't.
+  // depends on tuning a physics threshold; the answer is either right or it isn't.
   function buildBone(host) {
-    // data.js uses a top-level `const`, which is a lexical global — NOT a window property,
+    // data.js uses a top-level `const`, which is a lexical global, NOT a window property,
     // so it has to be reached by bare name rather than through window.
     const M = (typeof MOVEMENTS !== "undefined") ? MOVEMENTS.walk : null;
     const wrap = document.createElement("div");
@@ -88,7 +88,7 @@
     const read = document.createElement("div");
     read.className = "q-read";
     host.appendChild(read);
-    if (!M) { read.textContent = "—"; return; }
+    if (!M) { read.textContent = "·"; return; }
 
     const scales = computeScales(M, M.param.default);
     const bad = Math.floor(Math.random() * 3);
@@ -120,8 +120,8 @@
           markSolved("bone");
         } else {
           cell.classList.add("wrong");
-          read.textContent = T("That one is fine — the foot is loaded and the force matches. Look for a foot that is off the ground.",
-                               "Ten jest w porządku — stopa jest obciążona, a siła się zgadza. Szukaj stopy oderwanej od podłoża.");
+          read.textContent = T("That one is fine, the foot is loaded and the force matches. Look for a foot that is off the ground.",
+                               "Ten jest w porządku, stopa jest obciążona, a siła się zgadza. Szukaj stopy oderwanej od podłoża.");
           setTimeout(() => cell.classList.remove("wrong"), 900);
         }
       });
@@ -242,7 +242,7 @@
       const pct = Math.abs(err) * 100;
       read.textContent = done
         ? T("balanced", "zrównoważone")
-        : (pct < 12 ? T("almost — ", "prawie — ") : "") +
+        : (pct < 12 ? T("almost: ", "prawie: ") : "") +
           (err > 0 ? T("muscle torque too high", "moment mięśnia za duży")
                    : T("muscle torque too low", "moment mięśnia za mały"));
       if (!done && Math.abs(err) < 0.03) { done = true; markSolved("muscle"); }

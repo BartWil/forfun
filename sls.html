@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Single-Leg Squat — Motion Lab</title>
-<meta name="description" content="How a single-leg squat screens knee control — dynamic knee valgus, pelvic drop, and trunk lean — and how markerless motion capture (OpenCap) measures it. Illustrative demo." />
+<title>Single-Leg Squat · BioLab Play</title>
+<meta name="description" content="How a single-leg squat screens knee control through dynamic knee valgus, pelvic drop and trunk lean, and how markerless motion capture (OpenCap) measures it. Illustrative demo." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=46" />
-<link rel="stylesheet" href="sls.css?v=46" />
+<link rel="stylesheet" href="style.css?v=47" />
+<link rel="stylesheet" href="sls.css?v=47" />
 </head>
 <body>
 
 <nav id="navbar">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
@@ -39,13 +39,13 @@
     <div class="section-label" data-i18n="sl.label">Frontal-plane control</div>
     <h1 class="lab-title sls-title" data-i18n="sl.title">The Single-Leg Squat</h1>
     <p class="lab-sub" data-i18n-html="sl.sub">
-      Stand on one leg and slowly squat. It sounds trivial, but it's one of the most revealing
-      screens in sports medicine: it exposes whether your hip, knee, and trunk stay
-      <b>stacked and controlled</b> — or whether the knee caves inward into <b>dynamic valgus</b>.
+      Stand on one leg and slowly squat. It sounds trivial, but it is one of the most revealing
+      screens in sports medicine. It shows whether your hip, knee and trunk stay
+      <b>stacked and controlled</b>, or whether the knee caves inward into <b>dynamic valgus</b>.
       Drag the control slider and watch the collapse appear.
     </p>
     <p class="sls-disclaimer" data-i18n-html="sl.disclaimer">
-      ⚠️ Illustrative synthetic demo — the motion here is generated from idealised curves to
+      ⚠️ Illustrative synthetic demo. The motion here is generated from idealised curves to
       <b>teach the pattern</b>. It is <b>not</b> real study data and <b>not</b> a clinical assessment.
     </p>
   </div>
@@ -73,11 +73,12 @@
       <div class="sls-real-note" id="realNote" hidden>
         <h4 data-i18n="sl.real.h">Real markerless capture</h4>
         <p data-i18n-html="sl.real.p">
-          These are <b>real 3D joint positions</b> from an OpenCap capture — two phone videos turned
-          into a moving skeleton — shown as an <b>anonymized pilot sample</b> (single-leg squat, left
-          stance). It's here to show <em>what the raw motion looks like</em>, so no metrics or
-          interpretation are shown. Notice the planted (stance) leg tracks cleanly while the lifted leg
-          is noisier — a real limitation of markerless capture on an occluded limb.
+          These are <b>real 3D joint positions</b> from an OpenCap capture, two phone videos turned
+          into a moving skeleton, shown as an <b>anonymized pilot sample</b> (single-leg squat, left
+          stance). It is here to show <em>what the raw motion looks like</em>, so no metrics or
+          interpretation are shown. Notice how cleanly the planted stance leg tracks while the lifted leg
+          stays noisy. That is a real limitation of markerless capture on a limb the cameras cannot fully
+          see.
         </p>
       </div>
       <div class="sls-controls" id="controlWrap">
@@ -103,8 +104,8 @@
         <h3 data-i18n="sl.c1h">What "dynamic knee valgus" is</h3>
         <p data-i18n-html="sl.c1p">
           Watch the knee against the dashed line that runs from hip to foot. Under good control it
-          tracks over the foot. Under poor control it drifts <b>medially</b> — inward, toward the other
-          leg — as the hip rotates and adducts. That knee-in position, combined with a dropped pelvis and
+          tracks over the foot. Under poor control it drifts <b>medially</b>, inward toward the other
+          leg, as the hip rotates and adducts. That knee-in position, combined with a dropped pelvis and
           a leaning trunk, is the pattern linked in the literature with higher knee-injury risk
           (ACL, patellofemoral pain).
         </p>
@@ -112,41 +113,42 @@
       <div class="sls-ex-card">
         <h3 data-i18n="sl.c2h">The three things that give it away</h3>
         <p data-i18n-html="sl.c2p">
-          Clinicians and biomechanists don't just eyeball it — they quantify it: the knee's
-          <b>medial displacement / frontal-plane projection angle</b>, the
-          <b>contralateral pelvic drop</b> (the other hip sinking), and the <b>trunk lean</b>. All three
-          tend to grow together as control fails, and all three are visible from the front. Slide the
-          control and watch the three numbers climb together.
+          Clinicians and biomechanists put numbers on it: the knee's <b>medial displacement and
+          frontal-plane projection angle</b>, the <b>contralateral pelvic drop</b> (the other hip
+          sinking), and the <b>trunk lean</b>. All three tend to grow together as control fails, and all
+          three are visible from the front. Slide the control and watch the three numbers climb
+          together.
         </p>
       </div>
       <div class="sls-ex-card">
         <h3 data-i18n="sl.c3h">How OpenCap measures it</h3>
         <p data-i18n-html="sl.c3p">
           Traditionally this needs a marker-based lab. <a href="https://www.opencap.ai/" target="_blank" rel="noopener">OpenCap</a>
-          does it from <b>two ordinary phone videos</b>: it estimates body keypoints, triangulates them
-          to 3D, and fits a full musculoskeletal model (Uhlrich, Falisse et&nbsp;al., 2023) — giving the
-          same hip/knee/trunk angles a lab would, from a phone. That's what makes screening like this
-          scalable outside the lab.
+          does it from <b>two ordinary phone videos</b>. It estimates body keypoints, triangulates them
+          to 3D, and fits a full musculoskeletal model (Uhlrich, Falisse et&nbsp;al., 2023), which yields
+          the same hip, knee and trunk angles a lab would. That is what puts screening like this within
+          reach of a clinic or a school hall.
         </p>
       </div>
     </div>
     <p class="how-note" style="max-width:780px; margin-top:20px;" data-i18n-html="sl.note">
-      The angles, pelvic drop, and trunk lean here are <b>synthetic and idealised</b> for teaching, not
-      measurements of any person. The metric names (medial knee displacement, frontal-plane projection
-      angle, pelvic drop, trunk lean) mirror what a real OpenCap single-leg-squat pipeline computes, but
-      any thresholds shown are illustrative and not a diagnostic cut-off. Not medical advice.
+      The angles, pelvic drop and trunk lean here are <b>synthetic and idealised</b> for teaching. They
+      are not measurements of any person. The metric names (medial knee displacement, frontal-plane
+      projection angle, pelvic drop, trunk lean) mirror what a real OpenCap single-leg-squat pipeline
+      computes, but any thresholds shown are illustrative and carry no diagnostic weight. Not medical
+      advice.
     </p>
   </section>
 </main>
 
 <footer id="footer">
   <div class="container footer-inner">
-    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+    <p>BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
   </div>
 </footer>
 
-<script src="i18n.js?v=46"></script>
-<script src="nav.js?v=46"></script>
+<script src="i18n.js?v=47"></script>
+<script src="nav.js?v=47"></script>
 <script type="importmap">
 {
   "imports": {
@@ -155,7 +157,7 @@
   }
 }
 </script>
-<script type="module" src="sls.js?v=46"></script>
-<script src="abbr.js?v=46"></script>
+<script type="module" src="sls.js?v=47"></script>
+<script src="abbr.js?v=47"></script>
 </body>
 </html>

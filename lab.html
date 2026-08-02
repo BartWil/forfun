@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The Forge — Motion Lab</title>
+<title>The Forge · BioLab Play</title>
 <meta name="description" content="Ground reaction force and muscle activation rendered as real particle physics (Rapier2D / Rust / WASM) instead of chart axes." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=46" />
-<link rel="stylesheet" href="lab.css?v=46" />
+<link rel="stylesheet" href="style.css?v=47" />
+<link rel="stylesheet" href="lab.css?v=47" />
 </head>
 <body class="lab-body">
 
 <nav id="navbar">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
@@ -41,13 +41,13 @@
     <div class="section-label" data-i18n="lab.label">Same data, different physics</div>
     <h1 class="lab-title" data-i18n="lab.title">The Forge</h1>
     <p class="lab-sub" data-i18n-html="lab.sub">
-      No chart axes here. Ground reaction force is launched as a real particle spray —
-      simulated by <b>Rapier2D</b>, a rigid-body physics engine written in Rust and run in
-      your browser as WebAssembly — so a bigger force <em>literally</em> throws matter
-      further under real gravity and drag. Muscle activation drifts off each muscle belly
-      as glowing embers, brighter and denser the harder that muscle is working.
-      Same literature-grounded curves as the <a href="explorer.html#explorer">Explorer</a> page,
-      rendered as forces acting on things instead of lines on a graph.
+      No chart axes here. Ground reaction force is launched as a real particle spray, simulated by
+      <b>Rapier2D</b>, a rigid-body physics engine written in Rust and run in your browser as
+      WebAssembly. A bigger force <em>literally</em> throws matter further under real gravity and drag.
+      Muscle activation drifts off each muscle belly as glowing embers, brighter and denser the harder
+      that muscle is working. These are the same literature-grounded curves as the
+      <a href="explorer.html#explorer">Explorer</a> page, drawn as forces acting on things instead of
+      lines on a graph.
     </p>
   </div>
 </header>
@@ -59,7 +59,7 @@
     <canvas id="labCanvas"></canvas>
     <div class="lab-hud">
       <div class="lab-phase">
-        <span id="phaseLabel">—</span>
+        <span id="phaseLabel">…</span>
         <span id="phasePercent">0%</span>
       </div>
       <div class="lab-status" id="physicsStatus">loading physics engine…</div>
@@ -80,24 +80,24 @@
 
   <p class="how-note" style="margin-top:28px;" data-i18n-html="lab.note">
     The particle spray's height and density are a direct, literal rendering of the
-    instantaneous ground-reaction-force curve — nothing here is hand-animated. See
+    instantaneous ground-reaction-force curve. Nothing here is hand-animated. See
     <a href="explorer.html#sources">Sources</a> for what the underlying curves are grounded in.
   </p>
 </main>
 
 <footer id="footer">
   <div class="container footer-inner">
-    <p data-i18n="footer.tagline">Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+    <p data-i18n="footer.tagline">BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
   </div>
 </footer>
 
-<script src="i18n.js?v=46"></script>
-<script src="nav.js?v=46"></script>
-<script src="spline.js?v=46"></script>
-<script src="data.js?v=46"></script>
-<script src="runtime.js?v=46"></script>
-<script src="figure.js?v=46"></script>
-<script type="module" src="lab.js?v=46"></script>
-<script src="abbr.js?v=46"></script>
+<script src="i18n.js?v=47"></script>
+<script src="nav.js?v=47"></script>
+<script src="spline.js?v=47"></script>
+<script src="data.js?v=47"></script>
+<script src="runtime.js?v=47"></script>
+<script src="figure.js?v=47"></script>
+<script type="module" src="lab.js?v=47"></script>
+<script src="abbr.js?v=47"></script>
 </body>
 </html>

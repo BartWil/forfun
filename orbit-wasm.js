@@ -1,7 +1,7 @@
-// Orbital core for the Motion Lab landing page.
+// Orbital core for the BioLab Play landing page.
 //
 // The physics below is NOT JavaScript. It is a WebAssembly module that was
-// hand-assembled byte by byte — LEB128 section headers, opcode by opcode —
+// hand-assembled byte by byte: LEB128 section headers, opcode by opcode -
 // with no compiler and no toolchain in the loop. It is 780 bytes, embedded
 // here as base64, so the landing page has zero network dependencies: nothing
 // to fetch, nothing to fail, nothing to wait for.
@@ -11,14 +11,14 @@
 //   * true Newtonian orbits for the satellites circling the hero
 //
 // If WebAssembly is unavailable for any reason, an identical JavaScript
-// implementation takes over silently (see JsCore below) — the page never
+// implementation takes over silently (see JsCore below): the page never
 // depends on the clever version working.
 
 const ORBIT_WASM_B64 =
   "AGFzbQEAAAABEwNgAAF9YAV/f399fQBgA319fQADBAMAAQIFAwEAAgcYAwZtZW1vcnkCAARpbml0AAEEc3RlcAACCscFAzQBAX9BAEEAKAIAIgBBDXQgAHMiAEERdiAAcyIAQQV0IABzIgA2AgAgAEEIdrNDAACAM5QLvQICAn8EfUEAIABBAXI2AgBBBCABNgIAQQggAjYCAEEAIQUCQANAIAUgAU4NAUHAACAFQRBsaiEGIAYQACADlDgCACAGEAAgBJQ4AgQgBhAAQwAAQD+UQwAAgD6SOAIIIAYQADgCDCAFQQFqIQUMAAsLQQAhBQJAA0AgBSACTg0BQcDAACAFQRhsaiEGEABDAAAAP5MgA5RDUrgeP5QhBxAAQwAAAD+TIASUQ1K4Hj+UIQggByAHlCAIIAiUkpFDAACAP5IhCSAGIANDAAAAP5QgB5I4AgAgBiAEQwAAAD+UIAiSOAIEQwCxHkogCZWRIQogBiAIjCAJlSAKlDgCCCAGIAcgCZUgCpQ4AgwgBhAAQzMzsz+UQ5qZGT+SOAIQIAYQAENmZuY/lEMAAIA/kjgCFCAFQQFqIQUMAAsLC9ACAgN/Bn1BBCgCACEFQQAhAwJAA0AgAyAFTg0BQcAAIANBEGxqIQQgBCAEKgIAIAQqAgggAJRDAADQQZSTIgY4AgAgBkMAAAAAXQRAIAQgBiABkjgCAAsgBCAEKgIMIAAgBCoCCEMzM7M+kpSSIgc4AgwgB0MAAIA/XgRAIAQgB0MAAIA/kzgCDAsgA0EBaiEDDAALC0EIKAIAIQVBACEDAkADQCADIAVODQFBwMAAIANBGGxqIQQgAUMAAAA/lCAEKgIAkyEGIAJDAAAAP5QgBCoCBJMhByAGIAaUIAcgB5SSQwAAlkSSIgiRIQlDALEeSiAIlSAAlCEKIAQgBCoCCCAGIAmVIAqUkiILOAIIIAQgBCoCDCAHIAmVIAqUkjgCDCAEIAQqAgAgCyAAlJI4AgAgBCAEKgIEIAQqAgwgAJSSOAIEIANBAWohAwwACwsL";
 
 const ORBIT_WAT = `(module
-  ;; Motion Lab — orbital core. Hand-assembled to raw WebAssembly bytes:
+  ;; BioLab Play: orbital core. Hand-assembled to raw WebAssembly bytes:
   ;; no compiler, no toolchain, no CDN. 780 bytes, embedded in the page.
 
   (memory (export "memory") 2)                  ;; 128 KiB of linear memory
@@ -43,15 +43,15 @@ const ORBIT_WAT = `(module
     ;; stars: x, y, depth in [0.25,1], twinkle phase
     ;;
     ;; bodies: drop at a random offset from centre, then solve for the speed
-    ;; that makes the orbit circular —  v = sqrt(GM / r)  — and point the
+    ;; that makes the orbit circular:  v = sqrt(GM / r) : and point the
     ;; velocity perpendicular to the radius.  No trigonometry anywhere:
     ;; the perpendicular is just (-dy/r, dx/r).
     ...)
 
   ;; ---- step: one integration tick ----
   (func (export "step") (param $dt f32) (param $w f32) (param $h f32)
-    ;; stars   — parallax drift proportional to depth, wrapping at the edge
-    ;; bodies  — Newtonian gravity toward the centre of mass:
+    ;; stars  : parallax drift proportional to depth, wrapping at the edge
+    ;; bodies : Newtonian gravity toward the centre of mass:
     ;;
     ;;     r2 = dx*dx + dy*dy + softening
     ;;     a  = GM / r2
@@ -138,7 +138,7 @@ window.OrbitCore = {
       const { instance } = await WebAssembly.instantiate(bin, {});
       return WasmCore(instance);
     } catch (e) {
-      console.warn("orbital core: wasm unavailable, using JS fallback —", e);
+      console.warn("orbital core: wasm unavailable, using JS fallback:", e);
       return JsCore();
     }
   },

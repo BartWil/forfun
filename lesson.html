@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Anatomy of a Step — Motion Lab</title>
-<meta name="description" content="A guided, scroll-along walkthrough of a single walking step — heel strike to the next, one phase at a time." />
+<title>Anatomy of a Step · BioLab Play</title>
+<meta name="description" content="A guided, scroll-along walkthrough of a single walking step, heel strike to the next, one phase at a time." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=46" />
-<link rel="stylesheet" href="lesson.css?v=46" />
+<link rel="stylesheet" href="style.css?v=47" />
+<link rel="stylesheet" href="lesson.css?v=47" />
 </head>
 <body>
 
 <nav id="navbar">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">Motion<span>Lab</span></a>
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
     </button>
@@ -40,8 +40,8 @@
     <h1 class="lab-title lesson-title" data-i18n="ls.title">Anatomy of a Step</h1>
     <p class="lab-sub" data-i18n-html="ls.sub">
       One ordinary step hides a beautifully timed sequence. Scroll down and we'll walk through it
-      together — one phase at a time — while the figure moves and the force trace keeps pace. Poke the
-      controls whenever you like; the point is to <b>play</b>.
+      together, one phase at a time, while the figure moves and the force trace keeps pace. Poke the
+      controls whenever you like. The point is to <b>play</b>.
     </p>
   </div>
 </header>
@@ -54,7 +54,7 @@
       <div class="lesson-viz-inner">
         <canvas id="lessonFigure" width="360" height="380"></canvas>
         <div class="lesson-phase">
-          <span id="phaseLabel">—</span>
+          <span id="phaseLabel">…</span>
           <span id="phasePercent">0%</span>
         </div>
         <canvas id="lessonChart" width="360" height="120"></canvas>
@@ -68,7 +68,7 @@
     <!-- narrative steps -->
     <div class="lesson-steps">
       <section class="step" data-cycle="2">
-        <h3 data-i18n="ls.s0h">It's a loop, not a line</h3>
+        <h3 data-i18n="ls.s0h">One cycle, start to start</h3>
         <p data-i18n-html="ls.s0p">
           Biomechanists measure walking in <b>one gait cycle</b>: from one foot touching down to that
           <em>same</em> foot touching down again. We stretch it to 0–100% so everyone lines up, whatever
@@ -82,7 +82,7 @@
         <h3 data-i18n="ls.s1h">1 · Heel strike &amp; loading</h3>
         <p data-i18n-html="ls.s1p">
           The heel lands and the body drops onto it. Watch the force trace spike to its
-          <b>first peak</b> — more than your body weight — as you catch your falling mass. The knee
+          <b>first peak</b>, more than your body weight, as you catch your falling mass. The knee
           immediately bends a little to soften the blow, like a car's suspension. Strictly there are two
           phases here: the touchdown instant itself is <b>initial contact</b> (the first ~2% of the
           cycle), and the shock-absorbing bit that follows is <b>loading response</b>.
@@ -90,10 +90,10 @@
       </section>
 
       <section class="step" data-cycle="30">
-        <h3 data-i18n="ls.s2h">2 · Mid-stance — the vault</h3>
+        <h3 data-i18n="ls.s2h">2 · Mid-stance: the vault</h3>
         <p data-i18n-html="ls.s2p">
           Now you roll up and over a nearly straight leg, like an inverted pendulum. The leg is at its
-          longest, your hips at their highest — so the ground force actually dips <em>below</em> body
+          longest and your hips at their highest, so the ground force actually dips <em>below</em> body
           weight for a moment. The knee has straightened back out.
         </p>
       </section>
@@ -102,7 +102,7 @@
         <h3 data-i18n="ls.s3h">3 · Push-off</h3>
         <p data-i18n-html="ls.s3p">
           The calf fires and the ankle drives you forward and up onto the toes. That's the force trace's
-          <b>second peak</b>. This push is the engine of walking — most of the propulsion happens right
+          <b>second peak</b>. This push is the engine of walking. Most of the propulsion happens right
           here, at the end of stance.
         </p>
       </section>
@@ -111,30 +111,30 @@
         <h3 data-i18n="ls.rockh">Three rockers, one smooth roll</h3>
         <p data-i18n-html="ls.rockp">
           Physiotherapy has a name for what you just watched. Perry describes stance as three
-          <b>rockers</b> — three pivots that hand the body forward instead of letting it stall over a
+          <b>rockers</b>: three pivots that hand the body forward instead of letting it stall over a
           fixed foot. <b>Heel rocker</b> (loading response): you land on the heel and the foot pivots
-          about it while tibialis anterior lowers the forefoot under control — this is the rocker that
+          about it while tibialis anterior lowers the forefoot under control. That is the rocker that
           fails in foot drop. <b>Ankle rocker</b> (mid stance): the foot is flat and the shin rotates
-          forward over the ankle — the rocker a stiff ankle destroys. <b>Forefoot rocker</b> (terminal
-          stance): the heel lifts and the body rolls over the metatarsal heads while the calf controls,
-          then drives. Lose any one and the body must find a detour — which is exactly what you can
-          switch on in the <a href="sandbox.html">Gait Lab</a>.
+          forward over the ankle. That is the rocker a stiff ankle destroys. <b>Forefoot rocker</b>
+          (terminal stance): the heel lifts and the body rolls over the metatarsal heads while the calf
+          controls, then drives. Lose any one and the body must find a detour. You can switch each of
+          them off in the <a href="sandbox.html">Gait Lab</a>.
         </p>
       </section>
 
       <section class="step" data-cycle="63">
         <h3 data-i18n="ls.s4h">4 · Toe-off</h3>
         <p data-i18n-html="ls.s4p">
-          The toes leave the ground and the ground force drops to <b>zero</b> — this leg is now flying.
-          For the next third of the cycle it carries no load at all; it just has to swing through and get
+          The toes leave the ground and the ground force drops to <b>zero</b>. This leg is now flying.
+          For the next third of the cycle it carries no load at all. It just has to swing through and get
           ready to land.
         </p>
       </section>
 
       <section class="step" data-cycle="73">
-        <h3 data-i18n="ls.s5h">5 · Swing — clear the floor</h3>
+        <h3 data-i18n="ls.s5h">5 · Swing: clear the floor</h3>
         <p data-i18n-html="ls.s5p">
-          Here's the knee's <b>big</b> bend — up to ~60°. With no ground to push on, the only job is to
+          Here's the knee's <b>big</b> bend, up to ~60°. With no ground to push on, the only job is to
           fold the leg up so the foot doesn't catch. A shorter, folded leg is also a faster pendulum, so
           it whips forward efficiently.
         </p>
@@ -144,7 +144,7 @@
         <h3 data-i18n="ls.s6h">6 · Reaching for the next step</h3>
         <p data-i18n-html="ls.s6p">
           The knee straightens and the leg reaches forward, decelerating so the heel can land gently. The
-          instant it touches down, the loop starts over — and the <em>other</em> leg is doing all of this
+          instant it touches down, the loop starts over. The <em>other</em> leg is doing all of this
           exactly half a cycle behind.
         </p>
       </section>
@@ -152,12 +152,12 @@
       <section class="step" data-cycle="10">
         <h3 data-i18n="ls.s7h">Now you drive</h3>
         <p data-i18n-html="ls.s7p">
-          That's one step. Jump straight to any moment —
+          That's one step. Jump straight to any moment:
           <button class="goto" data-goto="6">loading</button>
           <button class="goto" data-goto="30">mid-stance</button>
           <button class="goto" data-goto="50">push-off</button>
           <button class="goto" data-goto="73">swing</button>
-          — or scrub the whole cycle yourself and watch the force and the knee move together:
+          Or scrub the whole cycle yourself and watch the force and the knee move together:
         </p>
         <input type="range" id="freeScrub" class="inline-scrub" min="0" max="100" value="10" />
         <p class="step-hint" data-i18n-html="ls.s7hint">
@@ -172,17 +172,17 @@
 
 <footer id="footer">
   <div class="container footer-inner">
-    <p>Motion Lab — an educational biomechanics explorer. Built for public understanding of movement science, not clinical diagnosis.</p>
+    <p>BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
   </div>
 </footer>
 
-<script src="i18n.js?v=46"></script>
-<script src="nav.js?v=46"></script>
-<script src="spline.js?v=46"></script>
-<script src="data.js?v=46"></script>
-<script src="runtime.js?v=46"></script>
-<script src="figure.js?v=46"></script>
-<script src="lesson.js?v=46"></script>
-<script src="abbr.js?v=46"></script>
+<script src="i18n.js?v=47"></script>
+<script src="nav.js?v=47"></script>
+<script src="spline.js?v=47"></script>
+<script src="data.js?v=47"></script>
+<script src="runtime.js?v=47"></script>
+<script src="figure.js?v=47"></script>
+<script src="lesson.js?v=47"></script>
+<script src="abbr.js?v=47"></script>
 </body>
 </html>

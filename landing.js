@@ -1,11 +1,11 @@
-// Motion Lab — landing page.
+// BioLab Play: landing page.
 //
 // Every station panel renders a LIVE miniature of the page it opens, driven by the
 // same MOVEMENTS data (data.js) and the same runtime (runtime.js) as the real thing.
 // One requestAnimationFrame loop drives all of them; an IntersectionObserver means
 // offscreen panels cost nothing, and prefers-reduced-motion renders a single frame.
 //
-// The hero starfield and its orbiting satellites come from orbit-wasm.js — a
+// The hero starfield and its orbiting satellites come from orbit-wasm.js, a
 // hand-assembled WebAssembly module (with a JS fallback).
 
 const PL = () => window.i18n && window.i18n.lang === "pl";
@@ -55,7 +55,7 @@ function ground(ctx, W, H, y, color) {
 }
 
 // ============================================================
-//  station previews  — (ctx, W, H, t)  t = 0..1 loop phase
+//  station previews  · (ctx, W, H, t)  t = 0..1 loop phase
 // ============================================================
 const PREVIEW = {
   // walking figure with its force trace drawing itself underneath
@@ -106,7 +106,7 @@ const PREVIEW = {
     drawFigure(ctx, poseFigure(st, cx, gy, S), "#e8edf7", 2, H * .046);
   },
 
-  // gait lab: typical on the left, the same person with foot drop on the right —
+  // gait lab: typical on the left, the same person with foot drop on the right;
   // side by side rather than overlaid, which is unreadable at thumbnail size
   sandbox(ctx, W, H, t) {
     const gy = H * .76, S = H * .70;
@@ -200,7 +200,7 @@ const PREVIEW = {
     ctx.beginPath(); ctx.moveTo(ex - 5, ey - H * .40); ctx.lineTo(ex, ey); ctx.stroke();
     ctx.strokeStyle = "#c7d0e0"; ctx.lineWidth = 7;
     ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex + L, ey); ctx.stroke();
-    // biceps — thickness tracks the force it has to make
+    // biceps: thickness tracks the force it has to make
     ctx.strokeStyle = "#ff6f5e"; ctx.lineWidth = Math.min(11, 3 + F * .085);
     ctx.beginPath(); ctx.moveTo(ex - 2, ey - H * .35); ctx.lineTo(ex + d, ey); ctx.stroke();
     const arrow = (x, y, dy, col, w) => {
@@ -211,7 +211,7 @@ const PREVIEW = {
       ctx.lineTo(x - 4, y + dy - s * 6); ctx.lineTo(x + 4, y + dy - s * 6);
       ctx.closePath(); ctx.fill();
     };
-    // muscle pull (up, huge) vs the weight (down, small) — the whole point of the page
+    // muscle pull (up, huge) vs the weight (down, small): the whole point of the page
     arrow(ex + d, ey - 8, -Math.min(H * .44, F * H * .0062), "#ff6f5e", 2.4);
     arrow(ex + L, ey + 8, Math.min(H * .30, load * H * .021), "#7c9bff", 2.4);
     // dumbbell
@@ -365,14 +365,14 @@ const STATIONS = [
   { id: "lesson", href: "lesson.html", emoji: "📖", c: "#7c9bff",
     tag: { en: "Start here", pl: "Zacznij tu" },
     title: { en: "Anatomy of a Step", pl: "Anatomia kroku" },
-    desc: { en: "A guided scroll through one walking step — heel strike to heel strike, one phase at a time.",
-            pl: "Prowadzona wędrówka przez jeden krok — od kontaktu pięty do kontaktu pięty, faza po fazie." } },
+    desc: { en: "A guided scroll through one walking step, heel strike to heel strike, one phase at a time.",
+            pl: "Prowadzona wędrówka przez jeden krok, od kontaktu pięty do kontaktu pięty, faza po fazie." } },
 
   { id: "sandbox", href: "sandbox.html", emoji: "🦿", c: "#ffb43c",
     tag: { en: "Clinical", pl: "Klinika" },
     title: { en: "Gait Lab", pl: "Gait Lab" },
-    desc: { en: "Switch on a deficit — foot drop, weak quadriceps, a painful limb — and watch the compensation appear.",
-            pl: "Włącz deficyt — opadanie stopy, słaby czworogłowy, bolesną kończynę — i patrz, jak pojawia się kompensacja." } },
+    desc: { en: "Switch on a deficit such as foot drop, weak quadriceps or a painful limb, and watch the compensation appear.",
+            pl: "Włącz deficyt: opadanie stopy, słaby czworogłowy albo bolesną kończynę, i patrz, jak pojawia się kompensacja." } },
 
   { id: "gait3d", href: "gait3d.html", emoji: "🚶", c: "#7c9bff",
     tag: { en: "Motion capture", pl: "Mocap" },
@@ -389,8 +389,8 @@ const STATIONS = [
   { id: "lab", href: "lab.html", emoji: "⚡", c: "#5eead4",
     tag: { en: "Physics", pl: "Fizyka" },
     title: { en: "The Forge", pl: "Kuźnia" },
-    desc: { en: "The same forces, rendered as physics particles — ground reaction sprayed from the foot at every contact.",
-            pl: "Te same siły, pokazane jako cząstki fizyczne — reakcja podłoża tryskająca spod stopy przy każdym kontakcie." } },
+    desc: { en: "The same forces, rendered as physics particles, with ground reaction sprayed from the foot at every contact.",
+            pl: "Te same siły, pokazane jako cząstki fizyczne, z reakcją podłoża tryskającą spod stopy przy każdym kontakcie." } },
 
   { id: "muscle", href: "muscle.html", emoji: "💪", c: "#ff6f5e",
     tag: { en: "Mechanics", pl: "Mechanika" },
@@ -407,20 +407,20 @@ const STATIONS = [
   { id: "spine", href: "spine.html", emoji: "🩻", c: "#ffb43c",
     tag: { en: "Evidence", pl: "Dowody" },
     title: { en: "Spine Under Load", pl: "Kręgosłup pod obciążeniem" },
-    desc: { en: "Disc pressure across postures — and the famous textbook claim that a modern re-measurement overturned.",
-            pl: "Ciśnienie w krążku w różnych pozycjach — i słynne podręcznikowe twierdzenie obalone przez nowoczesny pomiar." } },
+    desc: { en: "Disc pressure across postures, and the famous textbook claim that a modern re-measurement overturned.",
+            pl: "Ciśnienie w krążku w różnych pozycjach oraz słynne podręcznikowe twierdzenie obalone przez nowoczesny pomiar." } },
 
   { id: "sls", href: "sls.html", emoji: "🦵", c: "#ff6f5e",
     tag: { en: "Screening", pl: "Przesiew" },
     title: { en: "Knee Control", pl: "Kontrola kolana" },
-    desc: { en: "The single-leg squat, in 3-D — watch the knee cave into dynamic valgus as control fails.",
-            pl: "Przysiad na jednej nodze w 3-D — patrz, jak kolano zapada się w dynamiczną koślawość, gdy zawodzi kontrola." } },
+    desc: { en: "The single-leg squat, in 3-D. Watch the knee cave into dynamic valgus as control fails.",
+            pl: "Przysiad na jednej nodze w 3-D. Patrz, jak kolano zapada się w dynamiczną koślawość, gdy zawodzi kontrola." } },
 ];
 
 const PATH = [
   { href: "lesson.html", k: { en: "Anatomy of a Step", pl: "Anatomia kroku" },
-    t: { en: "build the vocabulary — phases, rockers, what a gait cycle even is",
-         pl: "zbuduj słownictwo — fazy, przetoczenia, czym w ogóle jest cykl chodu" } },
+    t: { en: "build the vocabulary: phases, rockers, what a gait cycle even is",
+         pl: "zbuduj słownictwo: fazy, przetoczenia, czym w ogóle jest cykl chodu" } },
   { href: "explorer.html#explorer", k: { en: "The Explorer", pl: "Eksplorator" },
     t: { en: "put numbers on it, and compare walking against running and jumping",
          pl: "przypisz temu liczby i porównaj chód z biegiem oraz skokiem" } },
@@ -428,14 +428,14 @@ const PATH = [
     t: { en: "why the forces inside a joint dwarf the load you are actually holding",
          pl: "dlaczego siły wewnątrz stawu są wielokrotnie większe od trzymanego ciężaru" } },
   { href: "dyno.html", k: { en: "Muscle Dyno", pl: "Muscle Dyno" },
-    t: { en: "the other half of the answer — why joint angle changes muscle strength",
-         pl: "druga połowa odpowiedzi — dlaczego kąt stawu zmienia siłę mięśnia" } },
+    t: { en: "the other half of the answer: why joint angle changes muscle strength",
+         pl: "druga połowa odpowiedzi: dlaczego kąt stawu zmienia siłę mięśnia" } },
   { href: "sandbox.html", k: { en: "Gait Lab", pl: "Gait Lab" },
     t: { en: "now break something, and predict the compensation before you look",
          pl: "teraz coś zepsuj i przewidź kompensację, zanim spojrzysz" } },
   { href: "spine.html", k: { en: "Spine Under Load", pl: "Kręgosłup pod obciążeniem" },
-    t: { en: "finish on evidence quality — how much a famous number is really worth",
-         pl: "zakończ na jakości dowodów — ile naprawdę warta jest słynna liczba" } },
+    t: { en: "finish on evidence quality: how much a famous number is really worth",
+         pl: "zakończ na jakości dowodów: ile naprawdę warta jest słynna liczba" } },
 ];
 
 // ============================================================
@@ -462,7 +462,7 @@ function buildGrid() {
     grid.appendChild(a);
     // visible defaults to TRUE: the IntersectionObserver is an optimisation that switches
     // offscreen panels off, never the thing that switches them on. If IO is missing or
-    // misbehaves the grid still animates correctly — it just costs a little more CPU.
+    // misbehaves the grid still animates correctly; it just costs a little more CPU.
     cards.push({ el: a, canvas: a.querySelector("canvas"), draw: PREVIEW[s.id], visible: true, phase: Math.random() });
   });
   observeCards();
@@ -474,7 +474,7 @@ function buildPath() {
   const L = PL() ? "pl" : "en";
   ol.innerHTML = PATH.map((p, i) =>
     `<li><span class="lp-path-num">${i + 1}</span>` +
-    `<span class="lp-path-txt"><a href="${p.href}">${p.k[L]}</a> — ${p.t[L]}</span></li>`).join("");
+    `<span class="lp-path-txt"><a href="${p.href}">${p.k[L]}</a> · ${p.t[L]}</span></li>`).join("");
 }
 
 // ============================================================
@@ -530,10 +530,10 @@ function dedicationConsole() {
     console.log("%c  " + (pl ? "dla moich wspaniałych studentów" : "for my lovely students") + "  ",
       "background:#ff6f5e;color:#0a0e17;font-weight:700;padding:7px 12px;border-radius:7px;font-size:13px");
     console.log("%c" + (pl
-      ? "— to Wy jesteście napięciem, które to wszystko spina.\n\n  Jeszcze tu jesteś? Chwyć szkielet i przytrzymaj przez dwie sekundy."
-      : "— you are the tension that holds all of this together.\n\n  Still here? Grab the skeleton and hold on for two seconds."),
+      ? "to Wy jesteście napięciem, które to wszystko spina.\n\n  Jeszcze tu jesteś? Chwyć szkielet i przytrzymaj przez dwie sekundy."
+      : "you are the tension that holds all of this together.\n\n  Still here? Grab the skeleton and hold on for two seconds."),
       "color:#93a1bd;line-height:1.6");
-  } catch (e) { /* console unavailable — no matter */ }
+  } catch (e) { /* console unavailable, no matter */ }
 }
 
 // ---- the draggable biotensegrity body ----
@@ -595,7 +595,7 @@ function frame(ts) {
 
   if (core && !reduceMotion) { core.step(dt, skyW, skyH); drawSky(); }
 
-  // the body is user-driven, so it keeps responding even under reduced motion —
+  // the body is user-driven, so it keeps responding even under reduced motion,
   // it simply sits at equilibrium until someone actually pulls on it
   if (bodyRig) { bodyRig.step(dt); bodyRig.draw(); }
 

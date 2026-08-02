@@ -55,8 +55,8 @@ function legChain(hip, scale, trunkLean, hipAngle, kneeAngle, ankleAngle) {
   };
 }
 
-// state  = joint angles for the primary (near) leg — this is the one GRF + muscles are tied to.
-// state2 = optional joint angles for the contralateral (far) leg — visual only. For gait it's the
+// state  = joint angles for the primary (near) leg: this is the one GRF + muscles are tied to.
+// state2 = optional joint angles for the contralateral (far) leg: visual only. For gait it's the
 //          same movement sampled half a cycle later; for bilateral moves it equals state. Either
 //          way the far leg is anchored at the same hip, nudged sideways so both read clearly in
 //          the sagittal view.

@@ -1,4 +1,4 @@
-// Anatomy of a Step — a scroll-driven explorable. As each narrative step scrolls into the centre
+// Anatomy of a Step: a scroll-driven explorable. As each narrative step scrolls into the centre
 // of the viewport, the sticky stick-figure and the mini force/knee chart ease to that moment of the
 // gait cycle. Inline scrubbers and "jump to" buttons let the reader drive directly. Reuses the shared
 // engine: MOVEMENTS/computeScales/liveState (data.js + runtime.js) and drawStickFigure (figure.js).

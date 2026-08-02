@@ -1,4 +1,4 @@
-// Glossary — every term that the rest of this site assumes you already know.
+// Glossary: every term that the rest of this site assumes you already know.
 //
 // Definitions in prose are close to useless for spatial ideas: "vertical ground reaction
 // force" means nothing until you watch the trace rise under a foot. So each entry that
@@ -292,7 +292,7 @@
       const both = a.grf > .04 && b.grf > .04;
       ctx.fillStyle = both ? "rgba(94,234,212,.16)" : "transparent";
       if (both) ctx.fillRect(0, 0, W, H);
-      label(ctx, both ? (PLg() ? "PODWÓJNY PODPÓR — obie stopy na podłożu" : "DOUBLE SUPPORT — both feet down")
+      label(ctx, both ? (PLg() ? "PODWÓJNY PODPÓR · obie stopy na podłożu" : "DOUBLE SUPPORT · both feet down")
                       : (PLg() ? "pojedynczy podpór" : "single support"),
             W * .06, H * .12, both ? "#5eead4" : "#647092", 10);
     },
@@ -310,16 +310,16 @@
 
   const T = [
     { id: "kinematics-kinetics", cat: "kinemat",
-      en: { t: "Kinematics vs kinetics", d: "Kinematics describes <b>motion</b> — positions, angles, speeds — without asking what caused it. Kinetics describes the <b>forces and torques</b> that cause motion.",
+      en: { t: "Kinematics vs kinetics", d: "Kinematics describes <b>motion</b>, meaning positions, angles and speeds, without asking what caused it. Kinetics describes the <b>forces and torques</b> that cause motion.",
             w: "The single most common mix-up. A video gives you kinematics. A force plate gives you kinetics. You need both to explain <em>why</em> a movement looks the way it does." },
-      pl: { t: "Kinematyka a kinetyka", d: "Kinematyka opisuje <b>ruch</b> — pozycje, kąty, prędkości — nie pytając o jego przyczynę. Kinetyka opisuje <b>siły i momenty</b>, które ten ruch wywołują.",
+      pl: { t: "Kinematyka a kinetyka", d: "Kinematyka opisuje <b>ruch</b>, czyli pozycje, kąty i prędkości, nie pytając o jego przyczynę. Kinetyka opisuje <b>siły i momenty</b>, które ten ruch wywołują.",
             w: "Najczęstsza pomyłka. Nagranie wideo daje kinematykę. Platforma dynamometryczna daje kinetykę. Potrzebujesz obu, by wyjaśnić, <em>dlaczego</em> ruch wygląda tak, jak wygląda." } },
 
     { id: "vgrf", cat: "kinetic", art: "vgrf",
       en: { t: "Ground reaction force (GRF, vGRF)", d: "The force the ground pushes back with. Newton's third law: push down, get pushed up. The <b>vertical</b> component (vGRF) is the big one and the one usually plotted.",
-            w: "In walking it makes a double hump — one peak catching your falling weight, a dip as you vault over a straight leg, a second peak at push-off. It is <b>zero</b> whenever the foot is in the air." },
+            w: "In walking it makes a double hump: one peak catching your falling weight, a dip as you vault over a straight leg, a second peak at push-off. It is <b>zero</b> whenever the foot is in the air." },
       pl: { t: "Siła reakcji podłoża (GRF, vGRF)", d: "Siła, którą podłoże oddziałuje z powrotem. Trzecia zasada Newtona: naciskasz w dół, zostajesz popchnięty w górę. Składowa <b>pionowa</b> (vGRF) jest największa i to ją najczęściej się wykreśla.",
-            w: "W chodzie tworzy dwa garby — pierwszy szczyt wyhamowuje opadającą masę, zagłębienie powstaje przy przetaczaniu nad wyprostowaną nogą, drugi szczyt to odbicie. Wynosi <b>zero</b>, gdy stopa jest w powietrzu." },
+            w: "W chodzie tworzy dwa garby: pierwszy szczyt wyhamowuje opadającą masę, zagłębienie powstaje przy przetaczaniu nad wyprostowaną nogą, drugi szczyt to odbicie. Wynosi <b>zero</b>, gdy stopa jest w powietrzu." },
       link: { href: "explorer.html#explorer", en: "Scrub it in the Explorer", pl: "Przewiń w Eksploratorze" } },
 
     { id: "body-weight", cat: "measure",
@@ -330,28 +330,28 @@
 
     { id: "torque", cat: "kinetic", art: "torque",
       en: { t: "Torque / moment", d: "The turning effect of a force about a joint: <b>force × moment arm</b>. Measured in newton-metres (N·m).",
-            w: "Muscles do not produce \"strength\" in the abstract — they produce torque about a joint, and it changes with joint angle because the moment arm changes." },
+            w: "Muscles do not produce \"strength\" in the abstract. They produce torque about a joint, and it changes with joint angle because the moment arm changes." },
       pl: { t: "Moment siły", d: "Efekt obrotowy siły względem stawu: <b>siła × ramię momentu</b>. Mierzony w niutonometrach (N·m).",
-            w: "Mięśnie nie wytwarzają abstrakcyjnej „siły” — wytwarzają moment względem stawu, a ten zmienia się z kątem stawu, bo zmienia się ramię momentu." },
+            w: "Mięśnie nie wytwarzają abstrakcyjnej „siły”. Wytwarzają moment względem stawu, a ten zmienia się z kątem stawu, bo zmienia się ramię momentu." },
       link: { href: "muscle.html", en: "Play with it on Levers", pl: "Pobaw się na stronie Dźwignie" } },
 
     { id: "moment-arm", cat: "kinetic",
       en: { t: "Moment arm (lever arm)", d: "The <b>perpendicular</b> distance from the joint axis to the line along which a force acts. Not the length of the bone, and not the distance to the attachment.",
-            w: "Muscle moment arms are tiny — the biceps peaks near 4.7 cm — which is exactly why muscles must pull with forces many times the load they are holding." },
+            w: "Muscle moment arms are tiny, with the biceps peaking near 4.7 cm, and that is exactly why muscles must pull with forces many times the load they are holding." },
       pl: { t: "Ramię momentu (ramię dźwigni)", d: "Odległość <b>prostopadła</b> od osi stawu do linii działania siły. To nie długość kości ani odległość do przyczepu.",
-            w: "Ramiona momentu mięśni są maleńkie — u bicepsa szczytowo około 4,7 cm — i właśnie dlatego mięśnie muszą ciągnąć z siłą wielokrotnie większą od utrzymywanego ciężaru." } },
+            w: "Ramiona momentu mięśni są maleńkie, u bicepsa szczytowo około 4,7 cm, i właśnie dlatego mięśnie muszą ciągnąć z siłą wielokrotnie większą od utrzymywanego ciężaru." } },
 
     { id: "com", cat: "kinemat", art: "com",
       en: { t: "Centre of mass (CoM)", d: "The single point at which the body's whole mass can be treated as concentrated. In standing it sits roughly just in front of S2, around 55% of your height.",
-            w: "It is not fixed to the body — raise your arms and it moves. Balance problems are almost always CoM problems: keeping it over the base of support." },
+            w: "It is not fixed to the body. Raise your arms and it moves. Balance problems are almost always CoM problems: keeping it over the base of support." },
       pl: { t: "Środek masy (CoM)", d: "Punkt, w którym można traktować całą masę ciała jako skupioną. W staniu leży mniej więcej tuż przed S2, na wysokości około 55% wzrostu.",
-            w: "Nie jest przytwierdzony do ciała — unieś ramiona, a się przesunie. Problemy z równowagą to prawie zawsze problemy ze środkiem masy: utrzymaniem go nad polem podparcia." } },
+            w: "Nie jest przytwierdzony do ciała. Unieś ramiona, a się przesunie. Problemy z równowagą to prawie zawsze problemy ze środkiem masy: utrzymaniem go nad polem podparcia." } },
 
     { id: "planes", cat: "kinemat", art: "planes",
       en: { t: "Planes of motion", d: "<b>Sagittal</b> splits left from right (flexion/extension). <b>Frontal</b> splits front from back (abduction/adduction). <b>Transverse</b> splits top from bottom (rotation).",
-            w: "Most of this site draws the sagittal plane, because walking mostly happens there. But knee valgus and Trendelenburg are frontal-plane events — invisible from the side, which is why you must watch a patient from more than one angle." },
+            w: "Most of this site draws the sagittal plane, because walking mostly happens there. But knee valgus and Trendelenburg are frontal-plane events, invisible from the side, which is why you must watch a patient from more than one angle." },
       pl: { t: "Płaszczyzny ruchu", d: "<b>Strzałkowa</b> dzieli lewo od prawa (zgięcie/wyprost). <b>Czołowa</b> dzieli przód od tyłu (odwodzenie/przywodzenie). <b>Poprzeczna</b> dzieli górę od dołu (rotacja).",
-            w: "Większość tej strony rysuje płaszczyznę strzałkową, bo w niej głównie odbywa się chód. Ale koślawość kolana i objaw Trendelenburga to zjawiska w płaszczyźnie czołowej — niewidoczne z boku, dlatego pacjenta trzeba oglądać z więcej niż jednej strony." } },
+            w: "Większość tej strony rysuje płaszczyznę strzałkową, bo w niej głównie odbywa się chód. Ale koślawość kolana i objaw Trendelenburga to zjawiska w płaszczyźnie czołowej, niewidoczne z boku, dlatego pacjenta trzeba oglądać z więcej niż jednej strony." } },
 
     { id: "ankle-motion", cat: "kinemat", art: "ankle",
       en: { t: "Dorsiflexion / plantarflexion", d: "<b>Dorsiflexion</b> lifts the foot toward the shin. <b>Plantarflexion</b> points it away, as in standing on tiptoe.",
@@ -360,9 +360,9 @@
             w: "Utrata zgięcia grzbietowego to jedno z najczęstszych ograniczeń mechanicznych w ciele: blokuje przetoczenie skokowe, skraca krok i przenosi kompensację w górę łańcucha, do kolana i biodra." } },
 
     { id: "valgus", cat: "kinemat", art: "valgus",
-      en: { t: "Valgus / varus", d: "<b>Valgus</b> is the distal segment angling away from the midline — at the knee, the joint falls inward, \"knock-kneed\". <b>Varus</b> is the opposite, \"bow-legged\".",
+      en: { t: "Valgus / varus", d: "<b>Valgus</b> is the distal segment angling away from the midline. At the knee the joint falls inward, \"knock-kneed\". <b>Varus</b> is the opposite, \"bow-legged\".",
             w: "Dynamic knee valgus during landing or a single-leg squat is one of the most-studied movement patterns in sports medicine, linked with ACL and patellofemoral problems." },
-      pl: { t: "Koślawość / szpotawość", d: "<b>Koślawość</b> to odchylenie odcinka dalszego od linii pośrodkowej — w kolanie staw ucieka do wewnątrz („kolana koślawe”, X). <b>Szpotawość</b> jest odwrotnością („kolana szpotawe”, O).",
+      pl: { t: "Koślawość / szpotawość", d: "<b>Koślawość</b> to odchylenie odcinka dalszego od linii pośrodkowej. W kolanie staw ucieka do wewnątrz („kolana koślawe”, X). <b>Szpotawość</b> jest odwrotnością („kolana szpotawe”, O).",
             w: "Dynamiczna koślawość kolana przy lądowaniu lub przysiadzie na jednej nodze to jeden z najlepiej przebadanych wzorców ruchu w medycynie sportowej, wiązany z problemami ACL i rzepkowo-udowymi." },
       link: { href: "sls.html", en: "See it collapse in Knee Control", pl: "Zobacz zapadanie w Kontroli kolana" } },
 
@@ -374,23 +374,23 @@
       link: { href: "lesson.html", en: "Walk through it step by step", pl: "Przejdź przez niego krok po kroku" } },
 
     { id: "double-support", cat: "gait", art: "doubleSupport",
-      en: { t: "Double support", d: "The part of walking when <b>both</b> feet are on the ground at once — about 20% of the cycle, in two spells.",
+      en: { t: "Double support", d: "The part of walking when <b>both</b> feet are on the ground at once, about 20% of the cycle, in two spells.",
             w: "It is the formal difference between walking and running: running has no double support, it has flight instead. Double support grows as people slow down and is a sensitive marker of unsteadiness." },
-      pl: { t: "Podwójny podpór", d: "Część chodu, gdy <b>obie</b> stopy są jednocześnie na podłożu — około 20% cyklu, w dwóch okresach.",
+      pl: { t: "Podwójny podpór", d: "Część chodu, gdy <b>obie</b> stopy są jednocześnie na podłożu, około 20% cyklu, w dwóch okresach.",
             w: "To formalna różnica między chodem a biegiem: bieg nie ma podwójnego podporu, ma fazę lotu. Podwójny podpór wydłuża się, gdy człowiek zwalnia, i jest czułym wskaźnikiem niepewności chodu." } },
 
     { id: "rockers", cat: "gait", art: "rockers",
       en: { t: "The three rockers", d: "Perry's description of stance as three successive pivots: the <b>heel</b> rocker at contact, the <b>ankle</b> rocker as the shin rotates over a flat foot, and the <b>forefoot</b> rocker as the heel lifts.",
             w: "It gives you a vocabulary for exactly where gait breaks. Foot drop kills the heel rocker; a stiff ankle kills the ankle rocker. Naming the rocker names the problem." },
       pl: { t: "Trzy przetoczenia (rockers)", d: "Opis fazy podporu wg Perry jako trzech kolejnych osi obrotu: przetoczenie <b>piętowe</b> przy kontakcie, <b>skokowe</b>, gdy goleń obraca się nad płaską stopą, i <b>przodostopia</b>, gdy pięta się unosi.",
-            w: "Daje słownictwo do precyzyjnego wskazania, gdzie chód się psuje. Opadanie stopy niszczy przetoczenie piętowe; sztywny staw skokowy — skokowe. Nazwanie przetoczenia nazywa problem." },
+            w: "Daje słownictwo do precyzyjnego wskazania, gdzie chód się psuje. Opadanie stopy niszczy przetoczenie piętowe, a sztywny staw skokowy niszczy skokowe. Nazwanie przetoczenia nazywa problem." },
       link: { href: "lesson.html", en: "See all three in the lesson", pl: "Zobacz wszystkie trzy w lekcji" } },
 
     { id: "cadence", cat: "gait",
-      en: { t: "Cadence, step length, stride length", d: "<b>Cadence</b> is steps per minute. <b>Step length</b> is one foot's contact to the other foot's. <b>Stride length</b> is a full cycle — two steps.",
-            w: "Walking speed = cadence × step length. People can slow down by shortening steps, by taking them less often, or both — and which one they choose is clinically informative." },
-      pl: { t: "Kadencja, długość kroku, długość cyklu", d: "<b>Kadencja</b> to liczba kroków na minutę. <b>Długość kroku</b> to odległość od kontaktu jednej stopy do kontaktu drugiej. <b>Długość cyklu</b> to pełny cykl — dwa kroki.",
-            w: "Prędkość chodu = kadencja × długość kroku. Można zwolnić, skracając kroki, wykonując je rzadziej albo obydwoma sposobami — a wybór jest klinicznie informacyjny." } },
+      en: { t: "Cadence, step length, stride length", d: "<b>Cadence</b> is steps per minute. <b>Step length</b> is one foot's contact to the other foot's. <b>Stride length</b> is a full cycle, so two steps.",
+            w: "Walking speed = cadence × step length. People can slow down by shortening steps, by taking them less often, or both, and which one they choose is clinically informative." },
+      pl: { t: "Kadencja, długość kroku, długość cyklu", d: "<b>Kadencja</b> to liczba kroków na minutę. <b>Długość kroku</b> to odległość od kontaktu jednej stopy do kontaktu drugiej. <b>Długość cyklu</b> to pełny cykl, czyli dwa kroki.",
+            w: "Prędkość chodu = kadencja × długość kroku. Można zwolnić, skracając kroki, wykonując je rzadziej albo obydwoma sposobami, a wybór jest klinicznie informacyjny." } },
 
     { id: "trendelenburg", cat: "gait",
       en: { t: "Trendelenburg sign", d: "When the hip abductors of the <b>stance</b> leg are too weak to hold the pelvis level, the pelvis drops on the <b>swing</b> side. If the trunk lurches over the stance hip instead, that is compensated Trendelenburg.",
@@ -399,34 +399,34 @@
             w: "To objaw w płaszczyźnie czołowej, więc trzeba patrzeć z przodu lub z tyłu. Zwróć uwagę, która strona opada: osłabienie jest po stronie, na której stoisz, a nie po tej, która się obniża." } },
 
     { id: "contraction", cat: "muscle", art: "contraction",
-      en: { t: "Concentric, eccentric, isometric", d: "<b>Concentric</b>: the muscle shortens while producing force. <b>Eccentric</b>: it lengthens while producing force — braking. <b>Isometric</b>: it produces force without changing length.",
-            w: "Most of walking is eccentric control, not concentric drive. \"Eccentric\" does not mean \"relaxing\" — the muscle is working hard while being stretched, which is why it is where most delayed soreness comes from." },
-      pl: { t: "Skurcz koncentryczny, ekscentryczny, izometryczny", d: "<b>Koncentryczny</b>: mięsień skraca się, wytwarzając siłę. <b>Ekscentryczny</b>: wydłuża się, wytwarzając siłę — hamuje. <b>Izometryczny</b>: wytwarza siłę bez zmiany długości.",
-            w: "Większość chodu to kontrola ekscentryczna, a nie napęd koncentryczny. „Ekscentryczny” nie znaczy „rozluźniony” — mięsień pracuje ciężko, będąc rozciąganym, i stąd bierze się większość opóźnionej bolesności." } },
+      en: { t: "Concentric, eccentric, isometric", d: "<b>Concentric</b>: the muscle shortens while producing force. <b>Eccentric</b>: it lengthens while producing force, which is braking. <b>Isometric</b>: it produces force without changing length.",
+            w: "Most of walking is eccentric control, not concentric drive. \"Eccentric\" does not mean \"relaxing\". The muscle is working hard while being stretched, which is why it is where most delayed soreness comes from." },
+      pl: { t: "Skurcz koncentryczny, ekscentryczny, izometryczny", d: "<b>Koncentryczny</b>: mięsień skraca się, wytwarzając siłę. <b>Ekscentryczny</b>: wydłuża się, wytwarzając siłę, czyli hamuje. <b>Izometryczny</b>: wytwarza siłę bez zmiany długości.",
+            w: "Większość chodu to kontrola ekscentryczna, a nie napęd koncentryczny. „Ekscentryczny” nie znaczy „rozluźniony”. Mięsień pracuje ciężko, będąc rozciąganym, i stąd bierze się większość opóźnionej bolesności." } },
 
     { id: "length-tension", cat: "muscle", art: "lengthTension",
       en: { t: "Length–tension relationship", d: "How much force a muscle can make depends on how long it is. Peak <b>active</b> force sits at optimal length (L₀), where actin and myosin overlap best; stretched further, <b>passive</b> tension from connective tissue takes over.",
-            w: "This is why a muscle tested in its shortened range tests weak even when perfectly healthy — and why joint position must be standardised in manual muscle testing." },
+            w: "This is why a muscle tested in its shortened range tests weak even when perfectly healthy, and why joint position must be standardised in manual muscle testing." },
       pl: { t: "Zależność długość–napięcie", d: "Siła, jaką mięsień może wytworzyć, zależy od jego długości. Szczyt siły <b>czynnej</b> przypada na długość optymalną (L₀), gdzie aktyna i miozyna najlepiej się zachodzą; przy dalszym rozciąganiu przejmuje napięcie <b>bierne</b> z tkanki łącznej.",
-            w: "Dlatego mięsień testowany w zakresie skróconym wypada słabo, nawet będąc całkowicie zdrowym — i dlatego pozycja stawu musi być ustandaryzowana w manualnym testowaniu mięśni." },
+            w: "Dlatego mięsień testowany w zakresie skróconym wypada słabo, nawet będąc całkowicie zdrowym, i dlatego pozycja stawu musi być ustandaryzowana w manualnym testowaniu mięśni." },
       link: { href: "dyno.html", en: "Drag the curve on Muscle Dyno", pl: "Przeciągnij krzywą w Muscle Dyno" } },
 
     { id: "force-velocity", cat: "muscle", art: "forceVelocity",
       en: { t: "Force–velocity relationship", d: "The faster a muscle shortens, the less force it makes (Hill's hyperbola). Lengthening under load produces <em>more</em> force than holding still.",
-            w: "It is why you cannot lift a heavy load quickly, and why peak <b>power</b> — force × velocity — occurs at an intermediate speed rather than at maximum force or maximum speed." },
+            w: "It is why you cannot lift a heavy load quickly, and why peak <b>power</b> (force × velocity) occurs at an intermediate speed instead of at maximum force or maximum speed." },
       pl: { t: "Zależność siła–prędkość", d: "Im szybciej mięsień się skraca, tym mniejszą siłę wytwarza (hiperbola Hilla). Wydłużanie pod obciążeniem daje <em>więcej</em> siły niż utrzymanie bez ruchu.",
-            w: "Dlatego nie da się szybko podnieść dużego ciężaru i dlatego szczyt <b>mocy</b> — siła × prędkość — przypada na prędkość pośrednią, a nie na maksymalną siłę czy maksymalną prędkość." } },
+            w: "Dlatego nie da się szybko podnieść dużego ciężaru i dlatego szczyt <b>mocy</b> (siła × prędkość) przypada na prędkość pośrednią, a nie na maksymalną siłę czy maksymalną prędkość." } },
 
     { id: "agonist", cat: "muscle",
       en: { t: "Agonist / antagonist / synergist", d: "The <b>agonist</b> drives the movement, the <b>antagonist</b> opposes it on the other side of the joint, and <b>synergists</b> assist or cancel unwanted actions.",
-            w: "Muscles can only pull, never push — so every joint needs opposing groups. Co-contraction of both is a real strategy: it stiffens a joint for stability, at an energy cost." },
+            w: "Muscles can only pull, never push, so every joint needs opposing groups. Co-contraction of both is a real strategy: it stiffens a joint for stability, at an energy cost." },
       pl: { t: "Agonista / antagonista / synergista", d: "<b>Agonista</b> napędza ruch, <b>antagonista</b> przeciwdziała mu po drugiej stronie stawu, a <b>synergiści</b> wspomagają lub znoszą niepożądane działania.",
-            w: "Mięśnie potrafią tylko ciągnąć, nigdy pchać — dlatego każdy staw potrzebuje grup przeciwstawnych. Jednoczesny skurcz obu to realna strategia: usztywnia staw dla stabilności, kosztem energii." } },
+            w: "Mięśnie potrafią tylko ciągnąć, nigdy pchać, dlatego każdy staw potrzebuje grup przeciwstawnych. Jednoczesny skurcz obu to realna strategia: usztywnia staw dla stabilności, kosztem energii." } },
 
     { id: "pcsa", cat: "muscle",
-      en: { t: "PCSA and fascicle length", d: "<b>Physiological cross-sectional area</b> is the total area of the fibres, cut perpendicular to them — it sets how much force a muscle can make. <b>Fascicle length</b> sets how far and how fast it can shorten.",
+      en: { t: "PCSA and fascicle length", d: "<b>Physiological cross-sectional area</b> is the total area of the fibres, cut perpendicular to them, and it sets how much force a muscle can make. <b>Fascicle length</b> sets how far and how fast it can shorten.",
             w: "Two muscles of the same volume can be built for completely different jobs. It also explains why brachioradialis, with the smallest area but the largest moment arm, still contributes usefully at the elbow." },
-      pl: { t: "PCSA i długość pęczków", d: "<b>Fizjologiczny przekrój poprzeczny</b> to łączne pole włókien, cięte prostopadle do nich — decyduje o tym, ile siły mięsień może wytworzyć. <b>Długość pęczków</b> decyduje o tym, jak daleko i jak szybko może się skrócić.",
+      pl: { t: "PCSA i długość pęczków", d: "<b>Fizjologiczny przekrój poprzeczny</b> to łączne pole włókien, cięte prostopadle do nich, i decyduje o tym, ile siły mięsień może wytworzyć. <b>Długość pęczków</b> decyduje o tym, jak daleko i jak szybko może się skrócić.",
             w: "Dwa mięśnie o tej samej objętości mogą być zbudowane do zupełnie różnych zadań. To też wyjaśnia, dlaczego mięsień ramienno-promieniowy, o najmniejszym przekroju, ale największym ramieniu momentu, wciąż użytecznie działa w łokciu." } },
 
     { id: "emg", cat: "measure",
@@ -436,22 +436,22 @@
             w: "EMG mówi, <em>kiedy</em> mięsień jest aktywny i z grubsza jak mocno, w odniesieniu do siebie samego. <b>Nie</b> podaje siły w niutonach, a amplitud nie można porównywać między osobami ani nawet między ustawieniami elektrod." } },
 
     { id: "force-plate", cat: "measure",
-      en: { t: "Force plate", d: "A rigid plate with load cells that measures the ground reaction force in three directions, plus the centre of pressure — the point through which that force acts.",
+      en: { t: "Force plate", d: "A rigid plate with load cells that measures the ground reaction force in three directions, plus the centre of pressure, the point through which that force acts.",
             w: "It is the ground truth for kinetics. Combined with motion capture and inverse dynamics, it is how joint moments are estimated without ever measuring a muscle directly." },
-      pl: { t: "Platforma dynamometryczna", d: "Sztywna płyta z czujnikami siły, mierząca siłę reakcji podłoża w trzech kierunkach oraz środek nacisku — punkt, przez który ta siła działa.",
+      pl: { t: "Platforma dynamometryczna", d: "Sztywna płyta z czujnikami siły, mierząca siłę reakcji podłoża w trzech kierunkach oraz środek nacisku, czyli punkt, przez który ta siła działa.",
             w: "To wzorzec odniesienia dla kinetyki. W połączeniu z rejestracją ruchu i dynamiką odwrotną pozwala oszacować momenty w stawach bez bezpośredniego pomiaru jakiegokolwiek mięśnia." } },
 
     { id: "mocap", cat: "measure",
       en: { t: "Motion capture, marker-based and markerless", d: "Marker-based systems track reflective markers on the skin with infrared cameras. <b>Markerless</b> systems (such as OpenCap) estimate body keypoints from ordinary video and triangulate them.",
-            w: "Markerless has made 3-D analysis possible outside a lab, but accuracy varies by joint and is worst where a limb is hidden from the cameras — which you can see directly on the Knee Control page." },
+            w: "Markerless has made 3-D analysis possible outside a lab, but accuracy varies by joint and is worst where a limb is hidden from the cameras, which you can see directly on the Knee Control page." },
       pl: { t: "Rejestracja ruchu: markerowa i bezmarkerowa", d: "Systemy markerowe śledzą markery odblaskowe na skórze kamerami podczerwonymi. Systemy <b>bezmarkerowe</b> (jak OpenCap) estymują punkty kluczowe ciała ze zwykłego wideo i triangulują je.",
-            w: "Technologia bezmarkerowa umożliwiła analizę 3-D poza laboratorium, ale dokładność zależy od stawu i jest najgorsza tam, gdzie kończyna jest zasłonięta przed kamerami — co widać wprost na stronie Kontrola kolana." } },
+            w: "Technologia bezmarkerowa umożliwiła analizę 3-D poza laboratorium, ale dokładność zależy od stawu i jest najgorsza tam, gdzie kończyna jest zasłonięta przed kamerami, co widać wprost na stronie Kontrola kolana." } },
 
     { id: "inverse-dynamics", cat: "measure",
       en: { t: "Inverse dynamics", d: "Working <em>backwards</em> from measured motion and measured external forces to calculate the net moment that must have acted at each joint.",
-            w: "Almost every published \"knee moment\" comes from this, not from a sensor in the knee. It gives the <b>net</b> moment of all structures at once — it cannot separate one muscle's contribution from another's." },
-      pl: { t: "Dynamika odwrotna", d: "Obliczanie <em>wstecz</em> — od zmierzonego ruchu i zmierzonych sił zewnętrznych — wypadkowego momentu, jaki musiał działać w każdym stawie.",
-            w: "Niemal każdy publikowany „moment w kolanie” pochodzi stąd, a nie z czujnika w kolanie. Daje moment <b>wypadkowy</b> wszystkich struktur naraz — nie rozdziela udziału poszczególnych mięśni." } },
+            w: "Almost every published \"knee moment\" comes from this, not from a sensor in the knee. It gives the <b>net</b> moment of all structures at once and cannot separate one muscle's contribution from another's." },
+      pl: { t: "Dynamika odwrotna", d: "Obliczanie <em>wstecz</em>, na podstawie zmierzonego ruchu i zmierzonych sił zewnętrznych, wypadkowego momentu, jaki musiał działać w każdym stawie.",
+            w: "Niemal każdy publikowany „moment w kolanie” pochodzi stąd, a nie z czujnika w kolanie. Daje moment <b>wypadkowy</b> wszystkich struktur naraz i nie rozdziela udziału poszczególnych mięśni." } },
 
     { id: "impulse", cat: "kinetic",
       en: { t: "Impulse", d: "Force multiplied by the time it acts (N·s). It equals the change in momentum it produces.",
@@ -467,15 +467,15 @@
 
     { id: "rom", cat: "kinemat",
       en: { t: "Range of motion (ROM)", d: "How far a joint travels. <b>Active</b> ROM is what the person can produce themselves; <b>passive</b> ROM is what you can move them through.",
-            w: "A gap between passive and active ROM points at the muscle or its control rather than the joint surfaces or capsule — a genuinely useful first split in an assessment." },
+            w: "A gap between passive and active ROM points at the muscle or its control instead of the joint surfaces or capsule. It is a genuinely useful first split in an assessment." },
       pl: { t: "Zakres ruchu (ROM)", d: "Jak daleko porusza się staw. Zakres <b>czynny</b> to ten, który pacjent wykona sam; zakres <b>bierny</b> to ten, przez który możesz go przeprowadzić.",
-            w: "Różnica między zakresem biernym a czynnym wskazuje raczej na mięsień lub jego sterowanie niż na powierzchnie stawowe czy torebkę — to naprawdę użyteczny pierwszy podział w badaniu." } },
+            w: "Różnica między zakresem biernym a czynnym wskazuje raczej na mięsień lub jego sterowanie niż na powierzchnie stawowe czy torebkę. To naprawdę użyteczny pierwszy podział w badaniu." } },
 
     { id: "grand-average", cat: "measure",
       en: { t: "Grand average", d: "A curve made by averaging many trials from many people after time-normalising each to 0–100%.",
-            w: "It shows the shared pattern but flattens individual variation — and it can produce a curve no single person actually walked. Useful for teaching the shape, unsafe for judging one patient." },
+            w: "It shows the shared pattern but flattens individual variation, and it can produce a curve no single person actually walked. Useful for teaching the shape, unsafe for judging one patient." },
       pl: { t: "Średnia zbiorcza (grand average)", d: "Krzywa powstała przez uśrednienie wielu prób wielu osób, po znormalizowaniu każdej w czasie do 0–100%.",
-            w: "Pokazuje wspólny wzorzec, ale spłaszcza zmienność indywidualną — i może dać krzywą, którą w rzeczywistości nie szedł nikt. Przydatna do nauki kształtu, nieodpowiednia do oceny pojedynczego pacjenta." } },
+            w: "Pokazuje wspólny wzorzec, ale spłaszcza zmienność indywidualną i może dać krzywą, którą w rzeczywistości nie szedł nikt. Przydatna do nauki kształtu, nieodpowiednia do oceny pojedynczego pacjenta." } },
   ];
 
   // ---------- books ----------
@@ -483,7 +483,7 @@
     { g: { en: "Start here", pl: "Zacznij tutaj" }, items: [
       { a: "Neumann DA", t: "Kinesiology of the Musculoskeletal System", y: "3rd ed., Elsevier 2017",
         en: "If you buy one book, buy this one. Joint-by-joint functional anatomy with the mechanics woven in, and outstanding illustrations. Written for rehabilitation, not engineering.",
-        pl: "Jeśli masz kupić jedną książkę — kup tę. Anatomia czynnościowa staw po stawie z wplecioną mechaniką i znakomitymi ilustracjami. Napisana dla rehabilitacji, nie dla inżynierii." },
+        pl: "Jeśli masz kupić jedną książkę, kup tę. Anatomia czynnościowa staw po stawie z wplecioną mechaniką i znakomitymi ilustracjami. Napisana dla rehabilitacji, nie dla inżynierii." },
       { a: "Nordin M, Frankel VH", t: "Basic Biomechanics of the Musculoskeletal System", y: "4th ed., Wolters Kluwer 2012",
         en: "The gentlest real introduction. Short chapters, tissue mechanics before joint mechanics, minimal maths.",
         pl: "Najłagodniejsze poważne wprowadzenie. Krótkie rozdziały, mechanika tkanek przed mechaniką stawów, minimum matematyki." },
@@ -507,10 +507,10 @@
     ]},
     { g: { en: "Go deeper", pl: "Dla zaawansowanych" }, items: [
       { a: "Lieber RL", t: "Skeletal Muscle Structure, Function and Plasticity", y: "3rd ed., Wolters Kluwer 2009",
-        en: "Muscle architecture done properly — PCSA, fascicle length, sarcomere operating ranges. The book behind most modern strength reasoning.",
-        pl: "Architektura mięśnia zrobiona porządnie — PCSA, długość pęczków, zakresy pracy sarkomeru. Książka stojąca za większością współczesnego myślenia o sile." },
+        en: "Muscle architecture done properly: PCSA, fascicle length, sarcomere operating ranges. The book behind most modern strength reasoning.",
+        pl: "Architektura mięśnia zrobiona porządnie: PCSA, długość pęczków, zakresy pracy sarkomeru. Książka stojąca za większością współczesnego myślenia o sile." },
       { a: "Zatsiorsky VM", t: "Kinetics of Human Motion", y: "Human Kinetics 2002",
-        en: "Rigorous and mathematical. Reach for it when you need the derivation rather than the result.",
+        en: "Rigorous and mathematical. Reach for it when you need the derivation, not just the result.",
         pl: "Rygorystyczna i matematyczna. Sięgnij po nią, gdy potrzebujesz wyprowadzenia, a nie samego wyniku." },
       { a: "Whittle MW", t: "Gait Analysis: An Introduction", y: "5th ed., Elsevier 2012",
         en: "A far gentler entry to gait than Perry. A good bridge if Perry feels overwhelming at first.",
@@ -640,7 +640,7 @@
         const title = b.href
           ? '<a href="' + b.href + '" target="_blank" rel="noopener"><em>' + b.t + "</em></a>"
           : "<em>" + b.t + "</em>";
-        li.innerHTML = "<b>" + b.a + "</b> — " + title + '<span class="gs-ed">' + b.y + "</span>" +
+        li.innerHTML = "<b>" + b.a + "</b> · " + title + '<span class="gs-ed">' + b.y + "</span>" +
                        "<span class=\"gs-note\">" + b[lang] + "</span>";
         ul.appendChild(li);
       });

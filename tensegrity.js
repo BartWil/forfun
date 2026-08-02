@@ -1,13 +1,13 @@
-// Biotensegrity hero — a human body as a tensegrity structure.
+// Biotensegrity hero: a human body as a tensegrity structure.
 //
 // The model follows Levin's biotensegrity account: bones are discontinuous COMPRESSION
 // struts that never touch each other, suspended inside a continuous TENSION network of
-// muscle, tendon and fascia. Load applied anywhere is carried everywhere — which is why
+// muscle, tendon and fascia. Load applied anywhere is carried everywhere: which is why
 // dragging one hand makes the opposite hip move.
 //
 // Solver: Verlet integration + iterative constraint relaxation.
-//   struts  — hold their length in BOTH directions (rigid bone)
-//   cables  — resist stretch only, never push (tissue cannot push a rope)
+//   struts : hold their length in BOTH directions (rigid bone)
+//   cables : resist stretch only, never push (tissue cannot push a rope)
 //
 // The cross-body cables are real anatomy, not decoration: shoulder to opposite pelvis is
 // the posterior oblique sling (lat → thoracolumbar fascia → opposite gluteus maximus).
@@ -39,12 +39,12 @@
   // Nothing is pinned and gravity is almost nil. That is deliberate: a leg chain pinned at
   // the foot is rotationally symmetric about that pin, so "standing" and "hanging upside
   // down" are equally valid solutions and the rig will happily invert itself. Suspended,
-  // the prestressed net alone defines the shape — it cannot collapse, and it springs back
+  // the prestressed net alone defines the shape: it cannot collapse, and it springs back
   // exactly. It is also how tensegrity models are normally photographed.
   const PINNED = [];
   const GRAVITY = 0.012;
 
-  // bones — compression members
+  // bones: compression members
   const STRUTS = [
     ["neck", "shoulderL"], ["neck", "shoulderR"],          // clavicles
     ["shoulderL", "elbowL"], ["shoulderR", "elbowR"],      // humerus
@@ -57,7 +57,7 @@
     ["head", "neck"],
   ];
 
-  // fascia / muscle — tension members, pull only
+  // fascia / muscle: tension members, pull only
   const CABLES = [
     ["shoulderL", "shoulderR"], ["thoraxL", "thoraxR"],
     ["lumbarL", "lumbarR"], ["pelvisL", "pelvisR"],        // transverse bands
@@ -95,7 +95,7 @@
     // current one, and draw every node a little way toward where that motion says it should
     // be. It restores shape and orientation without forbidding deformation.
     //
-    // Physically this stands in for the elastic recoil of genuinely prestressed fascia —
+    // Physically this stands in for the elastic recoil of genuinely prestressed fascia -
     // which a real tensegrity gets from a solved self-stress state, and this anatomically
     // hand-assigned rig cannot.
     function shapeMatch(alpha) {
@@ -135,7 +135,7 @@
       // canvas an unbounded height would push the hands off the sides.
       S = Math.min(H * (opts.fill ? 0.74 : 0.80), W * 1.35);
       ox = W / 2;
-      oy = H / 2 - 0.42 * S;              // centred on the canvas rather than sat on a floor
+      oy = H / 2 - 0.42 * S;              // centred on the canvas, not sat on a floor
 
       pts = {};
       for (const k in N) {
@@ -152,7 +152,7 @@
       // tensegrity rather than a bag of sticks.
       // Cables sit at exactly their built length. Earlier drafts pre-shortened them to mimic
       // real prestress, but this rig's members were assigned by anatomy rather than solved
-      // for equilibrium, so there is no self-stress state to find — it simply contracted
+      // for equilibrium, so there is no self-stress state to find: it simply contracted
       // into a ball. At 1.0 the built pose IS the equilibrium: nothing pulls until you do.
       const PRESTRESS = 1.0;
       const add = (a, b, type) => {

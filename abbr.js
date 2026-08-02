@@ -1,12 +1,12 @@
 // Site-wide abbreviation help.
 //
-// Every page on this site leans on shorthand — vGRF, JCS, PCSA, ASIS — that a student meets
+// Every page on this site leans on shorthand: vGRF, JCS, PCSA, ASIS: that a student meets
 // for the first time here. Rather than tag them by hand across thirteen pages (and miss
 // half, and miss everything built dynamically), this walks the rendered text, finds known
 // abbreviations, and wraps them so hovering gives the expansion and a one-line explanation.
 //
 // Design notes:
-//   * matching is CASE-SENSITIVE — "IM" is a landmark, "im" is not
+//   * matching is CASE-SENSITIVE: "IM" is a landmark, "im" is not
 //   * a match must not be flanked by letters or digits, so IM never fires inside "IMPORTANT"
 //   * <code>, <pre>, form fields, canvases and existing tooltips are left alone
 //   * the pass is idempotent: already-wrapped text is skipped, so re-running is harmless
@@ -31,28 +31,28 @@
            pl: { full: "Cartesian Coordinate System (kartezjański układ współrzędnych)", d: "Trzy wzajemnie prostopadłe osie przypisane do jednej kości, wyznaczone z jej własnych punktów kostnych." } },
     ISO: { en: { full: "International Organization for Standardization", d: "Publishes cross-industry standards; ISO 2631 uses a different axis convention from the ISB one." },
            pl: { full: "International Organization for Standardization (Międzynarodowa Organizacja Normalizacyjna)", d: "Wydaje normy międzybranżowe; ISO 2631 stosuje inną konwencję osi niż ISB." } },
-    SAE: { en: { full: "Society of Automotive Engineers", d: "Its SAE J-211 impact standard uses yet another axis convention — one of the reasons a shared definition was needed." },
-           pl: { full: "Society of Automotive Engineers (Stowarzyszenie Inżynierów Motoryzacji)", d: "Jego norma zderzeniowa SAE J-211 stosuje jeszcze inną konwencję osi — jeden z powodów, dla których potrzebna była wspólna definicja." } },
+    SAE: { en: { full: "Society of Automotive Engineers", d: "Its SAE J-211 impact standard uses yet another axis convention, one of the reasons a shared definition was needed." },
+           pl: { full: "Society of Automotive Engineers (Stowarzyszenie Inżynierów Motoryzacji)", d: "Jego norma zderzeniowa SAE J-211 stosuje jeszcze inną konwencję osi, co jest jednym z powodów, dla których potrzebna była wspólna definicja." } },
     IHA: { en: { full: "instantaneous helical axis", d: "The single screw axis a body is rotating about and translating along at one instant. Used to locate joint centres that cannot be palpated." },
            pl: { full: "instantaneous helical axis (chwilowa oś śrubowa)", d: "Pojedyncza oś śrubowa, wokół której ciało w danej chwili się obraca i wzdłuż której się przemieszcza. Służy do lokalizowania środków stawów niedostępnych palpacyjnie." } },
 
     // ---- forces and mechanics ----
     GRF:  { en: { full: "ground reaction force", d: "The force the ground pushes back with. Equal and opposite to the force you apply to it." },
             pl: { full: "ground reaction force (siła reakcji podłoża)", d: "Siła, którą podłoże oddziałuje z powrotem. Równa co do wartości i przeciwnie skierowana do siły, którą na nie działasz." } },
-    vGRF: { en: { full: "vertical ground reaction force", d: "The upward component of the ground reaction force — the one usually plotted, and the largest of the three." },
-            pl: { full: "vertical ground reaction force (pionowa siła reakcji podłoża)", d: "Składowa pionowa siły reakcji podłoża — ta zwykle wykreślana i największa z trzech." } },
+    vGRF: { en: { full: "vertical ground reaction force", d: "The upward component of the ground reaction force, the one usually plotted, and the largest of the three." },
+            pl: { full: "vertical ground reaction force (pionowa siła reakcji podłoża)", d: "Składowa pionowa siły reakcji podłoża, zwykle wykreślana i największa z trzech." } },
     BW:   { en: { full: "body weight", d: "Used as a unit: 1.0 BW means a force equal to the person's own weight, so people of different sizes can be compared." },
             pl: { full: "body weight (masa/ciężar ciała)", d: "Używane jako jednostka: 1,0 BW oznacza siłę równą ciężarowi danej osoby, dzięki czemu można porównywać osoby o różnej masie." } },
     CoM:  { en: { full: "centre of mass", d: "The point where the body's whole mass can be treated as concentrated. It moves when you move your limbs." },
             pl: { full: "centre of mass (środek masy)", d: "Punkt, w którym można traktować całą masę ciała jako skupioną. Przesuwa się, gdy poruszasz kończynami." } },
     CoP:  { en: { full: "centre of pressure", d: "The point on the ground through which the resultant ground reaction force acts." },
             pl: { full: "centre of pressure (środek nacisku)", d: "Punkt na podłożu, przez który przechodzi wypadkowa siła reakcji podłoża." } },
-    MPa:  { en: { full: "megapascal", d: "A unit of pressure — one million newtons per square metre. Lumbar disc pressures sit around 0.5 MPa in standing." },
-            pl: { full: "megapaskal", d: "Jednostka ciśnienia — milion niutonów na metr kwadratowy. Ciśnienie w krążku lędźwiowym w staniu wynosi około 0,5 MPa." } },
+    MPa:  { en: { full: "megapascal", d: "A unit of pressure, one million newtons per square metre. Lumbar disc pressures sit around 0.5 MPa in standing." },
+            pl: { full: "megapaskal", d: "Jednostka ciśnienia, czyli milion niutonów na metr kwadratowy. Ciśnienie w krążku lędźwiowym w staniu wynosi około 0,5 MPa." } },
 
     // ---- muscle ----
-    EMG:  { en: { full: "electromyography", d: "Recording of a muscle's electrical activity. Tells you when a muscle is on and roughly how hard — never force in newtons." },
-            pl: { full: "electromyography (elektromiografia)", d: "Zapis czynności elektrycznej mięśnia. Mówi, kiedy mięsień pracuje i z grubsza jak mocno — nigdy o sile w niutonach." } },
+    EMG:  { en: { full: "electromyography", d: "Recording of a muscle's electrical activity. Tells you when a muscle is on and roughly how hard. It never gives force in newtons." },
+            pl: { full: "electromyography (elektromiografia)", d: "Zapis czynności elektrycznej mięśnia. Mówi, kiedy mięsień pracuje i z grubsza jak mocno. Nigdy nie podaje siły w niutonach." } },
     PCSA: { en: { full: "physiological cross-sectional area", d: "The total area of a muscle's fibres cut perpendicular to them. It sets how much force the muscle can produce." },
             pl: { full: "physiological cross-sectional area (fizjologiczny przekrój poprzeczny)", d: "Łączne pole przekroju włókien mięśnia, cięte prostopadle do nich. Decyduje o tym, ile siły mięsień może wytworzyć." } },
     MMT:  { en: { full: "manual muscle testing", d: "Grading muscle strength by hand against resistance. Its results depend heavily on joint angle." },
@@ -77,25 +77,25 @@
            pl: { full: "magnetic resonance imaging (rezonans magnetyczny)", d: "Obrazowanie dobrze pokazujące tkanki miękkie; bywa używane do lokalizowania punktów niedostępnych palpacyjnie." } },
     CT:  { en: { full: "computed tomography", d: "X-ray imaging that shows bone well, used for locating bony landmarks precisely." },
            pl: { full: "computed tomography (tomografia komputerowa)", d: "Obrazowanie rentgenowskie dobrze pokazujące kość, używane do dokładnej lokalizacji punktów kostnych." } },
-    DOI: { en: { full: "digital object identifier", d: "A permanent address for a paper or dataset — it keeps working when the web link rots." },
-           pl: { full: "digital object identifier (cyfrowy identyfikator dokumentu)", d: "Trwały adres pracy lub zbioru danych — działa nawet wtedy, gdy zwykły odnośnik przestanie działać." } },
+    DOI: { en: { full: "digital object identifier", d: "A permanent address for a paper or dataset. It keeps working when the web link rots." },
+           pl: { full: "digital object identifier (cyfrowy identyfikator dokumentu)", d: "Trwały adres pracy lub zbioru danych. Działa nawet wtedy, gdy zwykły odnośnik przestanie działać." } },
 
     // ---- ISB landmark codes: only on the page that defines them ----
     ASIS: { pages: ["isb.html"], en: { full: "anterior superior iliac spine", d: "The bony point at the front of the pelvic rim you can feel through the skin. Two of them define the pelvis axes." },
             pl: { full: "kolec biodrowy przedni górny", d: "Punkt kostny z przodu talerza biodrowego, wyczuwalny przez skórę. Dwa takie punkty wyznaczają osie miednicy." } },
     PSIS: { pages: ["isb.html"], en: { full: "posterior superior iliac spine", d: "The matching bony point at the back of the pelvis, felt as a dimple." },
             pl: { full: "kolec biodrowy tylny górny", d: "Odpowiadający punkt kostny z tyłu miednicy, wyczuwalny jako zagłębienie." } },
-    MM:   { pages: ["isb.html"], en: { full: "medial malleolus", d: "The bump on the inner side of the ankle — the tip of the tibia." },
-            pl: { full: "kostka przyśrodkowa", d: "Wyniosłość po wewnętrznej stronie stawu skokowego — koniec kości piszczelowej." } },
-    LM:   { pages: ["isb.html"], en: { full: "lateral malleolus", d: "The bump on the outer side of the ankle — the tip of the fibula." },
-            pl: { full: "kostka boczna", d: "Wyniosłość po zewnętrznej stronie stawu skokowego — koniec kości strzałkowej." } },
+    MM:   { pages: ["isb.html"], en: { full: "medial malleolus", d: "The bump on the inner side of the ankle, the tip of the tibia." },
+            pl: { full: "kostka przyśrodkowa", d: "Wyniosłość po wewnętrznej stronie stawu skokowego, koniec kości piszczelowej." } },
+    LM:   { pages: ["isb.html"], en: { full: "lateral malleolus", d: "The bump on the outer side of the ankle, the tip of the fibula." },
+            pl: { full: "kostka boczna", d: "Wyniosłość po zewnętrznej stronie stawu skokowego, koniec kości strzałkowej." } },
     IM:   { pages: ["isb.html"], en: { full: "inter-malleolar point", d: "The point midway between the two malleoli. It is the origin of the tibia/fibula coordinate system." },
             pl: { full: "punkt międzykostkowy", d: "Punkt w połowie odległości między obiema kostkami. Stanowi początek układu współrzędnych piszczeli i strzałki." } },
     IC:   { pages: ["isb.html"], en: { full: "inter-condylar point", d: "The point midway between the medial and lateral tibial condyles." },
             pl: { full: "punkt międzykłykciowy", d: "Punkt w połowie odległości między kłykciem przyśrodkowym a bocznym piszczeli." } },
-    GH:   { pages: ["isb.html"], en: { full: "glenohumeral rotation centre", d: "Not a palpable landmark — it has to be estimated by regression or from the motion itself." },
-            pl: { full: "środek obrotu stawu ramienno-łopatkowego", d: "Nie jest punktem wyczuwalnym palpacyjnie — trzeba go oszacować regresją lub z samego ruchu." } },
-    IJ:   { pages: ["isb.html"], en: { full: "incisura jugularis", d: "The suprasternal notch — the dip you can feel at the top of the breastbone. Origin of the thorax axes." },
+    GH:   { pages: ["isb.html"], en: { full: "glenohumeral rotation centre", d: "Not a palpable landmark. It has to be estimated by regression or from the motion itself." },
+            pl: { full: "środek obrotu stawu ramienno-łopatkowego", d: "Nie jest punktem wyczuwalnym palpacyjnie, trzeba go oszacować regresją lub z samego ruchu." } },
+    IJ:   { pages: ["isb.html"], en: { full: "incisura jugularis", d: "The suprasternal notch, the dip you can feel at the top of the breastbone. Origin of the thorax axes." },
             pl: { full: "wcięcie szyjne mostka", d: "Zagłębienie wyczuwalne u góry mostka. Początek układu osi klatki piersiowej." } },
     PX:   { pages: ["isb.html"], en: { full: "processus xiphoideus", d: "The xiphoid process, the lowest point of the sternum." },
             pl: { full: "wyrostek mieczykowaty", d: "Najniżej położony punkt mostka." } },
