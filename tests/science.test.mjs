@@ -9,7 +9,7 @@
 // Zero dependencies on purpose: this has to keep working in five years without an
 // npm install. Exit code 1 on any failure, so CI can gate on it.
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -443,12 +443,23 @@ group("Inverse dynamics", () => {
 group("Scientific contracts", () => {
   const required = ["learningGoal", "measured", "calculated", "modelled",
                     "assumptions", "cannotConclude", "primarySources"];
-  const pages = read("nav.js").match(/href:\s*"([a-z0-9]+\.html)"/g)
-    ?.map(s => s.match(/"([^"]+)"/)[1]) || [];
+  // The nav is generated from the catalogue now, so the check that matters is
+  // the other direction: every station must point at a page that exists, and
+  // every page must be in the catalogue.
+  const onDisk = readdirSync(ROOT).filter(f => f.endsWith(".html"));
   const known = new Set(STATIONS.list.map(s => s.page));
-
-  for (const p of pages) {
-    ok(known.has(p), `nav page ${p} has a station entry`);
+  for (const st of STATIONS.list) {
+    ok(existsSync(join(ROOT, st.page)), `${st.id}: page ${st.page} exists on disk`);
+  }
+  for (const f of onDisk) {
+    ok(known.has(f), `page ${f} is listed in the station catalogue`);
+  }
+  // Every page must load the catalogue BEFORE nav.js, which now depends on it.
+  for (const f of onDisk) {
+    const html = read(f);
+    const si = html.indexOf("stations.js"), ni = html.indexOf("nav.js");
+    ok(si !== -1 && ni !== -1 && si < ni,
+       `${f}: loads stations.js before nav.js`, `stations at ${si}, nav at ${ni}`);
   }
 
   for (const st of STATIONS.list) {

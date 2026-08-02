@@ -4,38 +4,32 @@
 
 (function () {
   "use strict";
-  const NAV = [
+  // The menu is generated from stations.js, so a station added to the catalogue
+  // appears here automatically and can never be listed under the wrong track.
+  // Home and Explorer stay as singles: they are entry points, not track members.
+  const SINGLES = [
     { href: "index.html", en: "Home ✦", pl: "Start ✦" },
     { href: "explorer.html", en: "Explorer", pl: "Eksplorator" },
-    {
-      g: { en: "Movement", pl: "Ruch" }, items: [
-        { href: "lab.html", en: "The Forge ⚡", pl: "Kuźnia ⚡" },
-        { href: "gait3d.html", en: "Real Gait 🚶", pl: "Prawdziwy chód 🚶" },
-        { href: "sandbox.html", en: "Gait Lab 🦿", pl: "Laboratorium chodu 🦿" },
-      ]
-    },
-    {
-      g: { en: "Body", pl: "Ciało" }, items: [
-        { href: "body3d.html", en: "The Anatomy 🦴", pl: "Anatomia 🦴" },
-        { href: "sls.html", en: "Knee Control 🦵", pl: "Kontrola kolana 🦵" },
-      ]
-    },
-    {
-      g: { en: "Muscle & Joint", pl: "Mięśnie i stawy" }, items: [
-        { href: "muscle.html", en: "Levers 💪", pl: "Dźwignie 💪" },
-        { href: "dyno.html", en: "Muscle Dyno 🔬", pl: "Dynamometr 🔬" },
-        { href: "spine.html", en: "Spine 🩻", pl: "Kręgosłup 🩻" },
-      ]
-    },
-    {
-      g: { en: "Learn", pl: "Nauka" }, items: [
-        { href: "lesson.html", en: "Anatomy of a Step 📖", pl: "Anatomia kroku 📖" },
-        { href: "glossary.html", en: "Glossary 📗", pl: "Słownik pojęć 📗" },
-        { href: "isb.html", en: "The ISB Standard 📐", pl: "Standard ISB 📐" },
-        { href: "dynamics.html", en: "Inverse Dynamics 🧮", pl: "Dynamika odwrotna 🧮" },
-      ]
-    },
   ];
+  const TRACK_ORDER = ["movement", "forces", "measurement", "clinical"];
+
+  function buildModel() {
+    const S = window.STATIONS;
+    if (!S) return SINGLES.slice();            // stations.js missing: degrade, do not break
+    const out = SINGLES.slice();
+    TRACK_ORDER.forEach(t => {
+      const items = S.inTrack(t)
+        .filter(st => st.page !== "explorer.html")
+        .sort((a, b) => (a.level === b.level ? 0 : a.level === "beginner" ? -1 : 1))
+        .map(st => ({
+          href: st.page,
+          en: st.title.en + " " + st.icon,
+          pl: st.title.pl + " " + st.icon,
+        }));
+      if (items.length) out.push({ g: S.TRACKS[t], items, track: t });
+    });
+    return out;
+  }
 
   const file = (location.pathname.split("/").pop() || "index.html").toLowerCase() || "index.html";
   const lang = () => (window.i18n && window.i18n.lang === "pl" ? "pl" : "en");
@@ -46,7 +40,7 @@
     if (!ul) return;
     const L = lang();
     ul.innerHTML = "";
-    NAV.forEach(node => {
+    buildModel().forEach(node => {
       if (node.items) {
         const li = document.createElement("li");
         li.className = "nav-group" + (node.items.some(it => isActive(it.href)) ? " active-group" : "");
@@ -55,6 +49,7 @@
         btn.setAttribute("aria-haspopup", "true");
         btn.setAttribute("aria-expanded", "false");
         btn.innerHTML = node.g[L] + ' <span class="nav-caret">▾</span>';
+        if (node.track) li.style.setProperty("--tc", node.g.colour);
         btn.addEventListener("click", e => {
           e.stopPropagation();
           const open = !li.classList.contains("open");
