@@ -598,16 +598,16 @@
   // internal muscle force, and a "force of motion" that does not exist at all.
   const FBD = [
     {
-      id: "stand",
+      id: "stand", m: 70,
       n: { en: "Standing still", pl: "Stanie nieruchomo" },
       body: { en: "The whole person, 70 kg", pl: "Cały człowiek, 70 kg" },
       fig: "🧍",
       forces: [
-        { id: "grav", in: true, dir: "down", mag: 1,
+        { id: "grav", in: true, dir: "down", mag: 1, sym: "W", N: 686.7,
           n: { en: "Gravity on the person, 687 N", pl: "Grawitacja działająca na człowieka, 687 N" },
           why: { en: "Correct. Gravity reaches in without touching, so it is always on the diagram.",
                  pl: "Poprawnie. Grawitacja sięga bez dotykania, więc zawsze jest na rysunku." } },
-        { id: "grf", in: true, dir: "up", mag: 1,
+        { id: "grf", in: true, dir: "up", mag: 1, sym: "N", N: 686.7,
           n: { en: "Ground pushing up on the feet, 687 N", pl: "Podłoże pchające stopy w górę, 687 N" },
           why: { en: "Correct. The floor touches the body, so its push belongs here. It must equal 687 N, because the person is not accelerating.",
                  pl: "Poprawnie. Podłoga dotyka ciała, więc jej pchnięcie należy do rysunku. Musi wynosić 687 N, bo człowiek nie przyspiesza." } },
@@ -624,12 +624,12 @@
               pl: "Dwie siły, równe i przeciwne, siła wypadkowa zero, brak przyspieszenia. Wszystko inne albo działało na inne ciało, albo kryło się wewnątrz tego." },
     },
     {
-      id: "fall",
+      id: "fall", m: 70,
       n: { en: "Mid-fall, before landing", pl: "W trakcie upadku, przed lądowaniem" },
       body: { en: "The whole person, 70 kg, in the air", pl: "Cały człowiek, 70 kg, w powietrzu" },
       fig: "🤸",
       forces: [
-        { id: "grav", in: true, dir: "down", mag: 1,
+        { id: "grav", in: true, dir: "down", mag: 1, sym: "W", N: 686.7,
           n: { en: "Gravity on the person, 687 N", pl: "Grawitacja działająca na człowieka, 687 N" },
           why: { en: "Correct, and at low speed it is very nearly the only one. That is why the acceleration comes out at about 9.81 m/s² whatever the person weighs.",
                  pl: "Poprawnie, a przy małej prędkości jest niemal jedyna. Dlatego przyspieszenie wychodzi około 9,81 m/s² niezależnie od masy człowieka." } },
@@ -646,16 +646,16 @@
               pl: "Jedna siła. Siła wypadkowa 687 N w dół, przyspieszenie 9,81 m/s² w dół. To najprostszy diagram sił, jaki istnieje, i jest prosty dlatego, że nic nie dotyka ciała." },
     },
     {
-      id: "lift",
+      id: "lift", m: 70,
       n: { en: "In a lift starting upwards", pl: "W windzie ruszającej w górę" },
       body: { en: "The whole person, 70 kg, accelerating up at 2 m/s²", pl: "Cały człowiek, 70 kg, przyspieszający w górę z 2 m/s²" },
       fig: "🛗",
       forces: [
-        { id: "grav", in: true, dir: "down", mag: 1,
+        { id: "grav", in: true, dir: "down", mag: 1, sym: "W", N: 686.7,
           n: { en: "Gravity on the person, 687 N", pl: "Grawitacja działająca na człowieka, 687 N" },
           why: { en: "Correct, and unchanged. Gravity does not care that the lift is moving.",
                  pl: "Poprawnie i bez zmian. Grawitacji nie obchodzi, że winda jedzie." } },
-        { id: "floor", in: true, dir: "up", mag: 1.2,
+        { id: "floor", in: true, dir: "up", mag: 1.2, sym: "N", N: 826.7,
           n: { en: "Lift floor pushing up, 827 N", pl: "Podłoga windy pchająca w górę, 827 N" },
           why: { en: "Correct, and this is the one that changed. For the person to accelerate up at 2 m/s², the net force must be 70 × 2 = 140 N upwards, so the floor must push 687 + 140 = 827 N. That extra 140 N is the whole sensation of a lift starting, and it is why a scale would read heavier.",
                  pl: "Poprawnie i to właśnie ta się zmieniła. Aby człowiek przyspieszał w górę z 2 m/s², siła wypadkowa musi wynosić 70 × 2 = 140 N w górę, więc podłoga musi pchać 687 + 140 = 827 N. Te dodatkowe 140 N to całe odczucie ruszającej windy i dlatego waga pokazałaby więcej." } },
@@ -669,12 +669,30 @@
     },
   ];
 
+  // Sign bookkeeping, kept apart from the drawing so the test suite can drive it.
+  // axis = +1 means "up is positive", axis = -1 means "down is positive". Nothing
+  // in here privileges either, which is the entire point.
+  const FBDMATH = {
+    component: (f, axis) => f.N * (f.dir === "up" ? 1 : -1) * axis,
+    solve(scenarioId, axis) {
+      const s = FBD.find(x => x.id === scenarioId);
+      if (!s || !axis) return null;
+      const terms = s.forces.filter(f => f.in).map(f => ({
+        sym: f.sym, magnitude: f.N, signed: FBDMATH.component(f, axis),
+      }));
+      const sumF = terms.reduce((t, x) => t + x.signed, 0);
+      const aSigned = sumF / s.m;
+      return { terms, sumF, aSigned, aMagnitude: Math.abs(aSigned), m: s.m };
+    },
+  };
+  window.__physicsFBD = { FBD, FBDMATH };
+
   function fbdDemo(host) {
     if (!host) return;
-    let si = 0, picked = {}, checked = false;
+    let si = 0, picked = {}, checked = false, axis = 0;   // axis 0 = not chosen yet
     const sc = () => FBD[si];
 
-    function reset() { picked = {}; checked = false; }
+    function reset() { picked = {}; checked = false; axis = 0; }
 
     function figure() {
       const s = sc(), W = 250, H = 260, cx = 125, cy = 130;
@@ -688,18 +706,105 @@
         arrows +=
           '<line x1="' + cx + '" y1="' + cy + '" x2="' + cx + '" y2="' + y2 +
             '" class="fbd-arw fbd-' + good + '" marker-end="url(#fbd-' + (up ? "u" : "d") + "-" + good + ')"/>';
+        // Once an axis exists, every arrow carries its sign under that convention.
+        if (axis && f.in && f.sym) {
+          const sgn = FBDMATH.component(f, axis) >= 0 ? "+" : "−";
+          arrows += '<text x="' + (cx + 13) + '" y="' + ((cy + y2) / 2 + 4) +
+            '" class="fbd-sign ' + (sgn === "+" ? "fbd-pos" : "fbd-neg") + '">' + sgn + f.sym + "</text>";
+        }
       });
+      // the axis marker, drawn only after the reader has committed to one
+      if (axis) {
+        const ax = 34, ay = axis > 0 ? 74 : 40, ay2 = axis > 0 ? 40 : 74;
+        arrows += '<line x1="' + ax + '" y1="' + ay + '" x2="' + ax + '" y2="' + ay2 +
+          '" class="fbd-axis" marker-end="url(#fbd-' + (axis > 0 ? "u" : "d") + '-axis)"/>' +
+          '<text x="' + (ax + 9) + '" y="' + (axis > 0 ? 44 : 78) + '" class="fbd-axis-l">+y</text>';
+      }
       const head = (id, col) =>
         '<marker id="' + id + '" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">' +
         '<polygon points="0 0, 10 4, 0 8" fill="' + col + '"/></marker>';
       return '<svg viewBox="0 0 ' + W + " " + H + '" class="fbd-svg"><defs>' +
         ["u", "d"].map(d => head("fbd-" + d + "-pend", "#7c9bff") + head("fbd-" + d + "-ok", "#5eead4") +
-                            head("fbd-" + d + "-bad", "#ff6f5e")).join("") + "</defs>" +
+                            head("fbd-" + d + "-bad", "#ff6f5e") + head("fbd-" + d + "-axis", "#ffd166")).join("") + "</defs>" +
         '<rect x="6" y="6" width="' + (W - 12) + '" height="' + (H - 12) + '" rx="12" class="fbd-box"/>' +
         arrows +
         '<text x="' + cx + '" y="' + (cy + 16) + '" class="fbd-fig">' + s.fig + "</text>" +
         '<circle cx="' + cx + '" cy="' + cy + '" r="4" class="fbd-com"/>' +
         "</svg>";
+    }
+
+
+    // ------------------------------------------------ step five: the positive axis
+    // Nothing is chosen by default and nothing proceeds without a choice. Letting
+    // the page quietly assume "up" would teach the rule this step exists to
+    // dismantle: that up and right are somehow intrinsically positive.
+    function axisStep() {
+      const s = sc();
+      if (!axis) {
+        return '<div class="fbd-axis-step"><div class="fbd-step5">' +
+            '<span class="fbd-step5-n">5</span>' +
+            "<b>" + T("Which direction will you call positive?",
+                      "Który kierunek nazwiesz dodatnim?") + "</b>" +
+          "</div>" +
+          '<p class="fbd-axis-p">' +
+            T("You have a correct diagram and you still cannot write an equation, because a plus sign has no meaning until you say which way it points. Pick one. There is no wrong answer here, and that is the lesson.",
+              "Masz poprawny rysunek i nadal nie możesz zapisać równania, bo znak plus nic nie znaczy, dopóki nie powiesz, w którą stronę wskazuje. Wybierz jeden. Nie ma tu złej odpowiedzi i to jest właśnie ta lekcja.") +
+          "</p>" +
+          '<div class="fbd-axis-btns">' +
+            '<button class="fbd-axis-btn" data-ax="1">↑ ' + T("upwards is positive", "w górę jest dodatnie") + "</button>" +
+            '<button class="fbd-axis-btn" data-ax="-1">↓ ' + T("downwards is positive", "w dół jest dodatnie") + "</button>" +
+          "</div></div>";
+      }
+
+      const r = FBDMATH.solve(s.id, axis);
+      const round = v => (Math.abs(v) < 0.05 ? 0 : v);
+      // Positive terms first, purely so the equation reads the way one would say it.
+      const ordered = r.terms.slice().sort((a, b) => b.signed - a.signed);
+      const lhs = ordered.map((t, i) => {
+        const neg = t.signed < 0;
+        return (i === 0 ? (neg ? "−" : "") : (neg ? " − " : " + ")) + t.sym;
+      }).join("");
+      const nums = ordered.map((t, i) => {
+        const neg = t.signed < 0;
+        return (i === 0 ? (neg ? "−" : "") : (neg ? " − " : " + ")) + Math.round(t.magnitude);
+      }).join("");
+      const moving = Math.abs(r.aSigned) > 0.01;
+      const rhs = moving ? "m · a" : "0";
+
+      return '<div class="fbd-axis-step done">' +
+        '<div class="fbd-axis-head">' +
+          "<b>" + (axis > 0 ? T("Upwards is positive", "W górę jest dodatnie")
+                            : T("Downwards is positive", "W dół jest dodatnie")) + "</b>" +
+          '<button class="fbd-flip" id="fbdFlip">' +
+            T("Flip the axis and watch", "Odwróć oś i patrz") + "</button>" +
+        "</div>" +
+        '<div class="fbd-eq">' +
+          '<div class="fbd-eq-row"><span>' + T("Signs from your axis", "Znaki z Twojej osi") + "</span>" +
+            "<code>" + lhs + " = " + rhs + "</code></div>" +
+          '<div class="fbd-eq-row"><span>' + T("Numbers in", "Podstawione liczby") + "</span>" +
+            "<code>" + nums + " = " + (moving ? s.m + " · a" : "0") + "</code></div>" +
+          '<div class="fbd-eq-row"><span>' + T("Net force", "Siła wypadkowa") + "</span>" +
+            "<code>" + fix(round(r.sumF), 0) + " N</code></div>" +
+          '<div class="fbd-eq-row fbd-eq-out"><span>' + T("Acceleration", "Przyspieszenie") + "</span>" +
+            "<code>a = " + fix(round(r.aSigned), 2) + " m/s²</code></div>" +
+        "</div>" +
+        '<p class="fbd-axis-note">' + axisNote(r) + "</p>" +
+        "</div>";
+    }
+
+    function axisNote(r) {
+      const s = sc();
+      if (s.id === "stand")
+        return T("Nothing accelerates, so the two forces cancel and the equation says zero either way. Flip the axis: both signs swap, and zero stays zero. The bookkeeping changed and the physics did not.",
+                 "Nic nie przyspiesza, więc obie siły znoszą się i równanie daje zero w obu wariantach. Odwróć oś: oba znaki się zamieniają, a zero pozostaje zerem. Zmieniła się buchalteria, a nie fizyka.");
+      if (s.id === "fall")
+        return axis > 0
+          ? T("The acceleration came out negative. That does NOT mean slowing down. It means the acceleration points the opposite way to the axis you chose, which is downwards, which is exactly where a falling person accelerates. Its size is 9.81 m/s² whichever way you set the axis.",
+              "Przyspieszenie wyszło ujemne. To NIE znaczy zwalniania. Znaczy, że przyspieszenie jest skierowane przeciwnie do wybranej przez Ciebie osi, czyli w dół, czyli dokładnie tam, gdzie przyspiesza spadający człowiek. Jego wartość to 9,81 m/s² niezależnie od ustawienia osi.")
+          : T("Now the same fall gives a positive acceleration, because you pointed the axis the same way the motion goes. Nothing about the fall changed. A sign is a statement about your axis, not about the world.",
+              "Teraz ten sam upadek daje dodatnie przyspieszenie, bo skierowałeś oś tak samo jak ruch. W upadku nic się nie zmieniło. Znak jest wypowiedzią o Twojej osi, a nie o świecie.");
+      return T("The floor pushes with 827 N under either convention. Only the signs moved. That invariance is the point of the whole step: if flipping your axis changed a physical force, you would have made an arithmetic mistake.",
+               "Podłoga naciska siłą 827 N przy obu konwencjach. Zmieniły się tylko znaki. Ta niezmienniczość jest sednem całego kroku: gdyby odwrócenie osi zmieniło siłę fizyczną, oznaczałoby to błąd rachunkowy.");
     }
 
     function paint() {
@@ -747,7 +852,8 @@
                    : T("Read the explanations above. The forces you should not draw are not imaginary; they are real forces that act somewhere else, or inside the body you chose.",
                        "Przeczytaj wyjaśnienia powyżej. Siły, których nie należy rysować, nie są wyimaginowane; to prawdziwe siły działające gdzie indziej albo wewnątrz wybranego przez Ciebie ciała.")) +
             "</div>"
-          : "");
+          : "") +
+        (checked && right ? axisStep() : "");
 
       host.querySelectorAll(".ph-chip").forEach(b =>
         b.onclick = () => { si = +b.dataset.s; reset(); paint(); });
@@ -757,6 +863,10 @@
         if (checked) { reset(); } else { checked = true; }
         paint();
       };
+      host.querySelectorAll(".fbd-axis-btn").forEach(b =>
+        b.onclick = () => { axis = +b.dataset.ax; paint(); });
+      const flip = host.querySelector("#fbdFlip");
+      if (flip) flip.onclick = () => { axis = -axis; paint(); };
     }
     paint();
   }

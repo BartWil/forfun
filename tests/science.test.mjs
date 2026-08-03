@@ -826,6 +826,83 @@ group("Physics station", () => {
     ok(js.includes("70 × 2 = 140"), "the lift scenario shows where the extra force comes from");
   }
 
+
+  // Step five: the sign convention. The whole teaching claim is that either axis
+  // is valid and the physics is unchanged, so that invariance gets pinned hard.
+  {
+    const M = new Function(`
+      const noop = () => {};
+      const el = { style:{}, classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},
+                   appendChild:noop, remove:noop, addEventListener:noop, setAttribute:noop,
+                   querySelector:()=>null, querySelectorAll:()=>[], innerHTML:"", textContent:"",
+                   dataset:{}, getBoundingClientRect:()=>({left:0,top:0,width:0,height:0,bottom:0}) };
+      const document = { readyState:"complete", addEventListener:noop, getElementById:()=>null,
+                         querySelector:()=>null, querySelectorAll:()=>[], createElement:()=>el, body:el };
+      const window = { addEventListener:noop, devicePixelRatio:1, innerWidth:1280, innerHeight:800 };
+      const location = { pathname:"/physics.html" };
+      ${read("physics.js")}
+      return window.__physicsFBD;
+    `)();
+    ok(!!M, "physics.js exposes the free-body sign maths");
+
+    if (M) {
+      const near = (a, b, t) => Math.abs(a - b) < (t || 1e-9);
+      const ids = ["stand", "fall", "lift"];
+
+      // 1. flipping the axis flips every component
+      let flipsOk = true, magsOk = true, accelOk = true;
+      for (const id of ids) {
+        const up = M.FBDMATH.solve(id, 1), dn = M.FBDMATH.solve(id, -1);
+        up.terms.forEach((t, i) => {
+          if (!near(t.signed, -dn.terms[i].signed)) flipsOk = false;
+          if (!near(t.magnitude, dn.terms[i].magnitude)) magsOk = false;
+        });
+        if (!near(up.aSigned, -dn.aSigned)) accelOk = false;
+        if (!near(up.aMagnitude, dn.aMagnitude)) accelOk = false;
+      }
+      ok(flipsOk, "reversing the positive axis reverses every force component");
+      ok(accelOk, "reversing the axis reverses the signed acceleration but not its size");
+      ok(magsOk, "the physical force magnitudes are unchanged by the axis choice");
+
+      // 4. standing is in equilibrium under either convention
+      ok(near(M.FBDMATH.solve("stand", 1).sumF, 0) && near(M.FBDMATH.solve("stand", -1).sumF, 0),
+         "standing gives zero net force in either convention");
+
+      // 5. free fall accelerates at g either way
+      const fu = M.FBDMATH.solve("fall", 1), fd = M.FBDMATH.solve("fall", -1);
+      ok(near(fu.aMagnitude, 9.81, 5e-3) && near(fd.aMagnitude, 9.81, 5e-3),
+         "free fall gives an acceleration of g in either convention",
+         `${fu.aMagnitude.toFixed(3)} and ${fd.aMagnitude.toFixed(3)}`);
+      ok(fu.aSigned < 0 && fd.aSigned > 0,
+         "with up positive the falling acceleration is negative, with down positive it is positive");
+
+      // 6. the lift floor force is 827 N either way
+      const lu = M.FBDMATH.solve("lift", 1), ld = M.FBDMATH.solve("lift", -1);
+      const floorU = lu.terms.find(t => t.sym === "N").magnitude;
+      const floorD = ld.terms.find(t => t.sym === "N").magnitude;
+      ok(Math.round(floorU) === 827 && Math.round(floorD) === 827,
+         "the lift floor pushes with 827 N in either convention",
+         `${floorU.toFixed(1)} and ${floorD.toFixed(1)}`);
+      ok(near(Math.abs(lu.sumF), 140, 0.2) && near(lu.aMagnitude, 2, 1e-3),
+         "the lift's leftover force is m*a, 140 N and 2 m/s²");
+
+      // 8. no axis, no answer
+      ok(M.FBDMATH.solve("stand", 0) === null,
+         "the builder cannot be completed without an explicit axis choice");
+    }
+
+    // 7. nothing may imply that up or right is intrinsically positive
+    const js = read("physics.js"), html = read("physics.html"), i18n = read("i18n.js");
+    const all = js + html + i18n;
+    ok(!/up (is|and right are) (always|intrinsically|naturally) positive/i.test(all) &&
+       !/(zawsze|z natury) dodatni[ea]? jest w gór[ęe]/i.test(all),
+       "nothing claims that up or right is intrinsically positive");
+    ok(/There is no wrong answer here/.test(js) && /Nie ma tu złej odpowiedzi/.test(js),
+       "the axis step says explicitly that either choice is valid, in both languages");
+    ok(/does NOT mean slowing down/i.test(js),
+       "a negative acceleration is explained as a direction, not as slowing down");
+  }
+
   // The contents list is generated from the headings, so it cannot describe a
   // page that no longer exists. What can break is the wiring.
   ok(/querySelectorAll\("main \.ph-sec > \.ph-h2"\)/.test(read("physics.js")),
