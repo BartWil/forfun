@@ -384,6 +384,55 @@
       },
     },
 
+    {
+      id: "emg", page: "emg.html", icon: "\u26a1", track: "measurement",
+      level: "beginner", status: "verified", prerequisites: [],
+      title: { en: "EMG Lab", pl: "Laboratorium EMG" },
+      blurb: { en: "Real unprocessed muscle electricity. Process it yourself and watch the answer move.",
+               pl: "Prawdziwa, nieprzetworzona elektryczno\u015b\u0107 mi\u0119\u015bnia. Przetw\u00f3rz j\u0105 sam i patrz, jak zmienia si\u0119 wynik." },
+      contract: {
+        learningGoal: {
+          en: "Take a raw EMG recording through filtering, rectification, enveloping and normalisation yourself, and say what the resulting number can and cannot support.",
+          pl: "Samodzielnie przeprowadzi\u0107 surowy zapis EMG przez filtracj\u0119, prostowanie, obwiedni\u0119 i normalizacj\u0119 oraz powiedzie\u0107, co wynikowa liczba potwierdza, a czego nie." },
+        measured: [
+          { en: "8 s of raw, unprocessed surface EMG from tibialis anterior, gastrocnemius medialis and rectus femoris, 1000 Hz, one anonymised treadmill walking trial (Santuz et al. 2021, CC BY 4.0)",
+            pl: "8 s surowego, nieprzetworzonego EMG powierzchniowego z piszczelowego przedniego, brzuchatego przy\u015brodkowego i prostego uda, 1000 Hz, jedna zanonimizowana pr\u00f3ba chodu na bie\u017cni (Santuz i wsp. 2021, CC BY 4.0)" },
+          { en: "Touchdown times for the 8 gait cycles inside the excerpt, from the same dataset",
+            pl: "Czasy kontaktu dla 8 cykli chodu w wycinku, z tego samego zbioru danych" }
+        ],
+        calculated: [
+          { en: "Every processing step, run live in the browser: zero-phase Butterworth high-pass, full-wave rectification, low-pass envelope, peak-of-trial normalisation",
+            pl: "Ka\u017cdy krok przetwarzania, liczony na bie\u017c\u0105co w przegl\u0105darce: zerofazowy filtr Butterwortha g\u00f3rnoprzepustowy, prostowanie pe\u0142nookresowe, obwiednia dolnoprzepustowa, normalizacja do szczytu pr\u00f3by" },
+          { en: "RMS, the proportion of signal power the filter removed, and median frequency before and after, from a fast Fourier transform of the excerpt",
+            pl: "RMS, udzia\u0142 mocy sygna\u0142u usuni\u0119tej przez filtr oraz cz\u0119stotliwo\u015b\u0107 mediany przed i po, z szybkiej transformaty Fouriera wycinka" }
+        ],
+        modelled: [
+          { en: "The MVC reference value only. No maximal voluntary contraction was recorded in this dataset, so it is a slider you set, labelled hypothetical wherever it appears.",
+            pl: "Wy\u0142\u0105cznie warto\u015b\u0107 odniesienia MVC. W tym zbiorze nie zarejestrowano maksymalnego skurczu dowolnego, wi\u0119c jest to suwak ustawiany przez Ciebie, oznaczony wsz\u0119dzie jako hipotetyczny." }
+        ],
+        assumptions: [
+          { en: "One trial from one participant. Nothing here is a group average.",
+            pl: "Jedna pr\u00f3ba jednego uczestnika. Nic tutaj nie jest \u015bredni\u0105 grupow\u0105." },
+          { en: "A second-order Butterworth applied forward and backward, which is zero-phase and effectively fourth order, matching the published pipeline's intent",
+            pl: "Filtr Butterwortha drugiego rz\u0119du zastosowany w prz\u00f3d i wstecz, czyli zerofazowy i efektywnie czwartego rz\u0119du, zgodnie z zamys\u0142em opublikowanego pipeline\u2019u" }
+        ],
+        cannotConclude: [
+          { en: "How much force any muscle produced. Surface EMG amplitude does not convert to force.",
+            pl: "Ile si\u0142y wytworzy\u0142 kt\u00f3rykolwiek mi\u0119sie\u0144. Amplituda powierzchniowego EMG nie przelicza si\u0119 na si\u0142\u0119." },
+          { en: "Which of two muscles is working harder. After peak-of-trial normalisation the two scales are unrelated, and raw millivolts are not comparable between electrode sites either.",
+            pl: "Kt\u00f3ry z dw\u00f3ch mi\u0119\u015bni pracuje ci\u0119\u017cej. Po normalizacji do szczytu pr\u00f3by obie skale s\u0105 niepowi\u0105zane, a surowe miliwolty te\u017c nie s\u0105 por\u00f3wnywalne mi\u0119dzy miejscami elektrod." },
+          { en: "That one filter setting is correct. There is no true activation curve waiting to be recovered; the envelope's shape is a choice.",
+            pl: "\u017be jedno ustawienie filtru jest poprawne. Nie ma prawdziwej krzywej aktywacji czekaj\u0105cej na odtworzenie; kszta\u0142t obwiedni jest wyborem." },
+          { en: "Anything clinical about this participant. It is one 8-second excerpt, shown to teach method.",
+            pl: "Niczego klinicznego o tym uczestniku. To jeden o\u015bmiosekundowy wycinek pokazany, by uczy\u0107 metody." }
+        ],
+        primarySources: [
+          { cite: "Santuz A et al. Zenodo 5171823, 2021 (CC BY 4.0)", url: "https://doi.org/10.5281/zenodo.5171823" },
+          { cite: "De Luca CJ et al. J Biomech 43:1573-1579, 2010", url: "" }
+        ],
+      },
+    },
+
     // --------------------------------------------------- clinical interpretation
     {
       id: "sandbox", page: "sandbox.html", icon: "🦿", track: "clinical",

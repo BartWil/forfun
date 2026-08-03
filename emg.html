@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EMG Lab · BioLab Play</title>
+<meta name="description" content="Eight seconds of real, unprocessed muscle electricity. Filter it, rectify it, smooth it and normalise it yourself, then see how much the answer depended on your choices." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=53" />
+<link rel="stylesheet" href="emg.css?v=53" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks"></ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label" data-i18n="eg.label">What the electrode recorded, and what you did to it</div>
+    <h1 class="lab-title eg-title" data-i18n="eg.title">EMG Lab</h1>
+    <p class="lab-sub" data-i18n-html="eg.sub">
+      Below is eight seconds of a real person walking, recorded from three muscles at a
+      thousand samples a second. It has not been filtered, rectified, smoothed or scaled.
+      It is the raw electrical mess the electrodes actually saw. Everything that turns
+      that mess into the clean activation curve you see in papers is a <b>choice someone
+      made</b>, and on this page the choices are yours. Make them, then look at what your
+      number is worth. <b>Hover any underlined phrase to see the source.</b>
+    </p>
+    <p class="eg-prov" id="egProv">loading…</p>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="eg-sec">
+    <p class="eg-p" data-i18n-html="eg.intro">
+      Work through the seven steps in order. Each one shows you the signal as it stands,
+      and the controls that apply to it. Steps two and six ask you to commit to an answer
+      before you see the result, which is the only way to find out whether you actually
+      believed it.
+    </p>
+  </section>
+
+  <div id="egLab" class="eg-lab"></div>
+
+  <section class="eg-sec">
+    <h2 class="eg-h2" data-i18n="eg.s1.h">Why a filter is never free</h2>
+    <p class="eg-p" data-i18n-html="eg.s1.p">
+      The published analysis of these data used a
+      <span class="q" data-q="hp50">50 Hz high-pass</span>, of
+      <span class="q" data-q="order">fourth order</span>, followed by rectification and a
+      <span class="q" data-q="lp20">20 Hz low-pass envelope</span>. Those numbers are the
+      authors' choice for their question, not a universal standard for electromyography.
+      A different group analysing the same recording could reasonably pick differently:
+      <span class="q" data-q="deluca">around 20 Hz is a widely used general-purpose
+      compromise</span>, and the trade is always the same one. A higher cutoff removes more
+      movement artefact, and removes more real muscle signal with it.
+    </p>
+    <p class="eg-p" data-i18n-html="eg.s1.p2">
+      That is why step two draws a third trace: <b>what the filter threw away</b>. It is
+      simply the raw signal minus the filtered one. Watch it while you move the cutoff.
+      At 10 Hz it is nearly flat. At 50 Hz it carries visible bursts that line up with the
+      steps, because a filter cannot tell a muscle from an artefact. It only knows
+      frequency.
+    </p>
+  </section>
+
+  <section class="eg-sec">
+    <h2 class="eg-h2" data-i18n="eg.s2.h">There is no true activation curve</h2>
+    <p class="eg-p" data-i18n-html="eg.s2.p">
+      Step four smooths the rectified signal into an envelope. Try 3, 6, 10 and 20 Hz in
+      turn. At 3 Hz you get a calm, confident-looking hump per step. At 20 Hz you get a
+      jagged thing that keeps changing its mind. <b>Both come from exactly the same
+      muscle.</b> Neither is the real activation, because activation is not a quantity the
+      electrode measured. The envelope is an estimate whose shape you selected, and the
+      papers that show you a beautiful smooth curve have selected one too. They usually
+      say which, in the methods section, in one line most readers skip.
+    </p>
+  </section>
+
+  <section class="eg-sec">
+    <h2 class="eg-h2" data-i18n="eg.s3.h">The denominator decides the number</h2>
+    <p class="eg-p" data-i18n-html="eg.s3.p">
+      Step five is where amplitude gets its units, and where most misreadings are born.
+      <b>Raw millivolts</b> cannot be compared between people, between sessions, or even
+      between two electrodes on the same person, because the voltage that reaches the skin
+      depends on fat, skin impedance and exactly where you stuck the sensor.
+      <b>Peak of trial</b> fixes that by dividing each muscle by its own maximum, which
+      makes timing comparable and makes amplitude meaningless across muscles.
+      <b>Percent MVC</b> divides by a maximal voluntary contraction instead.
+    </p>
+    <p class="eg-p" data-i18n-html="eg.s3.p2">
+      There is a problem with the third one here, and rather than hide it we made it the
+      exercise. <span class="q" data-q="nomvc">No maximal contraction was recorded in this
+      dataset</span>, so the MVC on this page is a slider, not a measurement. It is expressed
+      in the same units as the envelope it divides. Drag it from 0.60 down to 0.10 mV and
+      watch this identical recording report <b>27%, then 40%, then 80%, then 159%</b> of
+      maximum. Nothing about the muscle changed. Only your denominator did. And when it
+      passes 100, resist the urge to call it impossible: a reference contraction that was
+      not truly maximal does exactly this.
+    </p>
+  </section>
+
+  <section class="eg-sec">
+    <h2 class="eg-h2" data-i18n="eg.s4.h">What this station is actually teaching</h2>
+    <p class="eg-p" data-i18n-html="eg.s4.p">
+      Not electromyography. The habit underneath it: keeping three things apart that are
+      easy to blur together. <b>What the instrument recorded.</b> <b>What the analyst did
+      to it.</b> <b>What may honestly be concluded from the result.</b> On this page you
+      have done all three yourself, which means that the next time you read a figure
+      captioned "muscle activation", you will know how many decisions are sitting behind
+      that curve, and you will know to look for them in the methods.
+    </p>
+  </section>
+
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p data-i18n="footer.tagline">BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=53"></script>
+<script src="stations.js?v=53"></script>
+<script src="nav.js?v=53"></script>
+<script src="emg.js?v=53"></script>
+<script src="contract-panel.js?v=53"></script>
+<script src="abbr.js?v=53"></script>
+</body>
+</html>
