@@ -738,6 +738,63 @@ group("Physics station", () => {
   ok(!/the only thing that can move a body/.test(js),
      "does not claim the ground is the only thing that can move a body");
 
+
+  // The interactive moment arm exists to teach that M depends on the
+  // perpendicular distance, not the grip distance. These are the invariants that
+  // have to hold for the demo to be teaching that rather than something adjacent.
+  {
+    const TQ = new Function(`
+      const noop = () => {};
+      const el = { style:{}, classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},
+                   appendChild:noop, remove:noop, addEventListener:noop, setAttribute:noop,
+                   querySelector:()=>null, querySelectorAll:()=>[], innerHTML:"", textContent:"",
+                   dataset:{}, getBoundingClientRect:()=>({left:0,top:0,width:0,height:0,bottom:0}) };
+      const document = { readyState:"complete", addEventListener:noop, getElementById:()=>null,
+                         querySelector:()=>null, querySelectorAll:()=>[], createElement:()=>el, body:el };
+      const window = { addEventListener:noop, devicePixelRatio:1, innerWidth:1280, innerHeight:800 };
+      const location = { pathname:"/physics.html" };
+      ${read("physics.js")}
+      return window.__physicsTorque;
+    `)();
+
+    ok(!!TQ, "physics.js exposes its torque maths for testing");
+    if (TQ) {
+      const near = (a, b, tol) => Math.abs(a - b) < (tol || 1e-9);
+      const r = 0.30, F = 100;
+
+      ok(near(TQ.moment(r, F, 0), 0), "theta = 0 gives exactly zero moment",
+         "pulling along the lever cannot turn it, however hard");
+      ok(near(TQ.moment(r, F, 180), 0), "theta = 180 also gives zero moment");
+      ok(near(TQ.moment(r, F, 90), r * F), "theta = 90 gives the full r*F",
+         `${TQ.moment(r, F, 90)} against ${r * F}`);
+
+      let worst = 0;
+      for (let th = -180; th <= 180; th += 3)
+        worst = Math.max(worst, Math.abs(TQ.dPerp(r, th) - Math.abs(r * Math.sin(th * Math.PI / 180))));
+      ok(worst < 1e-12, "d_perp equals r*sin(theta) at every angle", "worst " + worst.toExponential(2));
+
+      // reversing the force reverses the turn
+      ok(TQ.moment(r, F, 45) > 0 && TQ.moment(r, F, 45 + 180) < 0,
+         "reversing the force direction flips the sign of the moment",
+         `${TQ.moment(r, F, 45).toFixed(3)} then ${TQ.moment(r, F, 225).toFixed(3)}`);
+      ok(near(TQ.moment(r, F, 45), -TQ.moment(r, F, 225)),
+         "the reversed moment is equal and opposite, not merely negative");
+
+      // linearity in both factors
+      ok(near(TQ.moment(r, 2 * F, 37), 2 * TQ.moment(r, F, 37)), "doubling F doubles the moment");
+      ok(near(TQ.moment(2 * r, F, 37), 2 * TQ.moment(r, F, 37)), "doubling d_perp doubles the moment");
+
+      // the teaching case: same grip, same force, less moment
+      ok(TQ.moment(r, F, 45) < TQ.moment(r, F, 90) &&
+         near(TQ.moment(r, F, 45) / TQ.moment(r, F, 90), Math.SQRT1_2),
+         "at 45 degrees the same grip and force give about 71% of the moment",
+         (TQ.moment(r, F, 45) / TQ.moment(r, F, 90) * 100).toFixed(1) + "%");
+    }
+    ok(/spanner/i.test(read("physics.js")), "the moment arm is introduced on a neutral lever, not the biceps");
+    ok(read("physics.html").indexOf('id="phTorque"') < read("physics.html").indexOf('id="phMoment"'),
+       "the neutral spanner demo comes before the forearm one");
+  }
+
   // the free-body-diagram section the review asked for
   for (const k of ["ph.s4b.q1h", "ph.s4b.q2h", "ph.s4b.q3h", "ph.s4b.q4h"])
     ok(html.includes(k), `free-body diagram step ${k.slice(-3)} is present`);

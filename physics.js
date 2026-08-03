@@ -555,6 +555,147 @@
     paint();
   }
 
+
+  // ==================================================== moment arm, interactive
+  //
+  //     M = r F sin(theta) = F d_perp
+  //
+  // The one sentence this demo exists to deliver: the moment does not depend on
+  // how far from the pivot you grabbed the thing. It depends on the perpendicular
+  // distance from the pivot to the LINE the force acts along. Those two are equal
+  // only when you pull at a right angle, which is the case textbooks draw and the
+  // reason the distinction gets missed.
+  //
+  // Pure geometry, so the maths is exposed for the test suite rather than
+  // duplicated there.
+  const TORQUE = {
+    dPerp: (r, thetaDeg) => Math.abs(r * Math.sin(thetaDeg * Math.PI / 180)),
+    moment: (r, F, thetaDeg) => r * F * Math.sin(thetaDeg * Math.PI / 180),
+  };
+  window.__physicsTorque = TORQUE;
+
+  function torqueDemo(host) {
+    let r = 0.30, F = 100, th = 90;
+    const PRESETS = [
+      { th: 90, n: { en: "90°, square on", pl: "90°, prostopadle" },
+        d: { en: "the biggest moment this force can give", pl: "największy moment, jaki ta siła może dać" } },
+      { th: 45, n: { en: "45°, angled", pl: "45°, pod kątem" },
+        d: { en: "same force, same grip, about 71% of the moment", pl: "ta sama siła, ten sam chwyt, około 71% momentu" } },
+      { th: 0, n: { en: "0°, along the lever", pl: "0°, wzdłuż dźwigni" },
+        d: { en: "same force, same grip, no moment at all", pl: "ta sama siła, ten sam chwyt, zero momentu" } },
+    ];
+
+    function svg() {
+      const W = 620, H = 300, ox = 110, oy = 200;   // pivot on screen
+      const SC = 420;                                // metres to pixels
+      const px = ox + r * SC, py = oy;               // point of application
+      const rad = th * Math.PI / 180;
+      const ux = Math.cos(rad), uy = -Math.sin(rad); // force direction, screen y is down
+
+      // foot of the perpendicular dropped from the pivot onto the line of action
+      const wx = ox - px, wy = oy - py;
+      const t = wx * ux + wy * uy;
+      const qx = px + t * ux, qy = py + t * uy;
+
+      const dp = TORQUE.dPerp(r, th);
+      const M = TORQUE.moment(r, F, th);
+      const L = 460;                                  // half-length of the drawn line of action
+      const aLen = 30 + F * 0.42;                     // arrow length scales with the force
+
+      const line = (x1, y1, x2, y2, cls) =>
+        '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) +
+        '" y2="' + y2.toFixed(1) + '" class="' + cls + '"/>';
+
+      return '<svg viewBox="0 0 ' + W + " " + H + '" class="ph-tq-svg" preserveAspectRatio="xMidYMid meet">' +
+        '<defs><marker id="tqhead" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto">' +
+          '<polygon points="0 0, 9 3.5, 0 7" fill="#ffd166"/></marker></defs>' +
+        // the line the force acts along, extended both ways
+        line(px - ux * L, py - uy * L, px + ux * L, py + uy * L, "tq-line") +
+        // the lever itself
+        line(ox, oy, ox + 0.46 * SC, oy, "tq-lever") +
+        // the perpendicular from the pivot to that line
+        line(ox, oy, qx, qy, "tq-perp") +
+        // r, from pivot to the point of application
+        line(ox, oy, px, py, "tq-r") +
+        // the force arrow
+        '<line x1="' + px.toFixed(1) + '" y1="' + py.toFixed(1) + '" x2="' + (px + ux * aLen).toFixed(1) +
+          '" y2="' + (py + uy * aLen).toFixed(1) + '" class="tq-force" marker-end="url(#tqhead)"/>' +
+        '<circle cx="' + ox + '" cy="' + oy + '" r="7" class="tq-pivot"/>' +
+        '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="4.5" class="tq-point"/>' +
+        (dp > 0.004 ? '<circle cx="' + qx.toFixed(1) + '" cy="' + qy.toFixed(1) + '" r="3.5" class="tq-foot"/>' : "") +
+        '<text x="' + (ox + r * SC / 2) + '" y="' + (oy + 19) + '" class="tq-lab tq-lab-r">r = ' + fix(r, 2) + " m</text>" +
+        (dp > 0.02
+          ? '<text x="' + ((ox + qx) / 2 + 8).toFixed(1) + '" y="' + ((oy + qy) / 2 - 7).toFixed(1) +
+            '" class="tq-lab tq-lab-d">d⊥ = ' + fix(dp, 3) + " m</text>"
+          : '<text x="' + (ox + 14) + '" y="' + (oy - 14) + '" class="tq-lab tq-lab-d">d⊥ = 0</text>') +
+        '<text x="' + (px + ux * aLen + (ux > 0 ? 8 : -54)).toFixed(1) + '" y="' +
+          (py + uy * aLen - 8).toFixed(1) + '" class="tq-lab tq-lab-f">F = ' + fix(F, 0) + " N</text>" +
+        "</svg>";
+    }
+
+    function paint() {
+      const dp = TORQUE.dPerp(r, th), M = TORQUE.moment(r, F, th);
+      const maxM = r * F;
+      host.innerHTML =
+        '<div class="ph-demo-h">' + T("Where the perpendicular actually is", "Gdzie naprawdę jest ta prostopadła") + "</div>" +
+        '<p class="ph-demo-p">' +
+          T("A spanner on a bolt, before any anatomy. Drag the angle first and watch the two distances come apart: r is where your hand is, d⊥ is what the bolt feels. They agree only at 90°.",
+            "Klucz na śrubie, zanim pojawi się jakakolwiek anatomia. Najpierw pociągnij za kąt i patrz, jak te dwie odległości się rozjeżdżają: r to miejsce, gdzie masz dłoń, a d⊥ to, co czuje śruba. Zgadzają się tylko przy 90°.") +
+        "</p>" +
+        '<div class="ph-tq-presets">' + PRESETS.map((pr, i) =>
+          '<button class="ph-tq-preset' + (Math.abs(th - pr.th) < 0.5 ? " on" : "") + '" data-p="' + i + '">' +
+            "<b>" + L(pr.n) + "</b><em>" + L(pr.d) + "</em></button>").join("") + "</div>" +
+        '<div class="ph-tq-stage">' + svg() + "</div>" +
+        '<div class="ph-tq-legend">' +
+          '<span class="tq-k tq-k-r"></span>' + T("r, to your hand", "r, do Twojej dłoni") +
+          '<span class="tq-k tq-k-line"></span>' + T("line of action", "linia działania siły") +
+          '<span class="tq-k tq-k-perp"></span>' + T("d⊥, what counts", "d⊥, to, co się liczy") +
+        "</div>" +
+        '<label class="ph-slider"><span>' + T("Angle of the force, θ", "Kąt działania siły, θ") + "</span>" +
+          '<input type="range" id="phTh" min="-180" max="180" step="1" value="' + th + '"><b>' + fix(th, 0) + "°</b></label>" +
+        '<label class="ph-slider"><span>' + T("Where you grip, r", "Gdzie chwytasz, r") + "</span>" +
+          '<input type="range" id="phR" min="0.05" max="0.45" step="0.01" value="' + r + '"><b>' + fix(r, 2) + " m</b></label>" +
+        '<label class="ph-slider"><span>' + T("Force, F", "Siła, F") + "</span>" +
+          '<input type="range" id="phFF" min="10" max="300" step="5" value="' + F + '"><b>' + fix(F, 0) + " N</b></label>" +
+        '<div class="ph-formula ph-formula-sm ph-tq-eq">' +
+          '<span class="sym" data-sym="M">M</span><span class="op">=</span>' +
+          "<i>r</i><span class=\"op\">·</span><span class=\"sym\" data-sym=\"F\">F</span><span class=\"op\">·</span>sin θ" +
+          '<span class="op">=</span><span class="sym" data-sym="F">F</span><span class="op">·</span>' +
+          '<span class="sym" data-sym="d">d⊥</span><span class="op">=</span><b>' + fix(M, 2) + " N·m</b></div>" +
+        '<div class="ph-readout">' +
+          '<div class="ph-read"><span>' + T("Grip distance r", "Odległość chwytu r") + "</span><b>" + fix(r, 2) + " m</b></div>" +
+          '<div class="ph-read ph-read-move"><span>' + T("Moment arm d⊥ = r · sin θ", "Ramię siły d⊥ = r · sin θ") +
+            "</span><b>" + fix(dp, 3) + " m</b><em>" + fix(r, 2) + " × sin " + fix(th, 0) + "°</em></div>" +
+          '<div class="ph-read"><span>' + T("Moment", "Moment") + "</span><b>" + fix(M, 2) + " N·m</b></div>" +
+          '<div class="ph-read"><span>' + T("Fraction of the best you could get", "Ułamek tego, co najlepsze możliwe") +
+            "</span><b>" + (maxM > 0 ? fix(Math.abs(M) / maxM * 100, 0) : "0") + " %</b></div>" +
+        "</div>" +
+        '<div class="ph-demo-note">' + note(dp, M) + "</div>";
+
+      host.querySelector("#phTh").oninput = e => { th = +e.target.value; paint(); };
+      host.querySelector("#phR").oninput = e => { r = +e.target.value; paint(); };
+      host.querySelector("#phFF").oninput = e => { F = +e.target.value; paint(); };
+      host.querySelectorAll(".ph-tq-preset").forEach(b =>
+        b.onclick = () => { th = PRESETS[+b.dataset.p].th; paint(); });
+      wireSyms(host);
+    }
+
+    function note(dp, M) {
+      if (Math.abs(M) < 0.06)
+        return T("The force is pointing straight along the lever, so its line of action passes through the pivot itself. The perpendicular distance is zero, and so is the moment, no matter how hard you pull. Push a door exactly towards its hinge and it will not swing.",
+                 "Siła jest skierowana dokładnie wzdłuż dźwigni, więc jej linia działania przechodzi przez samą oś obrotu. Odległość prostopadła wynosi zero i moment też, niezależnie od tego, jak mocno ciągniesz. Naciśnij drzwi dokładnie w stronę zawiasu, a się nie obrócą.");
+      if (M < 0)
+        return T("The moment has changed sign. The force now turns the spanner the other way. Nothing about how hard you pull has changed, only the direction, and direction is half of what a force is.",
+                 "Moment zmienił znak. Siła obraca teraz klucz w drugą stronę. Nic się nie zmieniło w tym, jak mocno ciągniesz, tylko kierunek, a kierunek to połowa tego, czym jest siła.");
+      if (Math.abs(Math.abs(th) - 90) < 3)
+        return T("Square on, and only here do r and d⊥ agree. This is the case textbooks draw, which is exactly why the difference between the two is so easy to miss.",
+                 "Prostopadle, i tylko tutaj r i d⊥ są sobie równe. To ten przypadek, który rysują podręczniki, i właśnie dlatego różnicę między nimi tak łatwo przeoczyć.");
+      return T("Notice r has not moved. Your hand is in the same place and you are pulling just as hard, yet the moment has dropped, because the perpendicular distance from the pivot to the line of action has shrunk. That distance, not your grip, is what the bolt responds to.",
+               "Zwróć uwagę, że r się nie zmieniło. Twoja dłoń jest w tym samym miejscu i ciągniesz tak samo mocno, a mimo to moment spadł, bo skurczyła się prostopadła odległość od osi do linii działania siły. To ta odległość, a nie Twój chwyt, jest tym, na co reaguje śruba.");
+    }
+    paint();
+  }
+
   // ============================================================ moment demo
   function momentDemo(host) {
     let load = 50, dist = 0.30;
@@ -783,6 +924,7 @@
     motionDemo(document.getElementById("phMotion"));
     secondDemo(document.getElementById("phSecond"));
     thirdDemo(document.getElementById("phThird"));
+    torqueDemo(document.getElementById("phTorque"));
     momentDemo(document.getElementById("phMoment"));
     quiz(document.getElementById("phQuiz"));
     cheat(document.getElementById("phCheat"));
