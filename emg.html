@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=53" />
-<link rel="stylesheet" href="emg.css?v=53" />
+<link rel="stylesheet" href="style.css?v=55" />
+<link rel="stylesheet" href="emg.css?v=55" />
 </head>
 <body>
 
@@ -57,8 +57,12 @@
     <p class="eg-p" data-i18n-html="eg.s1.p">
       The published analysis of these data used a
       <span class="q" data-q="hp50">50 Hz high-pass</span>, of
-      <span class="q" data-q="order">fourth order</span>, followed by rectification and a
-      <span class="q" data-q="lp20">20 Hz low-pass envelope</span>. Those numbers are the
+      <span class="q" data-q="order">fourth order</span>, applied forwards and backwards
+      so it adds no time shift, followed by rectification and a
+      <span class="q" data-q="lp20">20 Hz low-pass envelope</span> of the same order.
+      This page runs that same filter: the browser's output is checked against
+      <span class="q" data-q="oracle">a reference implementation and against the
+      closed-form Butterworth response</span> every time the tests run. Those numbers are the
       authors' choice for their question, not a universal standard for electromyography.
       A different group analysing the same recording could reasonably pick differently:
       <span class="q" data-q="deluca">around 20 Hz is a widely used general-purpose
@@ -71,6 +75,21 @@
       At 10 Hz it is nearly flat. At 50 Hz it carries visible bursts that line up with the
       steps, because a filter cannot tell a muscle from an artefact. It only knows
       frequency.
+    </p>
+  </section>
+
+  <section class="eg-sec">
+    <h2 class="eg-h2" data-i18n="eg.s5.h">Why the edges are shaded</h2>
+    <p class="eg-p" data-i18n-html="eg.s5.p">
+      Zero-phase filtering runs the filter forwards and then backwards, so every
+      estimate needs signal on <em>both</em> sides of it. At the very start and the very
+      end there is no such signal, so the filter is handed an invented extension of the
+      recording and is partly talking to itself. The first and last <b>half second</b> are
+      shaded for that reason, and <b>every metric on this page is computed on the interior
+      only</b>. The published workflow reaches the same conclusion by a different route:
+      it discards the first and last gait cycle before analysis. Edge effects are not a
+      flaw peculiar to this page. They are a property of the method, and knowing where
+      your numbers stop being trustworthy is part of using it.
     </p>
   </section>
 
@@ -130,11 +149,11 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=53"></script>
-<script src="stations.js?v=53"></script>
-<script src="nav.js?v=53"></script>
-<script src="emg.js?v=53"></script>
-<script src="contract-panel.js?v=53"></script>
-<script src="abbr.js?v=53"></script>
+<script src="i18n.js?v=55"></script>
+<script src="stations.js?v=55"></script>
+<script src="nav.js?v=55"></script>
+<script src="emg.js?v=55"></script>
+<script src="contract-panel.js?v=55"></script>
+<script src="abbr.js?v=55"></script>
 </body>
 </html>

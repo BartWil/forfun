@@ -10,6 +10,7 @@
 // npm install. Exit code 1 on any failure, so CI can gate on it.
 
 import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -501,6 +502,180 @@ group("Scientific contracts", () => {
     ok(st && st.status === "synthetic", `${p}: declared synthetic, not verified`,
        st ? st.status : "missing");
   }
+});
+
+
+// ================================================ 8. EMG DSP against an oracle
+//
+// The EMG Lab says it runs the Santuz pipeline. That is a factual claim about
+// code, so it gets tested like one, two independent ways:
+//
+//   A. Against scipy. scripts/make_emg_reference.py processes the committed
+//      excerpt with scipy.signal.butter(4)/filtfilt, the same design and the
+//      same forward-backward application as R's signal package, which is what
+//      the published analysis used. The browser's own filter is then run over
+//      the identical input and compared sample by sample.
+//
+//   B. Against mathematics. A Butterworth of order n has magnitude
+//      |H(f)| = 1/sqrt(1 + (f/fc)^(2n)) for a low-pass. Applying it forward and
+//      backward squares that. Pure sinusoids are pushed through the browser's
+//      filter and the measured gain is checked against the closed form, which
+//      depends on no other implementation at all.
+//
+// Test B is the one that would have caught the original bug: a 2nd-order section
+// run forward and backward gives 1/(1+(f/fc)^4), not 1/(1+(f/fc)^8), and half an
+// octave inside a 50 Hz high-pass those differ roughly fifteenfold.
+group("EMG signal processing", () => {
+  // Run emg.js exactly as shipped, in a stubbed browser, and take the DSP it
+  // publishes. Rewriting the file to extract functions would test a copy.
+  const DSP = new Function(`
+    const noop = () => {};
+    const el = { style:{}, classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},
+                 appendChild:noop, remove:noop, addEventListener:noop, setAttribute:noop,
+                 querySelector:()=>null, querySelectorAll:()=>[], innerHTML:"", textContent:"",
+                 dataset:{}, getBoundingClientRect:()=>({left:0,top:0,width:0,height:0,bottom:0}) };
+    const document = { readyState:"complete", addEventListener:noop, getElementById:()=>null,
+                       querySelector:()=>null, querySelectorAll:()=>[], createElement:()=>el, body:el };
+    const window = { addEventListener:noop, devicePixelRatio:1, innerWidth:1280, innerHeight:800 };
+    const location = { pathname:"/emg.html" };
+    const fetch = () => Promise.reject(new Error("no network in tests"));
+    ${read("emg.js")}
+    return window.__emgDSP;
+  `)();
+
+  ok(!!DSP && typeof DSP.filtfilt === "function", "emg.js exposes its DSP for testing");
+  if (!DSP) return;
+  ok(DSP.ORDER === 4, "filter order is 4, matching the published pipeline", "order " + DSP.ORDER);
+
+  // ---- B: closed-form Butterworth magnitude response
+  const fs = 1000, N = 8192;
+  function gainAt(freq, fc, high) {
+    const x = new Float64Array(N);
+    for (let i = 0; i < N; i++) x[i] = Math.sin(2 * Math.PI * freq * i / fs);
+    const y = DSP.filtfilt(x, fc, fs, high);
+    // measure on the interior only, away from the padded ends
+    const a = Math.floor(N * 0.25), b = Math.floor(N * 0.75);
+    let px = 0, py = 0;
+    for (let i = a; i < b; i++) { px += x[i] * x[i]; py += y[i] * y[i]; }
+    return Math.sqrt(py / px);
+  }
+  const n = DSP.ORDER;
+  // filtfilt applies |H| twice, so the expected gain is |H|^2
+  const wantLow = (f, fc) => 1 / (1 + Math.pow(f / fc, 2 * n));
+  const wantHigh = (f, fc) => 1 / (1 + Math.pow(fc / f, 2 * n));
+
+  let worstLow = 0, worstHigh = 0;
+  for (const [f, fc] of [[10, 50], [25, 50], [50, 50], [100, 50], [200, 50], [400, 50]]) {
+    const got = gainAt(f, fc, true), want = wantHigh(f, fc);
+    worstHigh = Math.max(worstHigh, Math.abs(got - want));
+  }
+  for (const [f, fc] of [[2, 20], [10, 20], [20, 20], [40, 20], [80, 20]]) {
+    const got = gainAt(f, fc, false), want = wantLow(f, fc);
+    worstLow = Math.max(worstLow, Math.abs(got - want));
+  }
+  ok(worstHigh < 2e-3, "high-pass matches the closed-form Butterworth response",
+     "worst gain error " + worstHigh.toExponential(2));
+  ok(worstLow < 2e-3, "low-pass matches the closed-form Butterworth response",
+     "worst gain error " + worstLow.toExponential(2));
+
+  // The response must be order 4, not order 2. At half the cutoff the two differ
+  // by about fifteenfold, so this pins the order independently of the constant.
+  {
+    const got = gainAt(25, 50, true);
+    const order4 = wantHigh(25, 50), order2 = 1 / (1 + Math.pow(50 / 25, 4));
+    ok(Math.abs(got - order4) < Math.abs(got - order2) / 5,
+       "response is 4th order, not a 2nd-order section run twice",
+       `measured ${got.toExponential(3)}, order-4 ${order4.toExponential(3)}, order-2 ${order2.toExponential(3)}`);
+  }
+
+  // ---- A: sample-by-sample against scipy
+  if (!existsSync(join(ROOT, "data/emg/reference_santuz.csv"))) {
+    ok(false, "reference_santuz.csv exists (run scripts/make_emg_reference.py)");
+    return;
+  }
+  const parse = txt => {
+    const meta = {}; let header = null; const rows = [];
+    for (const line of txt.split(/\r?\n/)) {
+      if (!line.trim()) continue;
+      if (line.replace(/^"/, "").startsWith("#")) {
+        const p = line.replace(/^"?#\s*/, "").split(",");
+        if (p.length >= 2) meta[p[0].trim().replace(/"$/, "")] = p.slice(1).join(",").trim();
+        continue;
+      }
+      if (!header) { header = line.split(",").map(s => s.trim()); continue; }
+      rows.push(line.split(",").map(Number));
+    }
+    const cols = {};
+    header.forEach((h, i) => (cols[h] = rows.map(r => r[i])));
+    return { meta, cols };
+  };
+
+  const src = parse(read("data/emg/santuz2021_demo.csv"));
+  const ref = parse(read("data/emg/reference_santuz.csv"));
+  const SR = parseInt(src.meta.sampling_rate_hz, 10) || 1000;
+  const idx = ref.cols.sample_index;
+  const EDGE = Math.round(0.5 * SR);          // the region the station shades
+
+  for (const ch of ["ta", "gm", "rf"]) {
+    const raw = Float64Array.from(src.cols[ch + "_mv"]);
+    const hp = DSP.filtfilt(raw, 50, SR, true);
+    const rect = hp.map(Math.abs);
+    let env = DSP.filtfilt(rect, 20, SR, false);
+    env = env.map(v => (v < 0 ? 0 : v));
+    let mn = Infinity; for (const v of env) if (v < mn) mn = v;
+    env = env.map(v => v - mn);
+
+    let wHpIn = 0, wEnvIn = 0, wHpEdge = 0, wEnvEdge = 0;
+    let sHp = 0, sEnv = 0, nIn = 0;
+    for (let k = 0; k < idx.length; k++) {
+      const i = idx[k];
+      const dHp = Math.abs(hp[i] - ref.cols[ch + "_hp"][k]);
+      const dEnv = Math.abs(env[i] - ref.cols[ch + "_env"][k]);
+      const edge = i < EDGE || i >= raw.length - EDGE;
+      if (edge) { wHpEdge = Math.max(wHpEdge, dHp); wEnvEdge = Math.max(wEnvEdge, dEnv); }
+      else {
+        wHpIn = Math.max(wHpIn, dHp); wEnvIn = Math.max(wEnvIn, dEnv);
+        sHp += ref.cols[ch + "_hp"][k] ** 2; sEnv += ref.cols[ch + "_env"][k] ** 2; nIn++;
+      }
+    }
+    const rmsHp = Math.sqrt(sHp / nIn), rmsEnv = Math.sqrt(sEnv / nIn);
+    // Interior agreement has to be numerical, not approximate.
+    ok(wHpIn / rmsHp < 1e-6, `${ch}: high-pass matches scipy in the interior`,
+       `worst ${wHpIn.toExponential(2)} mV against RMS ${rmsHp.toFixed(5)} mV`);
+    ok(wEnvIn / rmsEnv < 1e-6, `${ch}: envelope matches scipy in the interior`,
+       `worst ${wEnvIn.toExponential(2)} mV against RMS ${rmsEnv.toFixed(5)} mV`);
+    // Edges are allowed to differ more, and the station shades them for that reason.
+    ok(wEnvEdge / rmsEnv < 5e-2, `${ch}: envelope stays close to scipy even at the edges`,
+       `worst ${wEnvEdge.toExponential(2)} mV`);
+  }
+
+  // The page must not claim to run the published pipeline unless it is at order 4.
+  const js = read("emg.js");
+  ok(/ORDER = 4/.test(js), "emg.js pins the filter order in one place");
+  ok(!/effectively fourth order/.test(js),
+     "emg.js no longer calls a 2nd-order section 'effectively fourth order'");
+});
+
+
+// ================================================ 9. the repository stays honest
+group("Repository", () => {
+  // The README is generated from the catalogue. If someone adds a station and
+  // forgets to regenerate, the README starts lying about what the project is,
+  // which is exactly how the old one ended up describing four pages.
+  const gen = spawnSync(process.execPath, [join(ROOT, "scripts/gen_readme.mjs"), "--check"],
+                        { encoding: "utf8" });
+  ok(gen.status === 0, "README.md matches the station catalogue",
+     (gen.stderr || gen.stdout || "").trim());
+
+  for (const f of ["LICENSE", "CITATION.cff", "CONTRIBUTING.md", "README.md",
+                   "data/emg/LICENSE_DATA.md"]) {
+    ok(existsSync(join(ROOT, f)), f + " exists");
+  }
+  // Redistributed data must carry its attribution next to it.
+  const lic = read("data/emg/LICENSE_DATA.md");
+  ok(/CC BY 4\.0/.test(lic), "the redistributed excerpt states its licence");
+  ok(/10\.5281\/zenodo\.5171823/.test(lic), "the redistributed excerpt names its source");
+  ok(/scripts\/extract_emg_demo\.py/.test(lic), "the redistributed excerpt says how to regenerate it");
 });
 
 // ------------------------------------------------------------------- summary

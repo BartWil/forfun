@@ -48,6 +48,11 @@
       pl: "W tym zbiorze danych nie zarejestrowano maksymalnego skurczu dowolnego. Wartość MVC na tej stronie to liczba, którą wybierasz, a nie pomiar, i służy pokazaniu, co ten wybór zmienia.",
       c: "Santuz et al. 2021, dataset contents",
     },
+    oracle: {
+      en: "The browser filter is tested two ways on every run: sample by sample against scipy.signal.butter(4)/filtfilt over this same recording, and against the closed-form Butterworth magnitude response, which depends on no implementation at all. Interior agreement is better than one part in a million.",
+      pl: "Filtr w przeglądarce jest testowany na dwa sposoby przy każdym uruchomieniu: próbka po próbce względem scipy.signal.butter(4)/filtfilt na tym samym zapisie oraz względem analitycznej charakterystyki amplitudowej Butterwortha, która nie zależy od żadnej implementacji. Zgodność we wnętrzu zapisu jest lepsza niż jedna milionowa.",
+      c: "tests/science.test.mjs, group 'EMG signal processing'",
+    },
     over100: {
       en: "Dynamic EMG can legitimately exceed the reference contraction. Task specificity, electrode shift, fatigue, and a reference trial that was not truly maximal all push normalised values above 100%.",
       pl: "Dynamiczne EMG może zgodnie z prawdą przekroczyć skurcz referencyjny. Specyfika zadania, przesunięcie elektrod, zmęczenie oraz próba referencyjna, która nie była w pełni maksymalna, podnoszą wartości znormalizowane powyżej 100%.",
@@ -99,33 +104,109 @@
   window.addEventListener("scroll", hideTip, { passive: true });
 
   // ------------------------------------------------------- signal processing
-  // Second-order Butterworth sections, applied forward and then backward so the
-  // envelope is not shifted in time. Zero-phase, effectively fourth order, which
-  // is what the published pipeline uses.
-  function biquad(fc, fs, high) {
-    const w = Math.tan(Math.PI * fc / fs), w2 = w * w, r = Math.SQRT2;
-    const n = 1 / (1 + r * w + w2);
-    return high
-      ? { b0: n, b1: -2 * n, b2: n, a1: 2 * (w2 - 1) * n, a2: (1 - r * w + w2) * n }
-      : { b0: w2 * n, b1: 2 * w2 * n, b2: w2 * n, a1: 2 * (w2 - 1) * n, a2: (1 - r * w + w2) * n };
+  //
+  // The published pipeline is signal::butter(4, fc, type) followed by
+  // signal::filtfilt. Two things have to be right for this to be the same filter:
+  //
+  //   1. FOURTH order, not second. A Butterworth of order n is a cascade of n/2
+  //      biquads whose damping differs per section. Running one 2nd-order section
+  //      forward and backward gives |H2|^2, which rolls off far more gently than
+  //      |H4|^2. Half an octave inside a 50 Hz high-pass they differ 15-fold.
+  //   2. Zero-phase application, forward then backward, with the padding and the
+  //      steady-state initial conditions that filtfilt uses, or the first and last
+  //      few tens of milliseconds are transient rather than signal.
+  //
+  // Verified against scipy.signal.butter/filtfilt and against the closed-form
+  // Butterworth magnitude response in tests/science.test.mjs.
+
+  // Second-order sections of a Butterworth of the given (even) order. Section k
+  // has 1/Q = 2*cos((2k+1)*pi/(2*order)); for order 4 that is 1.8478 and 0.7654.
+  function butterSections(fc, fs, high, order) {
+    const w = Math.tan(Math.PI * fc / fs), w2 = w * w;
+    const out = [];
+    for (let k = 0; k < order / 2; k++) {
+      const invQ = 2 * Math.cos((2 * k + 1) * Math.PI / (2 * order));
+      const n = 1 / (1 + invQ * w + w2);
+      out.push(high
+        ? { b0: n, b1: -2 * n, b2: n, a1: 2 * (w2 - 1) * n, a2: (1 - invQ * w + w2) * n }
+        : { b0: w2 * n, b1: 2 * w2 * n, b2: w2 * n, a1: 2 * (w2 - 1) * n, a2: (1 - invQ * w + w2) * n });
+    }
+    return out;
   }
-  function pass(x, c) {
+
+  // Steady-state internal state of a transposed direct-form II biquad for a
+  // constant input of 1. This is what scipy's lfilter_zi returns, and scaling it
+  // by the first sample is what stops filtfilt starting from a step transient.
+  function sectionZi(c) {
+    const g = (c.b0 + c.b1 + c.b2) / (1 + c.a1 + c.a2);
+    return [c.b1 + c.b2 - (c.a1 + c.a2) * g, c.b2 - c.a2 * g];
+  }
+
+  function passSection(x, c, useZi) {
     const y = new Float64Array(x.length);
-    let x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    let z1 = 0, z2 = 0;
+    if (useZi) { const zi = sectionZi(c); z1 = zi[0] * x[0]; z2 = zi[1] * x[0]; }
     for (let i = 0; i < x.length; i++) {
-      const v = c.b0 * x[i] + c.b1 * x1 + c.b2 * x2 - c.a1 * y1 - c.a2 * y2;
-      x2 = x1; x1 = x[i]; y2 = y1; y1 = v; y[i] = v;
+      const v = c.b0 * x[i] + z1;
+      z1 = c.b1 * x[i] - c.a1 * v + z2;
+      z2 = c.b2 * x[i] - c.a2 * v;
+      y[i] = v;
     }
     return y;
   }
-  const reverse = a => { const o = new Float64Array(a.length); for (let i = 0; i < a.length; i++) o[i] = a[a.length - 1 - i]; return o; };
-  function filtfilt(x, fc, fs, high) {
-    const c = biquad(fc, fs, high);
-    return reverse(pass(reverse(pass(x, c)), c));
+
+  const reverse = a => {
+    const o = new Float64Array(a.length);
+    for (let i = 0; i < a.length; i++) o[i] = a[a.length - 1 - i];
+    return o;
+  };
+
+  // Odd-symmetric extension, the padding filtfilt uses by default: the signal is
+  // reflected through its own endpoint rather than mirrored, so no artificial
+  // discontinuity or peak is introduced at the join.
+  function oddPad(x, p) {
+    const n = x.length, out = new Float64Array(n + 2 * p);
+    for (let i = 0; i < p; i++) out[i] = 2 * x[0] - x[p - i];
+    out.set(x, p);
+    for (let i = 0; i < p; i++) out[n + p + i] = 2 * x[n - 1] - x[n - 2 - i];
+    return out;
   }
 
-  const rms = a => { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * a[i]; return Math.sqrt(s / a.length); };
-  const peak = a => { let m = 0; for (let i = 0; i < a.length; i++) if (a[i] > m) m = a[i]; return m; };
+  const ORDER = 4;
+  // scipy's default: 3 * max(len(a), len(b)), which is 3 * (order + 1).
+  const PADLEN = 3 * (ORDER + 1);
+
+  function filtfilt(x, fc, fs, high) {
+    const secs = butterSections(fc, fs, high, ORDER);
+    const p = Math.min(PADLEN, x.length - 1);
+    let y = oddPad(x, p);
+    for (const c of secs) y = passSection(y, c, true);
+    y = reverse(y);
+    for (const c of secs) y = passSection(y, c, true);
+    y = reverse(y);
+    return y.slice(p, p + x.length);
+  }
+
+  // Exposed so the test suite can drive the identical code path the page uses.
+  window.__emgDSP = { butterSections, filtfilt, oddPad, ORDER, PADLEN };
+
+  // Zero-phase filtering needs signal on both sides of every sample it estimates.
+  // Padding invents that signal at the two ends, so the first and last half second
+  // are partly the filter talking to itself. The station shades them and every
+  // metric is computed on the interior only. The published workflow reaches the
+  // same place by another route: it discards the first and last gait cycle.
+  const EDGE_S = 0.5;
+
+  const rms = (a, lo, hi) => {
+    lo = lo || 0; hi = hi == null ? a.length : hi;
+    let s = 0; for (let i = lo; i < hi; i++) s += a[i] * a[i];
+    return Math.sqrt(s / (hi - lo));
+  };
+  const peak = (a, lo, hi) => {
+    lo = lo || 0; hi = hi == null ? a.length : hi;
+    let m = 0; for (let i = lo; i < hi; i++) if (a[i] > m) m = a[i];
+    return m;
+  };
 
   // Iterative radix-2 FFT, real input, for the power spectrum and median frequency.
   function fftPower(x, fs) {
@@ -196,7 +277,10 @@
     const env = filtfilt(S.rectify ? rect : filt, S.lp, S.fs, false);
     for (let i = 0; i < env.length; i++) if (env[i] < 0) env[i] = 0;
 
-    const pk = peak(env) || 1;
+    const e0 = Math.round(EDGE_S * S.fs), e1 = env.length - e0;
+    // peak of trial is taken on the interior, so a filter transient at the very
+    // first sample cannot set the denominator for the whole recording
+    const pk = peak(env, e0, e1) || 1;
     let norm = env, unit = "mV";
     if (S.norm === "peak") {
       norm = new Float64Array(env.length);
@@ -208,12 +292,17 @@
       unit = "% MVC";
     }
 
-    const rawP = rms(raw), filtP = rms(filt);
+    const rawP = rms(raw, e0, e1), filtP = rms(filt, e0, e1);
     cache = {
       raw, filt, removed, rect, env, norm, unit, peak: pk,
+      e0, e1,
       rmsRaw: rawP, rmsFilt: filtP,
-      powerRemoved: rawP > 0 ? Math.max(0, 1 - (filtP * filtP) / (rawP * rawP)) : 0,
-      mfRaw: medianFreq(raw, S.fs), mfFilt: medianFreq(filt, S.fs),
+      // NOT the power of the removed trace. This is how much the mean-square
+      // power of the signal fell after filtering, which is a different and more
+      // defensible quantity, so it is worded that way in the UI.
+      msDrop: rawP > 0 ? Math.max(0, 1 - (filtP * filtP) / (rawP * rawP)) : 0,
+      mfRaw: medianFreq(raw.slice(e0, e1), S.fs),
+      mfFilt: medianFreq(filt.slice(e0, e1), S.fs),
       envPeak: pk,
     };
     cacheKey = key;
@@ -252,6 +341,21 @@
     ctx.fillText(label, x0 + 7, y0 + 13);
     if (sub) { ctx.fillStyle = C.muted; ctx.font = "400 9.5px 'JetBrains Mono',monospace";
                ctx.fillText(sub, x0 + 7, y0 + 25); }
+  }
+
+  function drawEdges(ctx, x0, y0, w, h) {
+    const dur = S.csv.time[S.csv.time.length - 1];
+    const frac = EDGE_S / dur;
+    ctx.save();
+    ctx.fillStyle = "rgba(255,111,94,.07)";
+    ctx.fillRect(x0, y0, w * frac, h);
+    ctx.fillRect(x0 + w * (1 - frac), y0, w * frac, h);
+    ctx.strokeStyle = "rgba(255,111,94,.28)"; ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath(); ctx.moveTo(x0 + w * frac, y0); ctx.lineTo(x0 + w * frac, y0 + h);
+    ctx.moveTo(x0 + w * (1 - frac), y0); ctx.lineTo(x0 + w * (1 - frac), y0 + h);
+    ctx.stroke();
+    ctx.restore();
   }
 
   function drawTouchdowns(ctx, x0, y0, w, h) {
@@ -358,6 +462,7 @@
           m = m || 1; lo = 0; hi = m * 1.06;
         }
         panel(ctx, pad, y0, w - pad * 2, rowH, r.label, r.sub);
+        drawEdges(ctx, pad, y0, w - pad * 2, rowH);
         drawTouchdowns(ctx, pad, y0, w - pad * 2, rowH);
         if (r.sym) {
           ctx.strokeStyle = "rgba(255,255,255,.07)"; ctx.beginPath();
@@ -373,6 +478,10 @@
       ctx.font = "400 9px 'JetBrains Mono',monospace"; ctx.fillStyle = C.muted;
       ctx.fillText("0 s", pad + 2, h - 1);
       ctx.fillText("8 s", w - pad - 20, h - 1);
+      ctx.fillStyle = "rgba(255,111,94,.75)";
+      ctx.fillText(T("shaded: filter edge, excluded from every metric",
+                     "cieniowane: brzeg filtru, wyłączone ze wszystkich wskaźników"),
+                   pad + 34, h - 1);
     }
     subs.push(paint);
     window.addEventListener("resize", paint);
@@ -453,16 +562,23 @@
       }
 
       if (d && stage >= 2) {
-        const pctRemoved = (d.powerRemoved * 100);
+        const pctDrop = d.msDrop * 100;
         html += '<div class="eg-metrics">' +
           metric(T("RMS raw", "RMS surowy"), d.rmsRaw.toFixed(4) + " mV") +
           metric(T("RMS filtered", "RMS po filtracji"), d.rmsFilt.toFixed(4) + " mV") +
-          metric(T("Signal power removed", "Usunięta moc sygnału"), pctRemoved.toFixed(1) + " %",
-                 pctRemoved > 60 ? "bad" : pctRemoved > 30 ? "warn" : "ok") +
+          // Deliberately not "power removed": this is the drop in mean-square
+          // power after filtering, not the power of the removed trace.
+          metric(T("Mean-square power, lower by", "Moc średniokwadratowa, niższa o"),
+                 pctDrop.toFixed(1) + " %",
+                 pctDrop > 60 ? "bad" : pctDrop > 30 ? "warn" : "ok") +
           metric(T("Median frequency raw", "Częstotliwość mediany, surowy"), d.mfRaw.toFixed(0) + " Hz") +
           metric(T("Median frequency filtered", "Częstotliwość mediany, po filtracji"), d.mfFilt.toFixed(0) + " Hz") +
           metric(T("Envelope peak", "Szczyt obwiedni"), d.envPeak.toFixed(4) + " mV") +
-          "</div>";
+          "</div>" +
+          '<p class="eg-metric-note">' +
+          T("Measured on the interior only, with the shaded filter edges excluded. The spectral shift is produced by the filter you chose. It is not evidence of fatigue or of any physiological change in the muscle.",
+            "Liczone wyłącznie we wnętrzu zapisu, z pominięciem cieniowanych brzegów filtru. Przesunięcie widma jest efektem wybranego przez Ciebie filtru. Nie jest dowodem zmęczenia ani żadnej zmiany fizjologicznej w mięśniu.") +
+          "</p>";
       }
       box.innerHTML = html;
 

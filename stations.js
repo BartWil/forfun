@@ -403,8 +403,8 @@
         calculated: [
           { en: "Every processing step, run live in the browser: zero-phase Butterworth high-pass, full-wave rectification, low-pass envelope, peak-of-trial normalisation",
             pl: "Ka\u017cdy krok przetwarzania, liczony na bie\u017c\u0105co w przegl\u0105darce: zerofazowy filtr Butterwortha g\u00f3rnoprzepustowy, prostowanie pe\u0142nookresowe, obwiednia dolnoprzepustowa, normalizacja do szczytu pr\u00f3by" },
-          { en: "RMS, the proportion of signal power the filter removed, and median frequency before and after, from a fast Fourier transform of the excerpt",
-            pl: "RMS, udzia\u0142 mocy sygna\u0142u usuni\u0119tej przez filtr oraz cz\u0119stotliwo\u015b\u0107 mediany przed i po, z szybkiej transformaty Fouriera wycinka" }
+          { en: "RMS, the drop in mean-square signal power after filtering, and median frequency before and after, from a fast Fourier transform. All computed on the interior, with the filter edges excluded.",
+            pl: "RMS, spadek mocy \u015bredniokwadratowej po filtracji oraz cz\u0119stotliwo\u015b\u0107 mediany przed i po, z szybkiej transformaty Fouriera. Wszystko liczone we wn\u0119trzu zapisu, z pomini\u0119ciem brzeg\u00f3w filtru." }
         ],
         modelled: [
           { en: "The MVC reference value only. No maximal voluntary contraction was recorded in this dataset, so it is a slider you set, labelled hypothetical wherever it appears.",
@@ -413,8 +413,8 @@
         assumptions: [
           { en: "One trial from one participant. Nothing here is a group average.",
             pl: "Jedna pr\u00f3ba jednego uczestnika. Nic tutaj nie jest \u015bredni\u0105 grupow\u0105." },
-          { en: "A second-order Butterworth applied forward and backward, which is zero-phase and effectively fourth order, matching the published pipeline's intent",
-            pl: "Filtr Butterwortha drugiego rz\u0119du zastosowany w prz\u00f3d i wstecz, czyli zerofazowy i efektywnie czwartego rz\u0119du, zgodnie z zamys\u0142em opublikowanego pipeline\u2019u" }
+          { en: "A fourth-order Butterworth applied forward and backward, the same design and application as the published pipeline. Checked against scipy and against the closed-form response on every test run.",
+            pl: "Filtr Butterwortha czwartego rz\u0119du zastosowany w prz\u00f3d i wstecz, ta sama konstrukcja i spos\u00f3b u\u017cycia co w opublikowanym pipeline. Sprawdzany wzgl\u0119dem scipy i wzgl\u0119dem analitycznej charakterystyki przy ka\u017cdym uruchomieniu test\u00f3w." }
         ],
         cannotConclude: [
           { en: "How much force any muscle produced. Surface EMG amplitude does not convert to force.",
@@ -423,6 +423,10 @@
             pl: "Kt\u00f3ry z dw\u00f3ch mi\u0119\u015bni pracuje ci\u0119\u017cej. Po normalizacji do szczytu pr\u00f3by obie skale s\u0105 niepowi\u0105zane, a surowe miliwolty te\u017c nie s\u0105 por\u00f3wnywalne mi\u0119dzy miejscami elektrod." },
           { en: "That one filter setting is correct. There is no true activation curve waiting to be recovered; the envelope's shape is a choice.",
             pl: "\u017be jedno ustawienie filtru jest poprawne. Nie ma prawdziwej krzywej aktywacji czekaj\u0105cej na odtworzenie; kszta\u0142t obwiedni jest wyborem." },
+          { en: "Fatigue, from the median-frequency readout. That shift is produced by the filter you selected, not by anything happening in the muscle.",
+            pl: "Zm\u0119czenia, na podstawie odczytu cz\u0119stotliwo\u015bci mediany. To przesuni\u0119cie wywo\u0142uje wybrany filtr, a nie cokolwiek dziej\u0105cego si\u0119 w mi\u0119\u015bniu." },
+          { en: "Anything from the shaded first and last half second, where zero-phase filtering is working on an invented extension of the recording.",
+            pl: "Niczego z cieniowanego pierwszego i ostatniego p\u00f3\u0142 sekundy, gdzie filtracja zerofazowa pracuje na zmy\u015blonym przed\u0142u\u017ceniu zapisu." },
           { en: "Anything clinical about this participant. It is one 8-second excerpt, shown to teach method.",
             pl: "Niczego klinicznego o tym uczestniku. To jeden o\u015bmiosekundowy wycinek pokazany, by uczy\u0107 metody." }
         ],

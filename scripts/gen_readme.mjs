@@ -1,4 +1,52 @@
-# BioLab Play
+// Generate README.md from stations.js.
+//
+// The old README described four pages and a cache version of v=11 while the site
+// had fifteen stations. Hand-maintained inventories rot. This one is built from
+// the catalogue, so the day a station is added the README knows about it.
+//
+//   node scripts/gen_readme.mjs           write README.md
+//   node scripts/gen_readme.mjs --check   fail if README.md is out of date
+//
+// tests/science.test.mjs runs the --check form, so a stale README breaks the build.
+
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const read = f => readFileSync(join(ROOT, f), "utf8");
+
+const STATIONS = new Function(
+  "var self={},module={};" + read("stations.js") + "; return self.STATIONS || module.exports;")();
+
+const STATUS = {
+  verified: "traceable to a published measurement",
+  reconstructed: "reconstructed from the literature",
+  synthetic: "synthetic teaching model",
+  reference: "reference material",
+};
+const TRACK_ORDER = ["movement", "forces", "measurement", "clinical"];
+
+function stationTable() {
+  let out = "";
+  for (const t of TRACK_ORDER) {
+    const items = STATIONS.inTrack(t);
+    if (!items.length) continue;
+    out += `\n### ${STATIONS.TRACKS[t].en}\n\n`;
+    out += `${STATIONS.TRACKS[t].d.en}\n\n`;
+    out += "| Station | Level | Scientific status | Page |\n";
+    out += "|---|---|---|---|\n";
+    for (const s of items) {
+      out += `| ${s.icon} **${s.title.en}**<br><sub>${s.blurb.en}</sub> | ${s.level} | ${STATUS[s.status]} | [\`${s.page}\`](${s.page}) |\n`;
+    }
+  }
+  return out;
+}
+
+const counts = TRACK_ORDER.map(t => `${STATIONS.inTrack(t).length} ${STATIONS.TRACKS[t].en.toLowerCase()}`).join(", ");
+const total = STATIONS.list.filter(s => !s.hidden).length;
+
+const README = `# BioLab Play
 
 **An interactive biomechanics laboratory for students and curious clinicians.**
 
@@ -20,51 +68,9 @@ No accounts, no tracking, no build step, no backend. Open a file and it runs.
 
 ## What is in it
 
-14 stations across four tracks (5 movement, 3 forces & mechanics, 3 measurement, 3 clinical interpretation). You can wander in anywhere, or
+${total} stations across four tracks (${counts}). You can wander in anywhere, or
 follow a track in order.
-
-### Movement
-
-What bodies actually do: walking, running, jumping, squatting.
-
-| Station | Level | Scientific status | Page |
-|---|---|---|---|
-| 🔬 **Explorer**<br><sub>Four movements, three signals, one cycle. The place to start.</sub> | beginner | traceable to a published measurement | [`explorer.html`](explorer.html) |
-| 📖 **Anatomy of a Step**<br><sub>One walking step, narrated phase by phase as you scroll.</sub> | beginner | traceable to a published measurement | [`lesson.html`](lesson.html) |
-| 🚶 **Real Gait**<br><sub>A rigged body walking on measured motion-capture angles.</sub> | intermediate | traceable to a published measurement | [`gait3d.html`](gait3d.html) |
-| 🦴 **The Anatomy**<br><sub>A 3D figure whose muscles light up with real activation.</sub> | intermediate | traceable to a published measurement | [`body3d.html`](body3d.html) |
-| ⚡ **The Forge**<br><sub>The same forces, thrown as real physics particles.</sub> | beginner | traceable to a published measurement | [`lab.html`](lab.html) |
-
-### Forces & Mechanics
-
-Why they do it: levers, moments, muscle mechanics, inverse dynamics.
-
-| Station | Level | Scientific status | Page |
-|---|---|---|---|
-| 💪 **Muscle Levers**<br><sub>Why holding 5 kg costs the biceps ten times that.</sub> | beginner | reconstructed from the literature | [`muscle.html`](muscle.html) |
-| 🔬 **Muscle Dyno**<br><sub>Length-tension and force-velocity, running as live Ruby.</sub> | intermediate | reconstructed from the literature | [`dyno.html`](dyno.html) |
-| 🧮 **Inverse Dynamics**<br><sub>Solve the joint moments yourself, from the floor up.</sub> | intermediate | traceable to a published measurement | [`dynamics.html`](dynamics.html) |
-
-### Measurement
-
-Where the numbers come from, and how far you can trust them.
-
-| Station | Level | Scientific status | Page |
-|---|---|---|---|
-| 📐 **The ISB Standard**<br><sub>Why the same knee gives different numbers in different labs.</sub> | intermediate | reference material | [`isb.html`](isb.html) |
-| 📗 **Glossary**<br><sub>Every term the rest of the site assumes you know.</sub> | beginner | reference material | [`glossary.html`](glossary.html) |
-| ⚡ **EMG Lab**<br><sub>Real unprocessed muscle electricity. Process it yourself and watch the answer move.</sub> | beginner | traceable to a published measurement | [`emg.html`](emg.html) |
-
-### Clinical interpretation
-
-Reading movement in a person, and the limits of doing so.
-
-| Station | Level | Scientific status | Page |
-|---|---|---|---|
-| 🦿 **Gait Lab**<br><sub>Switch on a deficit and watch the compensation appear.</sub> | intermediate | synthetic teaching model | [`sandbox.html`](sandbox.html) |
-| 🦵 **Knee Control**<br><sub>Frontal-plane control, and the limits of seeing it.</sub> | intermediate | synthetic teaching model | [`sls.html`](sls.html) |
-| 🩻 **Spine Under Load**<br><sub>Two classic studies, and the textbook claim they disagree on.</sub> | beginner | traceable to a published measurement | [`spine.html`](spine.html) |
-
+${stationTable()}
 
 ---
 
@@ -75,29 +81,29 @@ the source. It states, before a reader has to ask:
 
 | Field | Meaning |
 |---|---|
-| `learningGoal` | what you should be able to do afterwards |
-| `measured` | numbers that came off an instrument |
-| `calculated` | numbers derived from those, by arithmetic the page shows |
-| `modelled` | numbers that came from an assumption, not an instrument |
-| `assumptions` | what has to be true for the page to mean anything |
-| `cannotConclude` | the questions this station **cannot** answer, however tempting |
-| `primarySources` | what to read to check us |
+| \`learningGoal\` | what you should be able to do afterwards |
+| \`measured\` | numbers that came off an instrument |
+| \`calculated\` | numbers derived from those, by arithmetic the page shows |
+| \`modelled\` | numbers that came from an assumption, not an instrument |
+| \`assumptions\` | what has to be true for the page to mean anything |
+| \`cannotConclude\` | the questions this station **cannot** answer, however tempting |
+| \`primarySources\` | what to read to check us |
 
-`cannotConclude` is the load-bearing one. Every scientific error found in review
+\`cannotConclude\` is the load-bearing one. Every scientific error found in review
 of this project so far would have been caught by writing that field honestly
 first, so the test suite refuses to build if any station leaves it empty.
 
-Contracts live in [`stations.js`](stations.js) and are rendered by
-[`contract-panel.js`](contract-panel.js). Nothing is hand-written per page, so a
+Contracts live in [\`stations.js\`](stations.js) and are rendered by
+[\`contract-panel.js\`](contract-panel.js). Nothing is hand-written per page, so a
 contract cannot drift away from the station it describes.
 
 ---
 
 ## Tests
 
-```bash
+\`\`\`bash
 npm test        # or: node tests/science.test.mjs
-```
+\`\`\`
 
 These are **not** UI tests. Nothing checks that a button is blue. Every assertion
 states something that has to be true for the site to be honest, so that a commit
@@ -116,13 +122,13 @@ which changes an animation cannot quietly change the physiology:
 - inverse dynamics agrees with an independent free-body solution to 1e-9, and
   satisfies invariants: force through a joint centre leaves only segment weight,
   massless and unloaded gives exactly zero
-- the EMG filter is checked sample by sample against `scipy.signal.butter(4)` +
-  `filtfilt`, **and** against the closed-form Butterworth magnitude response
+- the EMG filter is checked sample by sample against \`scipy.signal.butter(4)\` +
+  \`filtfilt\`, **and** against the closed-form Butterworth magnitude response
 - every station's contract is complete, bilingual, and points at pages that exist
 - this README matches the catalogue
 
 Zero dependencies, on purpose: it has to still run in five years without an
-`npm install`.
+\`npm install\`.
 
 ---
 
@@ -135,7 +141,7 @@ Datasets are **cited and linked, not redistributed**, with one exception.
 | Walking and running kinematics and forces | Fukuchi et al. 2018 / 2017 | see source | no, derived curves only |
 | Running EMG | Santuz et al. 2018 | CC BY-SA 4.0 | no, derived curves only |
 | Walking EMG | Santuz et al. 2021 | CC BY 4.0 | no, derived curves only |
-| **Raw EMG excerpt, 8 s, 3 channels** | **Santuz et al. 2021** | **CC BY 4.0** | **yes**, see [`data/emg/LICENSE_DATA.md`](data/emg/LICENSE_DATA.md) |
+| **Raw EMG excerpt, 8 s, 3 channels** | **Santuz et al. 2021** | **CC BY 4.0** | **yes**, see [\`data/emg/LICENSE_DATA.md\`](data/emg/LICENSE_DATA.md) |
 
 The raw excerpt is redistributed because the EMG Lab is meaningless without a
 real unprocessed signal, and because CC BY 4.0 permits it with attribution. The
@@ -148,10 +154,10 @@ same as redistributable.**
 
 Both committed data files are reproducible from their sources:
 
-```bash
+\`\`\`bash
 python scripts/extract_emg_demo.py      # fetch and cut the raw excerpt
 python scripts/make_emg_reference.py    # regenerate the DSP test oracle
-```
+\`\`\`
 
 ---
 
@@ -159,17 +165,17 @@ python scripts/make_emg_reference.py    # regenerate the DSP test oracle
 
 There is no build step.
 
-```bash
+\`\`\`bash
 python -m http.server 8000
 # then open http://localhost:8000
-```
+\`\`\`
 
-A plain `file://` open works for most pages, but the EMG Lab fetches a CSV, so
+A plain \`file://\` open works for most pages, but the EMG Lab fetches a CSV, so
 it needs a server.
 
 ## Layout
 
-```
+\`\`\`
 *.html              one file per station
 stations.js         the catalogue and every scientific contract
 contract-panel.js   renders the contract onto every page
@@ -181,7 +187,7 @@ spline.js           cyclic interpolation
 data/emg/           the raw EMG excerpt and its test oracle
 scripts/            data extraction and this README generator
 tests/              the scientific test suite
-```
+\`\`\`
 
 ## Languages
 
@@ -191,16 +197,30 @@ citations. Language is remembered per browser.
 ## Licence
 
 Code is MIT. Educational content is CC BY 4.0. Third-party data keeps its own
-licence, listed above and in `data/emg/LICENSE_DATA.md`.
+licence, listed above and in \`data/emg/LICENSE_DATA.md\`.
 
-See [`LICENSE`](LICENSE) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
+See [\`LICENSE\`](LICENSE) and [\`CONTRIBUTING.md\`](CONTRIBUTING.md).
 
 ## Citing
 
-See [`CITATION.cff`](CITATION.cff).
+See [\`CITATION.cff\`](CITATION.cff).
 
 ---
 
-<sub>This file is generated from `stations.js` by `scripts/gen_readme.mjs`.
+<sub>This file is generated from \`stations.js\` by \`scripts/gen_readme.mjs\`.
 Edit the catalogue or the generator, not this file. The test suite checks that it
 is current.</sub>
+`;
+
+const target = join(ROOT, "README.md");
+if (process.argv.includes("--check")) {
+  const cur = existsSync(target) ? readFileSync(target, "utf8") : "";
+  if (cur.replace(/\r\n/g, "\n") !== README.replace(/\r\n/g, "\n")) {
+    console.error("README.md is out of date. Run: node scripts/gen_readme.mjs");
+    process.exit(1);
+  }
+  console.log("README.md is current");
+} else {
+  writeFileSync(target, README);
+  console.log("wrote README.md (%d stations)", total);
+}

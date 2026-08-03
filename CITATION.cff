@@ -1,0 +1,52 @@
+cff-version: 1.2.0
+title: "BioLab Play: an interactive biomechanics laboratory for students and curious clinicians"
+message: "If you use BioLab Play in teaching or research, please cite it, and cite the underlying datasets separately."
+type: software
+authors:
+  - family-names: Wilczynski
+    given-names: Bartosz
+repository-code: "https://github.com/BartWil/forfun"
+url: "https://bartwil.github.io/forfun/"
+abstract: >-
+  Browser-based interactive experiments that teach how biomechanical numbers are
+  created, manipulated and misinterpreted. Each station carries a scientific
+  contract stating what was measured, what was calculated, what was modelled, and
+  what may not be concluded. Covers gait, inverse dynamics, muscle mechanics,
+  measurement standards and EMG signal processing, in English and Polish.
+keywords:
+  - biomechanics
+  - gait analysis
+  - electromyography
+  - inverse dynamics
+  - science education
+  - measurement literacy
+  - open educational resources
+license: MIT
+license-url: "https://github.com/BartWil/forfun/blob/main/LICENSE"
+references:
+  - type: article
+    title: "OpenSim: open-source software to create and analyze dynamic simulations of movement"
+    authors:
+      - family-names: Delp
+        given-names: "Scott L."
+    journal: "IEEE Transactions on Biomedical Engineering"
+    volume: 54
+    issue: 11
+    year: 2007
+    doi: 10.1109/TBME.2007.901024
+  - type: dataset
+    title: "Sex-specific tuning of modular muscle activation patterns for locomotion in young and older adults"
+    authors:
+      - family-names: Santuz
+        given-names: Alessandro
+    year: 2021
+    doi: 10.5281/zenodo.5171823
+    notes: "Source of the raw EMG excerpt redistributed in data/emg/ under CC BY 4.0"
+  - type: article
+    title: "A public dataset of overground and treadmill walking kinematics and kinetics in healthy individuals"
+    authors:
+      - family-names: Fukuchi
+        given-names: "Claudiane A."
+    journal: PeerJ
+    year: 2018
+    doi: 10.7717/peerj.4640
