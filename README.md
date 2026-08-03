@@ -20,7 +20,7 @@ No accounts, no tracking, no build step, no backend. Open a file and it runs.
 
 ## What is in it
 
-14 stations across four tracks (5 movement, 3 forces & mechanics, 3 measurement, 3 clinical interpretation). You can wander in anywhere, or
+15 stations across four tracks (5 movement, 4 forces & mechanics, 3 measurement, 3 clinical interpretation). You can wander in anywhere, or
 follow a track in order.
 
 ### Movement
@@ -41,6 +41,7 @@ Why they do it: levers, moments, muscle mechanics, inverse dynamics.
 
 | Station | Level | Scientific status | Page |
 |---|---|---|---|
+| 🍎 **Physics, from scratch**<br><sub>Newton's laws rebuilt for anyone who barely survived school physics.</sub> | beginner | reference material | [`physics.html`](physics.html) |
 | 💪 **Muscle Levers**<br><sub>Why holding 5 kg costs the biceps ten times that.</sub> | beginner | reconstructed from the literature | [`muscle.html`](muscle.html) |
 | 🔬 **Muscle Dyno**<br><sub>Length-tension and force-velocity, running as live Ruby.</sub> | intermediate | reconstructed from the literature | [`dyno.html`](dyno.html) |
 | 🧮 **Inverse Dynamics**<br><sub>Solve the joint moments yourself, from the floor up.</sub> | intermediate | traceable to a published measurement | [`dynamics.html`](dynamics.html) |

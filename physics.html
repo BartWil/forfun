@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Physics, from scratch · BioLab Play</title>
+<meta name="description" content="Newton's laws rebuilt from zero for anyone who barely survived school physics. Every symbol explained, every unit spelled out, nothing assumed." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=58" />
+<link rel="stylesheet" href="physics.css?v=58" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks"></ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label" data-i18n="ph.label">The bit everyone pretends they remember</div>
+    <h1 class="lab-title ph-title" data-i18n="ph.title">Physics, from scratch</h1>
+    <p class="lab-sub" data-i18n-html="ph.sub">
+      Biomechanics is applied Newtonian mechanics, and almost every other station on
+      this site quietly assumes you are comfortable with it. This page stops assuming.
+      It starts from <b>what a force actually is</b> and builds up, slowly, to the three
+      laws and the one equation you will meet again everywhere. No calculus. No proofs.
+      No steps skipped because they are "obvious".
+    </p>
+    <p class="ph-promise" data-i18n-html="ph.promise">
+      Written for the person who scraped a pass in school physics, decided they were
+      "not a maths person", and has been quietly working around that ever since.
+      <b>You were not bad at this. It was taught to you in the wrong order.</b>
+    </p>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ============================================ 0. how to read this -->
+  <section class="ph-sec">
+    <div class="ph-kicker" data-i18n="ph.s0.k">Before anything else</div>
+    <h2 class="ph-h2" data-i18n="ph.s0.h">How to read a formula without panicking</h2>
+    <p class="ph-p" data-i18n-html="ph.s0.p1">
+      A formula is not a spell and it is not a test. It is a <b>sentence written in
+      shorthand</b>, and like any sentence it can be read out loud in ordinary words.
+      The only reason formulas feel hostile is that nobody reads them out loud to you.
+      So here is the deal for this page: <b>every single symbol you meet is
+      hoverable.</b> Put your mouse on it, or tap it on a phone, and you get its name,
+      what it means in plain language, its unit, an everyday analogy, a worked example
+      with real numbers, and the mistake people usually make with it.
+    </p>
+    <p class="ph-p" data-i18n-html="ph.s0.p2">
+      Try it now. Here is the equation this whole page is building towards. You are not
+      expected to understand it yet. Just hover the letters and see what happens.
+    </p>
+
+    <div class="ph-formula-demo">
+      <div class="ph-formula ph-formula-lg" data-i18n-html="ph.demo.f">
+        <span class="sym" data-sym="F">F</span>
+        <span class="op">=</span>
+        <span class="sym" data-sym="m">m</span>
+        <span class="op">·</span>
+        <span class="sym" data-sym="a">a</span>
+      </div>
+      <p class="ph-formula-say" data-i18n-html="ph.demo.say">
+        Out loud: <b>"the net force on something equals its mass times its
+        acceleration"</b>. Five words of shorthand, one sentence of meaning.
+      </p>
+    </div>
+
+    <div class="ph-note" data-i18n-html="ph.s0.note">
+      <b>One habit worth building.</b> Whenever you see a formula, do not try to
+      memorise it. Instead ask three questions: <b>what does each letter stand for,
+      what units is it in, and what happens if I make one of them bigger?</b> Those
+      three questions turn a formula from something to be feared into something you can
+      interrogate. Every section below ends with exactly that.
+    </div>
+  </section>
+
+  <!-- ============================================ 1. force -->
+  <section class="ph-sec">
+    <div class="ph-kicker" data-i18n="ph.s1.k">Concept one</div>
+    <h2 class="ph-h2" data-i18n="ph.s1.h">What a force actually is</h2>
+    <p class="ph-p" data-i18n-html="ph.s1.p1">
+      A force is <b>a push or a pull</b>. That is genuinely the whole definition, and it
+      is worth pausing on how ordinary it is. When you press a hand into a patient's
+      shoulder, that is a force. When the floor holds you up, that is a force. When the
+      Earth pulls your body down, that is a force. When a muscle shortens and drags a
+      bone towards another bone, that is a force. Nothing exotic is going on.
+    </p>
+    <p class="ph-p" data-i18n-html="ph.s1.p2">
+      What makes a force slightly more than "a push" is that it has <b>two separate
+      pieces of information</b> bundled into it, and you need both or the description is
+      useless.
+    </p>
+    <div class="ph-two">
+      <div class="ph-card">
+        <div class="ph-card-h" data-i18n="ph.s1.c1h">How hard</div>
+        <p data-i18n-html="ph.s1.c1p">
+          The size of the push, measured in
+          <span class="sym" data-sym="N">newtons</span>. A gentle nudge might be 5 N. Your
+          bodyweight pressing into the floor is several hundred. A sprinter's foot at
+          push-off can exceed 2000 N.
+        </p>
+      </div>
+      <div class="ph-card">
+        <div class="ph-card-h" data-i18n="ph.s1.c2h">Which way</div>
+        <p data-i18n-html="ph.s1.c2p">
+          The direction the push points. 200 N straight down and 200 N sideways do
+          completely different things to a body. A quantity carrying both size and
+          direction is called a <span class="sym" data-sym="vector">vector</span>.
+        </p>
+      </div>
+    </div>
+    <p class="ph-p" data-i18n-html="ph.s1.p3">
+      This is why forces in biomechanics are drawn as <b>arrows</b>. The length of the
+      arrow is how hard, the way it points is which way. If you have ever looked at a
+      gait analysis figure and wondered why there is a stick growing out of somebody's
+      foot, that is why: it is the force from the ground, drawn to scale.
+    </p>
+    <div class="ph-ask">
+      <b data-i18n="ph.ask">Ask the three questions</b>
+      <ul>
+        <li data-i18n-html="ph.s1.q1"><b>What is it?</b> A push or a pull, with a size and a direction.</li>
+        <li data-i18n-html="ph.s1.q2"><b>What unit?</b> The newton, written N.</li>
+        <li data-i18n-html="ph.s1.q3"><b>Make it bigger?</b> The thing you are pushing changes its motion faster. Exactly how much faster is the second law, further down.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================ 2. mass vs weight -->
+  <section class="ph-sec">
+    <div class="ph-kicker" data-i18n="ph.s2.k">Concept two</div>
+    <h2 class="ph-h2" data-i18n="ph.s2.h">Mass and weight are not the same word</h2>
+    <p class="ph-p" data-i18n-html="ph.s2.p1">
+      In everyday speech we use these interchangeably and it causes no harm. In
+      mechanics they are two different quantities with two different units, and mixing
+      them up is the single most common reason a calculation comes out wrong by a factor
+      of about ten. It is worth ten minutes of your life to separate them properly.
+    </p>
+    <div class="ph-two">
+      <div class="ph-card ph-card-mass">
+        <div class="ph-card-h"><span class="sym" data-sym="m">Mass</span> <em data-i18n="ph.s2.unit1">kilograms, kg</em></div>
+        <p data-i18n-html="ph.s2.c1p">
+          How much <b>stuff</b> there is. How many atoms, roughly. This is a property of
+          the object itself and it does not care where the object is. A 70 kg person is
+          70 kg on Earth, 70 kg on the Moon, and 70 kg drifting in deep space.
+          <b>Mass is also a measure of how stubborn something is</b>, which turns out to
+          matter enormously and comes back in the second law.
+        </p>
+      </div>
+      <div class="ph-card ph-card-weight">
+        <div class="ph-card-h"><span class="sym" data-sym="W">Weight</span> <em data-i18n="ph.s2.unit2">newtons, N</em></div>
+        <p data-i18n-html="ph.s2.c2p">
+          The <b>force</b> with which gravity pulls that stuff downwards. It is a force,
+          so it is measured in newtons, and it absolutely does care where you are. The
+          same 70 kg person weighs about 687 N on Earth and about 114 N on the Moon,
+          because the Moon pulls more weakly.
+        </p>
+      </div>
+    </div>
+    <p class="ph-p" data-i18n-html="ph.s2.p2">
+      The bridge between them is one small formula, and it is the first real one on this
+      page. Hover every letter.
+    </p>
+
+    <div class="ph-formula-box">
+      <div class="ph-formula">
+        <span class="sym" data-sym="W">W</span>
+        <span class="op">=</span>
+        <span class="sym" data-sym="m">m</span>
+        <span class="op">·</span>
+        <span class="sym" data-sym="g">g</span>
+      </div>
+      <p class="ph-formula-say" data-i18n-html="ph.s2.say">
+        Out loud: <b>"weight equals mass times the strength of gravity"</b>. On Earth
+        <span class="sym" data-sym="g">g</span> is about 9.81, so to get someone's weight
+        in newtons you take their mass in kilograms and multiply by roughly ten.
+      </p>
+    </div>
+
+    <div class="ph-demo" id="phWeight"></div>
+
+    <div class="ph-warn" data-i18n-html="ph.s2.warn">
+      <b>Where this bites in practice.</b> A bathroom scale is labelled in kilograms, so
+      it looks like it measures mass. It does not. It measures the force you press into
+      it and then quietly divides by 9.81 to show you a number you expect. That is
+      harmless standing still. It stops being harmless the moment you are accelerating,
+      which is exactly what a force plate exploits: stand on one and rise up quickly and
+      it will briefly read far more than your "weight", not because you gained mass, but
+      because you added an acceleration on top of gravity.
+    </div>
+
+    <div class="ph-ask">
+      <b data-i18n="ph.ask">Ask the three questions</b>
+      <ul>
+        <li data-i18n-html="ph.s2.q1"><b>What is it?</b> Mass is how much stuff. Weight is the force of gravity on that stuff.</li>
+        <li data-i18n-html="ph.s2.q2"><b>What units?</b> Mass in kilograms. Weight in newtons. Never the same unit, never interchangeable.</li>
+        <li data-i18n-html="ph.s2.q3"><b>Make mass bigger?</b> Weight goes up in proportion, and the object also becomes harder to get moving. Two separate consequences of the same number.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================ 3. acceleration -->
+  <section class="ph-sec">
+    <div class="ph-kicker" data-i18n="ph.s3.k">Concept three</div>
+    <h2 class="ph-h2" data-i18n="ph.s3.h">Acceleration, which is where most people quietly get lost</h2>
+    <p class="ph-p" data-i18n-html="ph.s3.p1">
+      If one idea on this page deserves patience, it is this one. Almost everybody who
+      says they "don't get physics" actually means they never fully separated these
+      three words, because in ordinary English they blur together. Let us pull them
+      apart with an entirely undramatic example: walking down a corridor.
+    </p>
+
+    <div class="ph-three">
+      <div class="ph-card">
+        <div class="ph-card-h"><span class="sym" data-sym="x">Position</span> <em>m</em></div>
+        <p data-i18n-html="ph.s3.c1">Where you are. Ten metres along the corridor.</p>
+      </div>
+      <div class="ph-card">
+        <div class="ph-card-h"><span class="sym" data-sym="v">Velocity</span> <em>m/s</em></div>
+        <p data-i18n-html="ph.s3.c2">How fast your position is changing. One and a half metres every second.</p>
+      </div>
+      <div class="ph-card">
+        <div class="ph-card-h"><span class="sym" data-sym="a">Acceleration</span> <em>m/s²</em></div>
+        <p data-i18n-html="ph.s3.c3">How fast your <b>velocity</b> is changing. This is the one that feels slippery.</p>
+      </div>
+    </div>
+
+    <p class="ph-p" data-i18n-html="ph.s3.p2">
+      Here is the sentence to hold on to. <b>Acceleration is not how fast you are going.
+      Acceleration is how fast your speed is changing.</b> They are so different that you
+      can have a huge amount of one and none of the other, and it is worth seeing all
+      four combinations laid out, because at least two of them surprise people.
+    </p>
+
+    <div class="ph-grid4">
+      <div class="ph-quad">
+        <div class="ph-quad-h" data-i18n="ph.s3.g1h">Sitting in a chair</div>
+        <p data-i18n-html="ph.s3.g1p">Velocity zero. Acceleration zero. Nothing is happening, which is the easy case.</p>
+      </div>
+      <div class="ph-quad">
+        <div class="ph-quad-h" data-i18n="ph.s3.g2h">Cruising on a motorway</div>
+        <p data-i18n-html="ph.s3.g2p"><b>Huge velocity. Zero acceleration.</b> You are covering ground fast, but your speed is not changing, so there is no acceleration at all. This is the one people find hardest to accept.</p>
+      </div>
+      <div class="ph-quad">
+        <div class="ph-quad-h" data-i18n="ph.s3.g3h">Lights go green</div>
+        <p data-i18n-html="ph.s3.g3p"><b>Zero velocity. Large acceleration.</b> At the instant you start moving you are not yet going anywhere, but your speed is climbing quickly. This is the mirror image of the case above.</p>
+      </div>
+      <div class="ph-quad">
+        <div class="ph-quad-h" data-i18n="ph.s3.g4h">Braking hard</div>
+        <p data-i18n-html="ph.s3.g4p"><b>Velocity forwards. Acceleration backwards.</b> Slowing down is acceleration too. It simply points the opposite way to your motion. Physics has no separate word for it; "deceleration" is everyday speech, not mechanics.</p>
+      </div>
+    </div>
+
+    <p class="ph-p" data-i18n-html="ph.s3.p3">
+      That last box matters more than it looks, because in walking and running the
+      interesting forces are mostly the slowing-down ones. Every time your foot lands you
+      are braking, and braking is acceleration pointing backwards, which by the second
+      law means a real force pointing backwards. It is not a metaphor.
+    </p>
+
+    <div class="ph-note" data-i18n-html="ph.s3.units">
+      <b>And what on earth is m/s²?</b> It reads "metres per second per second", and the
+      doubled "per second" is not a typo. Velocity is metres per second. Acceleration is
+      how much that changes each second, so it is (metres per second) per second. If your
+      acceleration is 2 m/s², then every second that passes, your speed goes up by
+      2 m/s. After one second you are doing 2 m/s, after two seconds 4 m/s, after three
+      6 m/s. That is all the little ² is telling you.
+    </div>
+
+    <div class="ph-demo" id="phMotion"></div>
+  </section>
+
+  <!-- ============================================ 4. second law -->
+  <section class="ph-sec ph-sec-hero">
+    <div class="ph-kicker" data-i18n="ph.s4.k">The centrepiece</div>
+    <h2 class="ph-h2" data-i18n="ph.s4.h">Newton's second law</h2>
+    <p class="ph-p" data-i18n-html="ph.s4.p1">
+      Everything above was groundwork for this. The second law is the sentence that
+      connects <b>force</b>, <b>mass</b> and <b>acceleration</b> into one relationship,
+      and once you have it, an enormous amount of biomechanics stops being mysterious.
+      It is also, in fairness, one of the most useful sentences ever written down.
+    </p>
+
+    <div class="ph-formula-box ph-formula-star">
+      <div class="ph-formula ph-formula-lg">
+        <span class="sym" data-sym="Fnet">F</span><sub class="ph-sub">net</sub>
+        <span class="op">=</span>
+        <span class="sym" data-sym="m">m</span>
+        <span class="op">·</span>
+        <span class="sym" data-sym="a">a</span>
+      </div>
+      <p class="ph-formula-say" data-i18n-html="ph.s4.say">
+        Out loud: <b>"the total force on an object equals its mass times its
+        acceleration"</b>.
+      </p>
+    </div>
+
+    <p class="ph-p" data-i18n-html="ph.s4.p2">
+      Read slowly, it says something almost obvious and genuinely powerful:
+      <b>push something harder and it changes speed faster; make something heavier and
+      the same push changes its speed less.</b> You already knew both halves. A shopping
+      trolley full of bricks is harder to get moving than an empty one, and you get it
+      moving quicker if you shove harder. The second law is that intuition, written
+      precisely enough to put numbers in.
+    </p>
+
+    <h3 class="ph-h3" data-i18n="ph.s4.h3a">The word doing the most work here is "net"</h3>
+    <p class="ph-p" data-i18n-html="ph.s4.p3">
+      This is the detail that trips people up, so it gets its own heading. The
+      <span class="sym" data-sym="Fnet">F</span> in the formula is not "a force". It is
+      <b>everything pushing on the object, added up as arrows, all at once</b>. Forces
+      that point opposite ways cancel. Only what is left over causes acceleration.
+    </p>
+    <p class="ph-p" data-i18n-html="ph.s4.p4">
+      Right now, sitting still, gravity is pulling you down with several hundred newtons.
+      You are not accelerating downwards. That is not because gravity switched off. It is
+      because the chair is pushing up with an almost exactly equal force, the two cancel,
+      the <b>net</b> force is nearly zero, and so your acceleration is nearly zero.
+      Enormous forces, no motion. The formula handles this perfectly, but only if you
+      remember to add everything up first.
+    </p>
+
+    <div class="ph-warn" data-i18n-html="ph.s4.warn">
+      <b>The classic mistake.</b> Seeing a big force and concluding there must be a big
+      acceleration. There is only a big acceleration if that force is not being cancelled
+      by something else. A patient standing on a force plate registers around 700 N and
+      is going absolutely nowhere.
+    </div>
+
+    <h3 class="ph-h3" data-i18n="ph.s4.h3b">The same law, rearranged three ways</h3>
+    <p class="ph-p" data-i18n-html="ph.s4.p5">
+      One relationship can be written three ways depending on what you already know and
+      what you are trying to find. This is ordinary algebra and there is nothing hiding
+      in it, but seeing all three next to each other is how it stops feeling like three
+      separate facts to memorise.
+    </p>
+    <div class="ph-rearrange">
+      <div class="ph-rear">
+        <div class="ph-formula"><span class="sym" data-sym="Fnet">F</span><span class="op">=</span><span class="sym" data-sym="m">m</span><span class="op">·</span><span class="sym" data-sym="a">a</span></div>
+        <p data-i18n-html="ph.s4.r1"><b>You know mass and acceleration, you want force.</b> "This 70 kg runner slows by 4 m/s² on landing, so what force went through them?"</p>
+      </div>
+      <div class="ph-rear">
+        <div class="ph-formula"><span class="sym" data-sym="a">a</span><span class="op">=</span><span class="ph-frac"><span class="sym" data-sym="Fnet">F</span><span class="ph-bar"></span><span class="sym" data-sym="m">m</span></span></div>
+        <p data-i18n-html="ph.s4.r2"><b>You know force and mass, you want acceleration.</b> "I push this wheelchair with 90 N, how quickly does it pick up speed?"</p>
+      </div>
+      <div class="ph-rear">
+        <div class="ph-formula"><span class="sym" data-sym="m">m</span><span class="op">=</span><span class="ph-frac"><span class="sym" data-sym="Fnet">F</span><span class="ph-bar"></span><span class="sym" data-sym="a">a</span></span></div>
+        <p data-i18n-html="ph.s4.r3"><b>You know force and acceleration, you want mass.</b> Less common in the clinic, but it is how you weigh things where a scale will not go, including astronauts.</p>
+      </div>
+    </div>
+
+    <h3 class="ph-h3" data-i18n="ph.s4.h3c">Now go and play with it</h3>
+    <p class="ph-p" data-i18n-html="ph.s4.p6">
+      Reading about a relationship is the slow way to learn it. Below, you can set any
+      two of the three quantities and watch the third follow, with a body that actually
+      moves so you can see what the number means. Push a heavy thing gently. Push a light
+      thing hard. Try to get the same acceleration two different ways.
+    </p>
+
+    <div class="ph-demo" id="phSecond"></div>
+  </section>
+
+  <!-- ============================================ 5. first law -->
+  <section class="ph-sec">
+    <div class="ph-kicker" data-i18n="ph.s5.k">Going back for the first</div>
+    <h2 class="ph-h2" data-i18n="ph.s5.h">Newton's first law, and why it comes second here</h2>
+    <p class="ph-p" data-i18n-html="ph.s5.p1">
+      Textbooks put this one first. This page does not, because it makes far more sense
+      once you have the second law in your hands. The first law says:
+    </p>
+    <blockquote class="ph-quote" data-i18n-html="ph.s5.quote">
+      An object carries on doing exactly what it was already doing, at the same speed in
+      the same direction, unless a net force acts on it.
+    </blockquote>
+    <p class="ph-p" data-i18n-html="ph.s5.p2">
+      Look at what that is, given what you now know. Put zero into the second law: if
+      <span class="sym" data-sym="Fnet">F</span> is zero then
+      <span class="sym" data-sym="a">a</span> must be zero, and zero acceleration means
+      the velocity never changes. <b>The first law is the second law with nothing pushing.</b>
+      That is why it feels like a special case rather than a separate discovery.
+    </p>
+    <p class="ph-p" data-i18n-html="ph.s5.p3">
+      What made it revolutionary is that it contradicts everyday experience. Slide a book
+      across a table and it stops, so surely things naturally slow down? They do not. The
+      book stops because friction is pushing against it. Remove the friction, as on ice or
+      in space, and it simply keeps going. Aristotle got this wrong for two thousand
+      years, so if it feels counterintuitive you are in respectable company.
+    </p>
+    <div class="ph-note" data-i18n-html="ph.s5.note">
+      <b>The word for this stubbornness is inertia</b>, and mass is the measure of it. A
+      heavier body is harder to start moving <em>and</em> harder to stop once moving.
+      This is why a falling patient is dangerous to catch, and why the catching is safer
+      done over a longer time: you are not changing how much velocity has to disappear,
+      only how quickly, and the second law says a slower change needs a smaller force.
+    </div>
+  </section>
+
+  <!-- ============================================ 6. third law -->
+  <section class="ph-sec">
+    <div class="ph-kicker" data-i18n="ph.s6.k">The third</div>
+    <h2 class="ph-h2" data-i18n="ph.s6.h">Newton's third law, and the reason walking works</h2>
+    <blockquote class="ph-quote" data-i18n-html="ph.s6.quote">
+      If A pushes on B, then B pushes back on A, equally hard, in exactly the opposite
+      direction.
+    </blockquote>
+    <p class="ph-p" data-i18n-html="ph.s6.p1">
+      Everyone can recite this one as "action and reaction", and almost everyone
+      misunderstands it in the same specific way, so let us go straight at the
+      misunderstanding.
+    </p>
+    <div class="ph-warn ph-warn-big" data-i18n-html="ph.s6.warn">
+      <b>"If the forces are equal and opposite, why doesn't everything cancel and nothing
+      ever move?"</b><br>
+      Because <b>the two forces act on two different objects</b>. Forces only cancel when
+      they act on the <em>same</em> object. Your foot pushes the ground, so that force is
+      on the ground. The ground pushes your foot, so that force is on you. They can never
+      cancel each other, because they are not even in the same conversation.
+    </div>
+    <p class="ph-p" data-i18n-html="ph.s6.p2">
+      This is not a technicality. It is the entire reason locomotion is possible. You do
+      not move yourself forwards. <b>You push the planet backwards, and the planet pushes
+      you forwards.</b> That forward push from the ground is the only meaningful
+      horizontal force available to you, and it is precisely what a force plate measures.
+      Take the friction away, on ice or a polished floor in socks, and your foot slides
+      instead of pushing, so the ground has nothing to push back with, and you go nowhere.
+    </p>
+    <p class="ph-p" data-i18n-html="ph.s6.p3">
+      The planet, incidentally, does accelerate backwards when you walk. Put the Earth's
+      mass into the second law and the number comes out so close to zero that no
+      instrument will ever see it. The law still holds. The consequence is just very
+      unevenly shared.
+    </p>
+
+    <div class="ph-demo" id="phThird"></div>
+  </section>
+
+  <!-- ============================================ 7. moments -->
+  <section class="ph-sec">
+    <div class="ph-kicker" data-i18n="ph.s7.k">One more, because bodies are levers</div>
+    <h2 class="ph-h2" data-i18n="ph.s7.h">Turning things: the moment of a force</h2>
+    <p class="ph-p" data-i18n-html="ph.s7.p1">
+      Everything so far has been about making things move in straight lines. Bodies do
+      not work that way. Bones rotate around joints, so the quantity that matters is not
+      just how hard you push, but <b>how hard you push and how far from the pivot you
+      push it</b>. That combination has a name: the moment of a force, also called
+      torque.
+    </p>
+    <div class="ph-formula-box">
+      <div class="ph-formula">
+        <span class="sym" data-sym="M">M</span>
+        <span class="op">=</span>
+        <span class="sym" data-sym="F">F</span>
+        <span class="op">·</span>
+        <span class="sym" data-sym="d">d</span>
+      </div>
+      <p class="ph-formula-say" data-i18n-html="ph.s7.say">
+        Out loud: <b>"the turning effect equals the force times its distance from the
+        pivot"</b>. The unit is the newton metre, N·m, which is literally the two units
+        multiplied together.
+      </p>
+    </div>
+    <p class="ph-p" data-i18n-html="ph.s7.p2">
+      You have used this your whole life without naming it. A door handle is placed as far
+      from the hinge as possible, because the same push gives a much bigger turning effect
+      out there. Try pushing a door open right beside its hinge and it barely moves. The
+      force did not change. The distance did.
+    </p>
+    <p class="ph-p" data-i18n-html="ph.s7.p3">
+      In a body, that distance is usually short and unhelpful. A muscle attaches close to
+      the joint it moves, so its distance from the pivot is small, and it therefore needs
+      a <b>large</b> force to produce a modest turning effect. Meanwhile the load in your
+      hand sits far out at the end of a long forearm, with a large distance and a
+      correspondingly large turning effect from a small weight. That geometric unfairness
+      is why muscles pull with forces far greater than the weights they lift, and it is
+      the subject of the Muscle Machine station.
+    </p>
+    <div class="ph-demo" id="phMoment"></div>
+  </section>
+
+  <!-- ============================================ 8. check yourself -->
+  <section class="ph-sec">
+    <div class="ph-kicker" data-i18n="ph.s8.k">No marks, no record</div>
+    <h2 class="ph-h2" data-i18n="ph.s8.h">Check yourself</h2>
+    <p class="ph-p" data-i18n-html="ph.s8.p">
+      Six questions. Every one of them targets a specific confusion that this page tried
+      to clear up, and every answer explains itself whether you get it right or wrong.
+      Getting one wrong here is worth more than getting it right by luck.
+    </p>
+    <div id="phQuiz"></div>
+  </section>
+
+  <!-- ============================================ 9. cheat sheet -->
+  <section class="ph-sec">
+    <div class="ph-kicker" data-i18n="ph.s9.k">Take this with you</div>
+    <h2 class="ph-h2" data-i18n="ph.s9.h">The whole page on one card</h2>
+    <p class="ph-p" data-i18n-html="ph.s9.p">
+      Everything above, compressed. The symbols are still hoverable, so if one of them
+      has gone fuzzy you can check it without scrolling back up.
+    </p>
+    <div id="phCheat"></div>
+  </section>
+
+  <section class="ph-sec">
+    <h2 class="ph-h2" data-i18n="ph.s10.h">Where to go next</h2>
+    <p class="ph-p" data-i18n-html="ph.s10.p">
+      You now have the equipment for the rest of the site. <b>Muscle Machine</b> takes the
+      moment of a force and shows you why muscles are at such a mechanical disadvantage.
+      <b>Inverse Dynamics</b> takes the second law and runs it backwards, working out the
+      forces inside a joint from the motion outside it, which is the single most important
+      calculation in the field. <b>The Forge</b> lets you feel ground reaction force as a
+      physical thing. None of those pages will assume anything you have not just built.
+    </p>
+  </section>
+
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p data-i18n="footer.tagline">BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=58"></script>
+<script src="stations.js?v=58"></script>
+<script src="nav.js?v=58"></script>
+<script src="physics.js?v=58"></script>
+<script src="contract-panel.js?v=58"></script>
+<script src="abbr.js?v=58"></script>
+</body>
+</html>

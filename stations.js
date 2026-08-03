@@ -228,6 +228,48 @@
 
     // ------------------------------------------------------ forces & mechanics
     {
+      id: "physics", page: "physics.html", icon: "🍎", track: "forces",
+      level: "beginner", status: "reference", prerequisites: [],
+      title: { en: "Physics, from scratch", pl: "Fizyka od zera" },
+      blurb: { en: "Newton's laws rebuilt for anyone who barely survived school physics.",
+               pl: "Zasady dynamiki odbudowane dla każdego, kto ledwo przeżył fizykę w szkole." },
+      contract: {
+        learningGoal: {
+          en: "Read a mechanics formula out loud, say what every symbol means and in what unit, and predict what happens when one of them changes.",
+          pl: "Przeczytać wzór z mechaniki na głos, powiedzieć, co oznacza każdy symbol i w jakiej jednostce, oraz przewidzieć, co się stanie, gdy jeden z nich się zmieni." },
+        measured: [],
+        calculated: [
+          { en: "Every number in every demo, computed live from the formula being taught. Weight from mass and gravity, acceleration from force and mass, moment from force and distance.",
+            pl: "Każda liczba w każdej demonstracji, liczona na żywo z omawianego wzoru. Ciężar z masy i grawitacji, przyspieszenie z siły i masy, moment z siły i odległości." },
+        ],
+        modelled: [
+          { en: "The illustrative bodies are idealised: no friction, no air resistance, rigid objects, forces applied at a single point. Real movement has all of these and this page deliberately does not.",
+            pl: "Ciała na ilustracjach są wyidealizowane: bez tarcia, bez oporu powietrza, obiekty sztywne, siły przyłożone w jednym punkcie. Prawdziwy ruch ma to wszystko, a ta strona celowo nie ma." },
+          { en: "The anatomical numbers used as examples, such as a 4 cm biceps moment arm, are round textbook values chosen to make the arithmetic legible. They are not measurements of any person.",
+            pl: "Liczby anatomiczne użyte jako przykłady, takie jak 4 cm ramienia siły bicepsa, to zaokrąglone wartości podręcznikowe dobrane tak, by rachunek był czytelny. Nie są pomiarami żadnej osoby." },
+        ],
+        assumptions: [
+          { en: "Newtonian mechanics, which is exact at the sizes and speeds a human body works at. Relativity and quantum mechanics are irrelevant here and are not mentioned.",
+            pl: "Mechanika Newtona, dokładna przy rozmiarach i prędkościach, przy jakich pracuje ludzkie ciało. Teoria względności i mechanika kwantowa są tu nieistotne i nie są wspominane." },
+          { en: "Standard gravity of 9.81 m/s², which varies by a few tenths of a percent across the Earth's surface.",
+            pl: "Standardowe przyspieszenie ziemskie 9,81 m/s², które zmienia się o kilka dziesiątych procenta na powierzchni Ziemi." },
+        ],
+        cannotConclude: [
+          { en: "Anything about a real person. There is no data on this page. Every number is an illustration chosen to make a relationship visible, not a measurement of a body.",
+            pl: "Niczego o konkretnym człowieku. Na tej stronie nie ma danych. Każda liczba jest ilustracją dobraną tak, by uwidocznić zależność, a nie pomiarem ciała." },
+          { en: "That a muscle force computed from a moment arm is the force that muscle actually produced. The real joint has many muscles crossing it, and sharing the load between them cannot be solved from mechanics alone.",
+            pl: "Że siła mięśnia policzona z ramienia siły jest siłą, którą ten mięsień faktycznie wytworzył. Prawdziwy staw przekracza wiele mięśni, a podziału obciążenia między nie nie da się rozstrzygnąć samą mechaniką." },
+          { en: "That frictionless examples describe walking. Friction is not a detail here; without it the third law gives you nothing to push against and locomotion stops being possible.",
+            pl: "Że przykłady bez tarcia opisują chód. Tarcie nie jest tu szczegółem; bez niego trzecia zasada nie daje się od czego odepchnąć i lokomocja przestaje być możliwa." },
+        ],
+        primarySources: [
+          { cite: "Newton I. Philosophiae Naturalis Principia Mathematica, 1687", url: "" },
+          { cite: "BIPM. The International System of Units (SI), 9th edition, 2019", url: "https://www.bipm.org/en/publications/si-brochure" },
+          { cite: "Winter DA. Biomechanics and Motor Control of Human Movement, 4th ed., Wiley 2009", url: "" },
+        ],
+      },
+    },
+    {
       id: "muscle", page: "muscle.html", icon: "💪", track: "forces",
       level: "beginner", status: "reconstructed", prerequisites: [],
       title: { en: "Muscle Levers", pl: "Dźwignie mięśniowe" },

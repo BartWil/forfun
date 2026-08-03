@@ -671,6 +671,17 @@ group("Repository", () => {
                    "data/emg/LICENSE_DATA.md"]) {
     ok(existsSync(join(ROOT, f)), f + " exists");
   }
+
+  // i18n dispatches "i18n:changed" on document. A station that listens on window
+  // instead fails silently: data-i18n prose still switches, so the page looks
+  // translated while everything built in JS stays in the old language. This cost
+  // a full round of browser testing to find once.
+  for (const f of readdirSync(ROOT).filter(f => f.endsWith(".js"))) {
+    const src = read(f);
+    ok(!/window\.addEventListener\(\s*["']i18n:changed/.test(src),
+       `${f}: listens for i18n:changed on document, not window`);
+  }
+
   // Redistributed data must carry its attribution next to it.
   const lic = read("data/emg/LICENSE_DATA.md");
   ok(/CC BY 4\.0/.test(lic), "the redistributed excerpt states its licence");
