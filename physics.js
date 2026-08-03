@@ -556,6 +556,211 @@
   }
 
 
+
+  // ================================================== table of contents
+  // Built from the headings that are actually in the document, so it cannot end
+  // up describing a page that no longer exists. Rebuilt on a language switch
+  // along with everything else.
+  function toc(host) {
+    if (!host) return;
+    const heads = [...document.querySelectorAll("main .ph-sec > .ph-h2")];
+    heads.forEach((h, i) => {
+      if (!h.id) h.id = "sec-" + (i + 1);
+    });
+    host.innerHTML =
+      '<div class="ph-toc-h">' + T("On this page", "Na tej stronie") + "</div>" +
+      '<ol class="ph-toc-list">' + heads.map((h, i) =>
+        '<li><a href="#' + h.id + '"><span class="ph-toc-n">' + (i + 1) + "</span>" +
+        h.textContent.trim() + "</a></li>").join("") + "</ol>";
+
+    // Smooth scrolling, and a heading that briefly marks itself so the reader can
+    // see where they landed on a page this long.
+    host.querySelectorAll("a").forEach(a => {
+      a.addEventListener("click", e => {
+        const t = document.getElementById(a.getAttribute("href").slice(1));
+        if (!t) return;
+        e.preventDefault();
+        t.scrollIntoView({ behavior: "smooth", block: "start" });
+        t.classList.remove("ph-landed");
+        void t.offsetWidth;
+        t.classList.add("ph-landed");
+        history.replaceState(null, "", a.getAttribute("href"));
+      });
+    });
+  }
+
+  // ============================================== free-body diagram builder
+  //
+  // The four questions are a procedure, and a procedure is learned by running it.
+  // The interesting failure is not forgetting a force, it is including one that
+  // belongs to a different body, so the wrong options here are the specific
+  // wrong answers students actually give: the foot's push on the ground, an
+  // internal muscle force, and a "force of motion" that does not exist at all.
+  const FBD = [
+    {
+      id: "stand",
+      n: { en: "Standing still", pl: "Stanie nieruchomo" },
+      body: { en: "The whole person, 70 kg", pl: "Cały człowiek, 70 kg" },
+      fig: "🧍",
+      forces: [
+        { id: "grav", in: true, dir: "down", mag: 1,
+          n: { en: "Gravity on the person, 687 N", pl: "Grawitacja działająca na człowieka, 687 N" },
+          why: { en: "Correct. Gravity reaches in without touching, so it is always on the diagram.",
+                 pl: "Poprawnie. Grawitacja sięga bez dotykania, więc zawsze jest na rysunku." } },
+        { id: "grf", in: true, dir: "up", mag: 1,
+          n: { en: "Ground pushing up on the feet, 687 N", pl: "Podłoże pchające stopy w górę, 687 N" },
+          why: { en: "Correct. The floor touches the body, so its push belongs here. It must equal 687 N, because the person is not accelerating.",
+                 pl: "Poprawnie. Podłoga dotyka ciała, więc jej pchnięcie należy do rysunku. Musi wynosić 687 N, bo człowiek nie przyspiesza." } },
+        { id: "foot", in: false, dir: "down", mag: 1,
+          n: { en: "Feet pushing down on the ground, 687 N", pl: "Stopy naciskające na podłoże, 687 N" },
+          why: { en: "This one is real, but it acts ON THE GROUND, not on the person. It is the third-law partner of the force above, and putting both on one diagram is the classic way to make everything wrongly cancel.",
+                 pl: "Ta siła istnieje, ale działa NA PODŁOŻE, a nie na człowieka. To partner z trzeciej zasady dla siły powyżej, a umieszczenie obu na jednym rysunku to klasyczny sposób na błędne wyzerowanie wszystkiego." } },
+        { id: "musc", in: false, dir: "up", mag: 0.6,
+          n: { en: "Leg muscles holding the body up", pl: "Mięśnie nóg utrzymujące ciało" },
+          why: { en: "Real, and doing genuine work, but internal. Your chosen body is the whole person, so the muscles are inside it and their forces cancel in pairs. Choose a single segment instead and they would appear.",
+                 pl: "Prawdziwe i wykonujące realną pracę, ale wewnętrzne. Wybranym ciałem jest cały człowiek, więc mięśnie są w jego wnętrzu, a ich siły znoszą się parami. Wybierz pojedynczy segment, a się pojawią." } },
+      ],
+      done: { en: "Two forces, equal and opposite, net force zero, no acceleration. Everything else was either acting on another body or hiding inside this one.",
+              pl: "Dwie siły, równe i przeciwne, siła wypadkowa zero, brak przyspieszenia. Wszystko inne albo działało na inne ciało, albo kryło się wewnątrz tego." },
+    },
+    {
+      id: "fall",
+      n: { en: "Mid-fall, before landing", pl: "W trakcie upadku, przed lądowaniem" },
+      body: { en: "The whole person, 70 kg, in the air", pl: "Cały człowiek, 70 kg, w powietrzu" },
+      fig: "🤸",
+      forces: [
+        { id: "grav", in: true, dir: "down", mag: 1,
+          n: { en: "Gravity on the person, 687 N", pl: "Grawitacja działająca na człowieka, 687 N" },
+          why: { en: "Correct, and at low speed it is very nearly the only one. That is why the acceleration comes out at about 9.81 m/s² whatever the person weighs.",
+                 pl: "Poprawnie, a przy małej prędkości jest niemal jedyna. Dlatego przyspieszenie wychodzi około 9,81 m/s² niezależnie od masy człowieka." } },
+        { id: "grf", in: false, dir: "up", mag: 1,
+          n: { en: "Ground pushing up, 687 N", pl: "Podłoże pchające w górę, 687 N" },
+          why: { en: "Nothing is touching them. A contact force cannot exist without contact, and this is the moment to notice that the ground reaction was never automatic.",
+                 pl: "Nic go nie dotyka. Siła kontaktowa nie może istnieć bez kontaktu i to jest moment, by zauważyć, że reakcja podłoża nigdy nie była oczywista." } },
+        { id: "motion", in: false, dir: "down", mag: 0.5,
+          n: { en: "The downward force of the fall", pl: "Siła spadania, skierowana w dół" },
+          why: { en: "There is no such force. Falling is what happens when gravity is unopposed; it does not add a second push of its own. Motion is not a force, and inventing one is the most common thing to draw that simply is not there.",
+                 pl: "Taka siła nie istnieje. Spadanie to skutek niezrównoważonej grawitacji; nie dokłada drugiego, własnego pchnięcia. Ruch nie jest siłą, a wymyślanie jej to najczęstsza rzecz rysowana zupełnie bez powodu." } },
+      ],
+      done: { en: "One force. Net force 687 N down, acceleration 9.81 m/s² down. This is the simplest free-body diagram there is, and it is simple because nothing is touching.",
+              pl: "Jedna siła. Siła wypadkowa 687 N w dół, przyspieszenie 9,81 m/s² w dół. To najprostszy diagram sił, jaki istnieje, i jest prosty dlatego, że nic nie dotyka ciała." },
+    },
+    {
+      id: "lift",
+      n: { en: "In a lift starting upwards", pl: "W windzie ruszającej w górę" },
+      body: { en: "The whole person, 70 kg, accelerating up at 2 m/s²", pl: "Cały człowiek, 70 kg, przyspieszający w górę z 2 m/s²" },
+      fig: "🛗",
+      forces: [
+        { id: "grav", in: true, dir: "down", mag: 1,
+          n: { en: "Gravity on the person, 687 N", pl: "Grawitacja działająca na człowieka, 687 N" },
+          why: { en: "Correct, and unchanged. Gravity does not care that the lift is moving.",
+                 pl: "Poprawnie i bez zmian. Grawitacji nie obchodzi, że winda jedzie." } },
+        { id: "floor", in: true, dir: "up", mag: 1.2,
+          n: { en: "Lift floor pushing up, 827 N", pl: "Podłoga windy pchająca w górę, 827 N" },
+          why: { en: "Correct, and this is the one that changed. For the person to accelerate up at 2 m/s², the net force must be 70 × 2 = 140 N upwards, so the floor must push 687 + 140 = 827 N. That extra 140 N is the whole sensation of a lift starting, and it is why a scale would read heavier.",
+                 pl: "Poprawnie i to właśnie ta się zmieniła. Aby człowiek przyspieszał w górę z 2 m/s², siła wypadkowa musi wynosić 70 × 2 = 140 N w górę, więc podłoga musi pchać 687 + 140 = 827 N. Te dodatkowe 140 N to całe odczucie ruszającej windy i dlatego waga pokazałaby więcej." } },
+        { id: "up", in: false, dir: "up", mag: 0.5,
+          n: { en: "The upward force of the lift's motion", pl: "Siła ruchu windy, skierowana w górę" },
+          why: { en: "Not a separate force. The lift acts on the person through its floor and nothing else, and that push is already on the diagram. Adding motion as its own arrow double-counts it.",
+                 pl: "To nie jest osobna siła. Winda działa na człowieka wyłącznie przez swoją podłogę, a to pchnięcie już jest na rysunku. Dodanie ruchu jako osobnej strzałki liczy je dwa razy." } },
+      ],
+      done: { en: "Same two forces as standing still, but no longer equal. The floor wins by 140 N, and that leftover is exactly the mass times the acceleration.",
+              pl: "Te same dwie siły co przy staniu, ale już nie równe. Podłoga wygrywa o 140 N, a ta nadwyżka to dokładnie masa razy przyspieszenie." },
+    },
+  ];
+
+  function fbdDemo(host) {
+    if (!host) return;
+    let si = 0, picked = {}, checked = false;
+    const sc = () => FBD[si];
+
+    function reset() { picked = {}; checked = false; }
+
+    function figure() {
+      const s = sc(), W = 250, H = 260, cx = 125, cy = 130;
+      let arrows = "";
+      s.forces.forEach(f => {
+        if (!picked[f.id]) return;
+        const len = 42 + f.mag * 34;
+        const up = f.dir === "up";
+        const y2 = up ? cy - len : cy + len;
+        const good = checked ? (f.in ? "ok" : "bad") : "pend";
+        arrows +=
+          '<line x1="' + cx + '" y1="' + cy + '" x2="' + cx + '" y2="' + y2 +
+            '" class="fbd-arw fbd-' + good + '" marker-end="url(#fbd-' + (up ? "u" : "d") + "-" + good + ')"/>';
+      });
+      const head = (id, col) =>
+        '<marker id="' + id + '" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">' +
+        '<polygon points="0 0, 10 4, 0 8" fill="' + col + '"/></marker>';
+      return '<svg viewBox="0 0 ' + W + " " + H + '" class="fbd-svg"><defs>' +
+        ["u", "d"].map(d => head("fbd-" + d + "-pend", "#7c9bff") + head("fbd-" + d + "-ok", "#5eead4") +
+                            head("fbd-" + d + "-bad", "#ff6f5e")).join("") + "</defs>" +
+        '<rect x="6" y="6" width="' + (W - 12) + '" height="' + (H - 12) + '" rx="12" class="fbd-box"/>' +
+        arrows +
+        '<text x="' + cx + '" y="' + (cy + 16) + '" class="fbd-fig">' + s.fig + "</text>" +
+        '<circle cx="' + cx + '" cy="' + cy + '" r="4" class="fbd-com"/>' +
+        "</svg>";
+    }
+
+    function paint() {
+      const s = sc();
+      const wrong = s.forces.filter(f => picked[f.id] && !f.in).length;
+      const missing = s.forces.filter(f => !picked[f.id] && f.in).length;
+      const right = checked && !wrong && !missing;
+      host.innerHTML =
+        '<div class="ph-demo-h">' + T("Build the diagram yourself", "Zbuduj rysunek samodzielnie") + "</div>" +
+        '<p class="ph-demo-p">' +
+          T("Pick a situation, then decide which forces belong on the body. Some of the options are real forces that still do not go on this diagram, which is the part worth getting wrong at least once.",
+            "Wybierz sytuację, a potem zdecyduj, które siły należą do ciała. Część opcji to prawdziwe siły, które mimo to nie trafiają na ten rysunek, i właśnie na tym warto się choć raz pomylić.") +
+        "</p>" +
+        '<div class="ph-chips">' + FBD.map((x, i) =>
+          '<button class="ph-chip' + (i === si ? " on" : "") + '" data-s="' + i + '">' + L(x.n) + "</button>").join("") + "</div>" +
+        '<div class="fbd-wrap">' +
+          '<div class="fbd-stage">' +
+            '<div class="fbd-body"><b>' + T("The body", "Ciało") + "</b>" + L(s.body) + "</div>" +
+            figure() +
+          "</div>" +
+          '<div class="fbd-opts">' +
+            '<div class="fbd-opts-h">' + T("Does this go on the diagram?", "Czy to trafia na rysunek?") + "</div>" +
+            s.forces.map(f => {
+              const on = !!picked[f.id];
+              const cls = checked ? (on ? (f.in ? " right" : " wrong") : (f.in ? " missed" : " fine")) : (on ? " on" : "");
+              return '<button class="fbd-opt' + cls + '" data-f="' + f.id + '">' +
+                '<span class="fbd-tick">' + (checked ? (on === !!f.in ? "✓" : "✕") : (on ? "▣" : "▢")) + "</span>" +
+                '<span class="fbd-nm">' + L(f.n) + "</span>" +
+                '<span class="fbd-dir">' + (f.dir === "up" ? "↑" : "↓") + "</span></button>" +
+                (checked ? '<p class="fbd-why' + (f.in ? " in" : " out") + '">' + L(f.why) + "</p>" : "");
+            }).join("") +
+            '<div class="fbd-actions">' +
+              '<button class="fbd-btn" id="fbdGo">' +
+                (checked ? T("Try another", "Spróbuj innej") : T("Check my diagram", "Sprawdź mój rysunek")) + "</button>" +
+              (checked ? "" : '<span class="fbd-hint">' + T("Choose as many or as few as you think belong.",
+                                                             "Wybierz tyle, ile Twoim zdaniem należy.") + "</span>") +
+            "</div>" +
+          "</div>" +
+        "</div>" +
+        (checked
+          ? '<div class="ph-demo-note ' + (right ? "fbd-good" : "fbd-bad") + '"><b>' +
+            (right ? T("That is the diagram.", "To jest ten rysunek.")
+                   : T("Not quite yet.", "Jeszcze nie do końca.")) + "</b> " +
+            (right ? L(s.done)
+                   : T("Read the explanations above. The forces you should not draw are not imaginary; they are real forces that act somewhere else, or inside the body you chose.",
+                       "Przeczytaj wyjaśnienia powyżej. Siły, których nie należy rysować, nie są wyimaginowane; to prawdziwe siły działające gdzie indziej albo wewnątrz wybranego przez Ciebie ciała.")) +
+            "</div>"
+          : "");
+
+      host.querySelectorAll(".ph-chip").forEach(b =>
+        b.onclick = () => { si = +b.dataset.s; reset(); paint(); });
+      host.querySelectorAll(".fbd-opt").forEach(b =>
+        b.onclick = () => { if (checked) return; picked[b.dataset.f] = !picked[b.dataset.f]; paint(); });
+      host.querySelector("#fbdGo").onclick = () => {
+        if (checked) { reset(); } else { checked = true; }
+        paint();
+      };
+    }
+    paint();
+  }
+
   // ==================================================== moment arm, interactive
   //
   //     M = r F sin(theta) = F d_perp
@@ -924,11 +1129,13 @@
     motionDemo(document.getElementById("phMotion"));
     secondDemo(document.getElementById("phSecond"));
     thirdDemo(document.getElementById("phThird"));
+    fbdDemo(document.getElementById("phFbd"));
     torqueDemo(document.getElementById("phTorque"));
     momentDemo(document.getElementById("phMoment"));
     quiz(document.getElementById("phQuiz"));
     cheat(document.getElementById("phCheat"));
     wireSyms(document);
+    toc(document.getElementById("phToc"));
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

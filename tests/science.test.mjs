@@ -795,6 +795,45 @@ group("Physics station", () => {
        "the neutral spanner demo comes before the forearm one");
   }
 
+
+  // The free-body builder teaches by letting the reader include a force that is
+  // real but belongs somewhere else. That only works if every scenario actually
+  // offers such a trap, and if the physics behind each scenario is right.
+  {
+    const js = read("physics.js");
+    ok(/const FBD = \[/.test(js), "physics.js defines the free-body scenarios");
+
+    // Each scenario must offer at least one force that is real but not on the
+    // diagram; a set of obviously-silly distractors would teach nothing.
+    for (const id of ["stand", "fall", "lift"])
+      ok(js.includes(`id: "${id}"`), `free-body scenario "${id}" exists`);
+
+    ok(/acts ON THE GROUND, not on the person/.test(js),
+       "the standing scenario traps the third-law partner force");
+    ok(/internal\. Your chosen body is the whole person/.test(js),
+       "the standing scenario explains why muscle forces are internal");
+    ok(/There is no such force/.test(js),
+       "the falling scenario rejects an invented force of motion");
+    ok(/A contact force cannot exist without contact/.test(js),
+       "the falling scenario explains why there is no ground reaction in the air");
+
+    // The lift numbers are the only arithmetic in the builder, so they get checked.
+    const m = 70, g = 9.81, a = 2;
+    const floor = m * g + m * a;
+    ok(Math.abs(floor - 826.7) < 0.1, "the lift floor force follows from m(g + a)",
+       floor.toFixed(1) + " N");
+    ok(js.includes("827 N"), "the lift scenario states that force to the nearest newton");
+    ok(js.includes("70 × 2 = 140"), "the lift scenario shows where the extra force comes from");
+  }
+
+  // The contents list is generated from the headings, so it cannot describe a
+  // page that no longer exists. What can break is the wiring.
+  ok(/querySelectorAll\("main \.ph-sec > \.ph-h2"\)/.test(read("physics.js")),
+     "the contents list is generated from the document's own headings");
+  ok(/id="phToc"/.test(read("physics.html")), "the page has somewhere to mount the contents list");
+  ok(!/first real one on this\s+page/.test(read("physics.html")),
+     "does not call W = mg the first real formula on the page");
+
   // the free-body-diagram section the review asked for
   for (const k of ["ph.s4b.q1h", "ph.s4b.q2h", "ph.s4b.q3h", "ph.s4b.q4h"])
     ok(html.includes(k), `free-body diagram step ${k.slice(-3)} is present`);
