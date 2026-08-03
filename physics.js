@@ -78,15 +78,15 @@
     m: {
       s: "m", name: { en: "Mass", pl: "Masa" },
       what: {
-        en: "How much stuff an object is made of. Also, and just as importantly, how stubborn it is about changing its motion.",
-        pl: "Ile materii składa się na obiekt. A także, równie ważne, jak bardzo obiekt jest oporny na zmianę swojego ruchu." },
+        en: "How stubborn an object is about changing its motion. That stubbornness is called inertia, and mass is its measure. Loosely it is also how much stuff there is, which is the easier picture but the less useful definition.",
+        pl: "Jak bardzo obiekt jest oporny na zmianę swojego ruchu. Ta oporność nazywa się bezwładnością, a masa jest jej miarą. Z grubsza to także ilość materii, co jest łatwiejszym obrazem, ale mniej użyteczną definicją." },
       unit: { en: "kilograms (kg)", pl: "kilogramy (kg)" },
       analogy: {
         en: "An empty shopping trolley against one loaded with bricks. The same shove barely moves the heavy one. Nothing about the shove changed; the stubbornness did.",
         pl: "Pusty wózek sklepowy kontra wózek pełen cegieł. To samo pchnięcie ledwo rusza ten ciężki. Pchnięcie się nie zmieniło; zmieniła się oporność." },
       example: {
-        en: "An adult is 60 to 90 kg. A forearm and hand together are about 2.3% of that, so roughly 1.6 kg for a 70 kg person. A litre of water is exactly 1 kg, which is a handy thing to calibrate your intuition against.",
-        pl: "Dorosły ma 60 do 90 kg. Przedramię wraz z dłonią to około 2,3% tej wartości, czyli mniej więcej 1,6 kg przy masie 70 kg. Litr wody to dokładnie 1 kg, co jest wygodnym punktem odniesienia dla intuicji." },
+        en: "An adult is 60 to 90 kg. A forearm and hand together are about 2.3% of that, so roughly 1.6 kg for a 70 kg person. A litre of water is very close to 1 kg, which is a handy thing to calibrate your intuition against.",
+        pl: "Dorosły ma 60 do 90 kg. Przedramię wraz z dłonią to około 2,3% tej wartości, czyli mniej więcej 1,6 kg przy masie 70 kg. Litr wody to bardzo blisko 1 kg, co jest wygodnym punktem odniesienia dla intuicji." },
       mistake: {
         en: "Saying mass when you mean weight. Mass is in kilograms and never changes. Weight is a force in newtons and depends on where you are standing.",
         pl: "Mówienie „masa”, gdy chodzi o ciężar. Masa jest w kilogramach i nigdy się nie zmienia. Ciężar to siła w niutonach i zależy od tego, gdzie stoisz." },
@@ -94,8 +94,8 @@
     a: {
       s: "a", name: { en: "Acceleration", pl: "Przyspieszenie" },
       what: {
-        en: "How quickly velocity is changing. Not how fast you are going. How fast your going-ness is changing.",
-        pl: "Jak szybko zmienia się prędkość. Nie jak szybko się poruszasz, ale jak szybko zmienia się to, jak szybko się poruszasz." },
+        en: "How quickly velocity is changing: its size, its direction, or both. Not how fast you are going. How fast your going is changing.",
+        pl: "Jak szybko zmienia się prędkość: jej wartość, jej kierunek albo oba naraz. Nie jak szybko się poruszasz, ale jak szybko to się zmienia." },
       unit: { en: "metres per second per second (m/s²)", pl: "metry na sekundę na sekundę (m/s²)" },
       analogy: {
         en: "The push into the seat when a car pulls away. You feel acceleration, not speed. On a smooth motorway at 120 km/h you feel nothing at all, because nothing is changing.",
@@ -104,8 +104,8 @@
         en: "At 2 m/s² you gain 2 m/s of speed every second: after one second 2 m/s, after two 4 m/s, after three 6 m/s. A dropped object accelerates at 9.81 m/s². A hard landing can brake the body at 40 m/s² or more.",
         pl: "Przy 2 m/s² zyskujesz 2 m/s prędkości co sekundę: po sekundzie 2 m/s, po dwóch 4 m/s, po trzech 6 m/s. Upuszczony przedmiot przyspiesza z 9,81 m/s². Twarde lądowanie potrafi wyhamować ciało z 40 m/s² lub więcej." },
       mistake: {
-        en: "Assuming acceleration must mean speeding up. Slowing down is acceleration pointing the other way, and in walking and running it is the more interesting half.",
-        pl: "Założenie, że przyspieszenie musi oznaczać rozpędzanie się. Hamowanie to przyspieszenie skierowane w przeciwną stronę, a w chodzie i biegu to ta ciekawsza połowa." },
+        en: "Two. Assuming it must mean speeding up, when slowing down is acceleration pointing the other way. And forgetting direction: a car going round a bend at a constant 50 km/h is accelerating the whole way round, because its velocity is turning even though its speed is not.",
+        pl: "Dwa. Założenie, że musi oznaczać rozpędzanie się, podczas gdy hamowanie to przyspieszenie skierowane przeciwnie. Oraz zapominanie o kierunku: samochód pokonujący zakręt ze stałą szybkością 50 km/h przyspiesza przez cały łuk, bo jego prędkość skręca, choć szybkość nie." },
     },
     v: {
       s: "v", name: { en: "Velocity", pl: "Prędkość" },
@@ -148,27 +148,43 @@
         en: "A rate of exchange. It converts kilograms into newtons the way a currency rate converts one money into another, and like a currency rate it is different in different places.",
         pl: "Kurs wymiany. Przelicza kilogramy na niutony tak, jak kurs walutowy przelicza jedne pieniądze na drugie, i tak jak kurs walutowy jest różny w różnych miejscach." },
       example: {
-        en: "Earth 9.81, the Moon 1.62, Mars 3.72, Jupiter about 24.8. Even on Earth it varies slightly: it is fractionally weaker at the equator than at the poles.",
-        pl: "Ziemia 9,81, Księżyc 1,62, Mars 3,72, Jowisz około 24,8. Nawet na Ziemi nieco się zmienia: na równiku jest odrobinę słabsze niż na biegunach." },
+        en: "Earth about 9.81, the Moon 1.62, Mars 3.72, Jupiter about 24.8. Two different things share the symbol: STANDARD gravity is fixed by convention at exactly 9.80665, while the LOCAL value varies with latitude and altitude, being fractionally weaker at the equator and on a mountain.",
+        pl: "Ziemia około 9,81, Księżyc 1,62, Mars 3,72, Jowisz około 24,8. Symbol dzielą dwie różne rzeczy: przyspieszenie STANDARDOWE jest ustalone konwencjonalnie jako dokładnie 9,80665, natomiast wartość LOKALNA zmienia się z szerokością geograficzną i wysokością, będąc odrobinę mniejsza na równiku i w górach." },
       mistake: {
         en: "Calling it 'gravity' as though it were a force. It is not a force; it is the rate that turns mass into a force. The force it produces is weight.",
         pl: "Nazywanie go „grawitacją”, jakby było siłą. Nie jest siłą; jest współczynnikiem zamieniającym masę na siłę. Siła, którą wytwarza, to ciężar." },
     },
     W: {
-      s: "W", name: { en: "Weight", pl: "Ciężar" },
+      s: "W", name: { en: "Weight, the gravitational force", pl: "Ciężar, czyli siła grawitacji" },
       what: {
-        en: "The force with which gravity pulls an object down. A force, therefore in newtons, therefore not the same thing as mass.",
-        pl: "Siła, z jaką grawitacja ciągnie obiekt w dół. To siła, więc w niutonach, więc nie to samo co masa." },
+        en: "The force with which gravity pulls an object. A force, therefore in newtons, therefore not the same thing as mass. Careful: this is not always what a scale shows you, which is apparent weight.",
+        pl: "Siła, z jaką grawitacja przyciąga obiekt. To siła, więc w niutonach, więc nie to samo co masa. Uwaga: to nie zawsze jest to, co pokazuje waga, czyli ciężar pozorny." },
       unit: { en: "newtons (N)", pl: "niutony (N)" },
       analogy: {
-        en: "How heavy a rucksack feels on your shoulders. Take the identical rucksack to the Moon and it feels a sixth as heavy, though not one grain of its contents has left.",
-        pl: "Jak ciężki wydaje się plecak na ramionach. Zabierz ten sam plecak na Księżyc, a wyda się sześć razy lżejszy, choć nie ubyło z niego ani ziarno." },
+        en: "How heavy a rucksack feels on your shoulders. Take the identical rucksack to the Moon and it pulls about six times less, though not one grain of its contents has left.",
+        pl: "Jak ciężki wydaje się plecak na ramionach. Zabierz ten sam plecak na Księżyc, a będzie ciągnął około sześć razy słabiej, choć nie ubyło z niego ani ziarno." },
       example: {
-        en: "A 70 kg person weighs 70 × 9.81 = 687 N on Earth, 113 N on the Moon, and 0 N in orbit, where they are in free fall and their mass is still exactly 70 kg.",
-        pl: "Osoba o masie 70 kg waży 70 × 9,81 = 687 N na Ziemi, 113 N na Księżycu i 0 N na orbicie, gdzie jest w swobodnym spadku, a jej masa nadal wynosi dokładnie 70 kg." },
+        en: "A 70 kg person: 687 N on Earth, 260 N on Mars, 113 N on the Moon. In low Earth orbit gravity is still about 89% of its surface value, so the gravitational force on them is roughly 610 N. It is their APPARENT weight that is zero, because they and the spacecraft are falling together.",
+        pl: "Osoba o masie 70 kg: 687 N na Ziemi, 260 N na Marsie, 113 N na Księżycu. Na niskiej orbicie okołoziemskiej grawitacja to nadal około 89% wartości przy powierzchni, więc siła grawitacji działająca na nią wynosi mniej więcej 610 N. Zerowy jest jej ciężar POZORNY, bo ona i statek spadają razem." },
       mistake: {
-        en: "Reporting weight in kilograms. A bathroom scale does this, and it is why the distinction feels artificial until the first time it costs you a factor of ten.",
-        pl: "Podawanie ciężaru w kilogramach. Robi tak waga łazienkowa i dlatego to rozróżnienie wydaje się sztuczne, dopóki po raz pierwszy nie kosztuje pomyłki dziesięciokrotnej." },
+        en: "Two of them. Reporting weight in kilograms, which a bathroom scale encourages. And saying there is no gravity in orbit. Orbit is not the absence of gravity; it is falling around the planet fast enough to keep missing it.",
+        pl: "Dwa. Podawanie ciężaru w kilogramach, do czego zachęca waga łazienkowa. Oraz mówienie, że na orbicie nie ma grawitacji. Orbita to nie brak grawitacji; to spadanie wokół planety na tyle szybko, by wciąż w nią nie trafiać." },
+    },
+    Wapp: {
+      s: "N", name: { en: "Apparent weight", pl: "Ciężar pozorny" },
+      what: {
+        en: "The force a support pushes back with, and therefore the number a scale or a force plate reports. It equals the gravitational force ONLY when nothing is accelerating vertically.",
+        pl: "Siła, którą podpora oddziałuje z powrotem, czyli liczba pokazywana przez wagę lub platformę dynamometryczną. Równa się sile grawitacji TYLKO wtedy, gdy nic nie przyspiesza w pionie." },
+      unit: { en: "newtons (N)", pl: "niutony (N)" },
+      analogy: {
+        en: "A lift. Standing still you feel normal. As it starts upwards you feel briefly heavier, and as it starts downwards briefly lighter. Your mass never changed and gravity never changed. Only the floor's push did.",
+        pl: "Winda. W bezruchu czujesz się normalnie. Gdy rusza w górę, przez chwilę czujesz się cięższy, a gdy w dół, przez chwilę lżejszy. Twoja masa się nie zmieniła i grawitacja się nie zmieniła. Zmieniło się tylko pchnięcie podłogi." },
+      example: {
+        en: "Standing still, a 70 kg person's apparent weight is 687 N, the same as the gravitational force. Rising quickly onto the toes it briefly exceeds 800 N. In free fall it is exactly zero, which is what weightlessness actually means.",
+        pl: "W bezruchu ciężar pozorny osoby 70 kg wynosi 687 N, tyle samo co siła grawitacji. Przy szybkim wspięciu na palce przekracza chwilowo 800 N. W swobodnym spadku wynosi dokładnie zero i właśnie to znaczy nieważkość." },
+      mistake: {
+        en: "Assuming a force plate measures weight. It measures the force between body and plate, which is the gravitational force plus whatever the body is doing about it.",
+        pl: "Założenie, że platforma dynamometryczna mierzy ciężar. Mierzy siłę między ciałem a platformą, czyli siłę grawitacji plus to, co ciało z nią właśnie robi." },
     },
     N: {
       s: "N", name: { en: "The newton", pl: "Niuton" },
@@ -189,12 +205,12 @@
     M: {
       s: "M", name: { en: "Moment of a force", pl: "Moment siły" },
       what: {
-        en: "The turning effect of a force about a pivot. How much it twists something, rather than how much it shoves it along.",
-        pl: "Efekt obrotowy siły względem osi obrotu. Na ile coś skręca, a nie na ile popycha wzdłuż." },
+        en: "The turning effect of a force about a pivot: the force multiplied by its PERPENDICULAR distance from that pivot. How much it twists something, rather than how much it shoves it along.",
+        pl: "Efekt obrotowy siły względem osi obrotu: siła pomnożona przez jej PROSTOPADŁĄ odległość od tej osi. Na ile coś skręca, a nie na ile popycha wzdłuż." },
       unit: { en: "newton metres (N·m)", pl: "niutonometry (N·m)" },
       analogy: {
-        en: "Undoing a tight bolt. A short spanner defeats you; a long one does not. Your arm is no stronger, but the force now acts further from the pivot, and the turning effect is force times that distance.",
-        pl: "Odkręcanie mocno dokręconej śruby. Krótkim kluczem nie dasz rady, długim tak. Twoje ramię nie stało się silniejsze, ale siła działa teraz dalej od osi i efekt obrotowy to siła razy ta odległość." },
+        en: "Undoing a tight bolt. A short spanner defeats you; a long one does not. Your arm is no stronger, but the force now acts further from the pivot. Push along the spanner rather than across it and nothing happens at all, however hard you push, because the perpendicular distance has gone to zero.",
+        pl: "Odkręcanie mocno dokręconej śruby. Krótkim kluczem nie dasz rady, długim tak. Twoje ramię nie stało się silniejsze, ale siła działa teraz dalej od osi. Naciśnij wzdłuż klucza zamiast w poprzek, a nie stanie się nic, choćbyś naciskał najmocniej, bo odległość prostopadła spadła do zera." },
       example: {
         en: "Holding a 5 kg dumbbell, so about 50 N, at 0.3 m from the elbow gives 50 × 0.3 = 15 N·m that the elbow flexors have to match just to stop the arm dropping.",
         pl: "Trzymanie hantla 5 kg, czyli około 50 N, w odległości 0,3 m od łokcia daje 50 × 0,3 = 15 N·m, które zginacze łokcia muszą zrównoważyć tylko po to, by ramię nie opadło." },
@@ -203,20 +219,20 @@
         pl: "Mierzenie odległości wzdłuż kości zamiast prostopadle do linii działania siły. Liczy się wyłącznie odległość prostopadła i dlatego efekt obrotowy tego samego mięśnia zmienia się w zakresie ruchu." },
     },
     d: {
-      s: "d", name: { en: "Moment arm", pl: "Ramię siły" },
+      s: "d⊥", name: { en: "Moment arm", pl: "Ramię siły" },
       what: {
-        en: "How far the force acts from the pivot, measured perpendicular to the direction of the force.",
-        pl: "Jak daleko od osi obrotu działa siła, mierzone prostopadle do kierunku siły." },
+        en: "The PERPENDICULAR distance from the pivot to the line along which the force acts. Not the distance to where the force is applied, unless the two happen to coincide.",
+        pl: "PROSTOPADŁA odległość od osi obrotu do prostej, wzdłuż której działa siła. Nie odległość do punktu przyłożenia siły, chyba że akurat się pokrywają." },
       unit: { en: "metres (m)", pl: "metry (m)" },
       analogy: {
         en: "The distance from a door's hinge to your hand. Push near the handle and the door swings easily. Push near the hinge and almost nothing happens, with the same force.",
         pl: "Odległość od zawiasu drzwi do Twojej dłoni. Naciśnij blisko klamki, a drzwi otworzą się łatwo. Naciśnij blisko zawiasu, a przy tej samej sile prawie nic się nie stanie." },
       example: {
-        en: "The biceps attaches only about 4 cm from the elbow, so its moment arm is 0.04 m. A load in the hand sits about 0.3 m away. The muscle is working at roughly seven times the geometric disadvantage.",
-        pl: "Biceps przyczepia się zaledwie około 4 cm od łokcia, więc jego ramię siły to 0,04 m. Obciążenie w dłoni znajduje się około 0,3 m dalej. Mięsień pracuje przy mniej więcej siedmiokrotnie gorszej geometrii." },
+        en: "The biceps moment arm at the elbow is a few centimetres, commonly taken as about 4 cm in a textbook example. A load held in the hand acts about 0.3 m from the elbow. With the forearm horizontal and the load hanging vertically, that 0.3 m IS its perpendicular distance, so the arithmetic is easy. Tilt the forearm and it stops being easy.",
+        pl: "Ramię siły bicepsa w łokciu to kilka centymetrów, w przykładach podręcznikowych przyjmuje się zwykle około 4 cm. Obciążenie trzymane w dłoni działa około 0,3 m od łokcia. Przy poziomym przedramieniu i pionowo zwisającym obciążeniu te 0,3 m JEST jego odległością prostopadłą, więc rachunek jest łatwy. Przechyl przedramię, a przestaje być łatwy." },
       mistake: {
-        en: "Treating it as a fixed number for a given muscle. It changes continuously as the joint moves, which is a large part of why strength varies through the range.",
-        pl: "Traktowanie go jako stałej liczby dla danego mięśnia. Zmienia się nieustannie wraz z ruchem stawu i to w dużej mierze dlatego siła zmienia się w zakresie ruchu." },
+        en: "Two. Treating the distance to the attachment point as the moment arm, when only the perpendicular distance to the line of action counts. And treating it as a fixed number for a given muscle: it changes continuously through the range of motion, which is a large part of why strength does too.",
+        pl: "Dwa. Traktowanie odległości do punktu przyczepu jako ramienia siły, podczas gdy liczy się wyłącznie odległość prostopadła do linii działania. Oraz traktowanie go jako stałej liczby dla danego mięśnia: zmienia się nieustannie w zakresie ruchu i w dużej mierze dlatego siła też." },
     },
     vector: {
       s: "→", name: { en: "Vector", pl: "Wektor" },
@@ -323,12 +339,16 @@
         '<div class="ph-readout">' +
           '<div class="ph-read ph-read-still"><span>' + T("Mass", "Masa") + "</span><b>" + mass +
             ' kg</b><em>' + T("unchanged, everywhere", "niezmieniona, wszędzie") + "</em></div>" +
-          '<div class="ph-read ph-read-move"><span>' + T("Weight", "Ciężar") + "</span><b>" + fix(w, 0) +
+          '<div class="ph-read ph-read-move"><span>' + T("Weight, the gravitational force", "Ciężar, czyli siła grawitacji") + "</span><b>" + fix(w, 0) +
             ' N</b><em>' + fix(mass, 0) + " × " + fix(b.g, 2) + "</em></div>" +
         "</div>" +
+        '<div class="ph-demo-sub">' +
+          T("Standing still on any of these, a scale would read that same force back at you. It stops matching the moment anything accelerates vertically, and in free fall it reads zero while gravity carries on exactly as before. That reading has its own name: apparent weight.",
+            "Stojąc nieruchomo na którymkolwiek z nich, waga pokazałaby Ci tę samą siłę. Przestaje się zgadzać w chwili, gdy cokolwiek przyspiesza w pionie, a w swobodnym spadku pokazuje zero, podczas gdy grawitacja działa dokładnie tak jak wcześniej. Ten odczyt ma własną nazwę: ciężar pozorny.") +
+        "</div>" +
         '<div class="ph-demo-note">' +
-          T("On the Moon you could carry four times the load and your muscles would feel the same about it. Your mass, and therefore how hard you are to stop once moving, would not have changed at all.",
-            "Na Księżycu udźwignąłbyś czterokrotnie większy ładunek i Twoje mięśnie odczułyby to tak samo. Twoja masa, a więc to, jak trudno Cię zatrzymać w ruchu, nie zmieniłaby się ani trochę.") +
+          T("Gravity on the Moon is 9.81 / 1.62, about six times weaker. So a 6 kg mass there pulls down roughly as hard as 1 kg does here, and holding it still would feel about the same. Starting or stopping it would not: it still has six times the mass, so it takes six times the force to accelerate it. Weight scales with the planet. Inertia does not.",
+            "Grawitacja na Księżycu to 9,81 / 1,62, czyli około sześć razy słabsza. Masa 6 kg ciągnie tam w dół mniej więcej tak mocno jak 1 kg tutaj, a utrzymanie jej w bezruchu odczułbyś podobnie. Rozpędzenie jej albo zatrzymanie już nie: nadal ma sześć razy większą masę, więc potrzeba sześć razy większej siły, by ją rozpędzić. Ciężar skaluje się z planetą. Bezwładność nie.") +
         "</div>";
       host.querySelectorAll(".ph-planet").forEach(b2 =>
         b2.onclick = () => { where = b2.dataset.w; paint(); });
@@ -343,10 +363,13 @@
   function motionDemo(host) {
     let mode = "cruise", t = 0;
     const MODES = {
-      still: { n: { en: "Sitting still", pl: "Siedzenie w miejscu" }, a: () => 0, v0: 0 },
-      cruise: { n: { en: "Steady walk", pl: "Równy marsz" }, a: () => 0, v0: 1.4 },
-      start: { n: { en: "Setting off", pl: "Ruszanie" }, a: tt => (tt < 2 ? 1.2 : 0), v0: 0 },
-      brake: { n: { en: "Stopping", pl: "Zatrzymywanie" }, a: tt => (tt > 1.5 && tt < 3 ? -1.6 : 0), v0: 2.4 },
+      // Deliberately a puck on ice rather than a walker. A real walk at a steady
+      // average speed is full of within-step accelerations, so using it as the
+      // zero-acceleration example would teach the opposite of the truth.
+      still: { n: { en: "At rest", pl: "W spoczynku" }, a: () => 0, v0: 0 },
+      cruise: { n: { en: "Gliding, no friction", pl: "Ślizg bez tarcia" }, a: () => 0, v0: 1.4 },
+      start: { n: { en: "Being pushed", pl: "Popychany" }, a: tt => (tt < 2 ? 1.2 : 0), v0: 0 },
+      brake: { n: { en: "Being slowed", pl: "Hamowany" }, a: tt => (tt > 1.5 && tt < 3 ? -1.6 : 0), v0: 2.4 },
     };
     function state(tt) {
       const M = MODES[mode];
@@ -366,8 +389,8 @@
       host.innerHTML =
         '<div class="ph-demo-h">' + T("One journey, three numbers", "Jedna podróż, trzy liczby") + "</div>" +
         '<p class="ph-demo-p">' +
-          T("Pick a situation and watch the three readouts. The point is that they disagree with each other, and that this is normal.",
-            "Wybierz sytuację i obserwuj trzy odczyty. Chodzi o to, że nie zgadzają się ze sobą, i że to normalne.") +
+          T("A puck sliding on frictionless ice, in a straight line. Pick a situation and watch the three readouts disagree with each other, which is normal and is the whole point. It is a puck rather than a person on purpose: a real walk at a steady average speed is full of accelerations within every step, so it is the wrong example for showing zero acceleration.",
+            "Krążek ślizgający się po lodzie bez tarcia, po linii prostej. Wybierz sytuację i obserwuj, jak trzy odczyty nie zgadzają się ze sobą, co jest normalne i o to właśnie chodzi. To celowo krążek, a nie człowiek: prawdziwy chód ze stałą prędkością średnią jest pełen przyspieszeń wewnątrz każdego kroku, więc jest złym przykładem na zerowe przyspieszenie.") +
         "</p>" +
         '<div class="ph-chips">' + Object.keys(MODES).map(k =>
           '<button class="ph-chip' + (k === mode ? " on" : "") + '" data-m="' + k + '">' + L(MODES[k].n) + "</button>").join("") + "</div>" +
@@ -406,16 +429,16 @@
     }
     function liveNote(s) {
       if (Math.abs(s.a) < 0.01 && s.v > 0.1)
-        return T("Moving steadily. Velocity is large, acceleration is exactly zero. Nothing is pushing, and nothing needs to.",
-                 "Ruch jednostajny. Prędkość jest duża, przyspieszenie dokładnie zerowe. Nic nie popycha i nic nie musi.");
+        return T("Moving steadily. Velocity is large, acceleration is exactly zero. The NET force is zero, which is not the same as no forces: gravity still pulls the puck down and the ice still pushes it up, in balance.",
+                 "Ruch jednostajny. Prędkość jest duża, przyspieszenie dokładnie zerowe. Siła WYPADKOWA jest zerowa, co nie znaczy, że nie ma sił: grawitacja nadal ciągnie krążek w dół, a lód nadal pcha go w górę, i te dwie się równoważą.");
       if (s.a > 0.01)
         return T("Speeding up. Acceleration is positive, so by the second law something is pushing forwards right now.",
                  "Rozpędzanie. Przyspieszenie jest dodatnie, więc zgodnie z drugą zasadą coś w tej chwili pcha do przodu.");
       if (s.a < -0.01)
         return T("Slowing down. Acceleration is negative. This is still acceleration, and it still needs a real force, pointing backwards.",
                  "Hamowanie. Przyspieszenie jest ujemne. To wciąż przyspieszenie i wciąż wymaga prawdziwej siły, skierowanej do tyłu.");
-      return T("Nothing is happening. Velocity zero, acceleration zero. The easy case, and the rarest one in a moving body.",
-               "Nic się nie dzieje. Prędkość zero, przyspieszenie zero. Przypadek łatwy i najrzadszy w poruszającym się ciele.");
+      return T("Not moving and not changing. Velocity zero, acceleration zero, net force zero. Note that gravity and the ice are both still acting; they simply cancel.",
+               "Bez ruchu i bez zmian. Prędkość zero, przyspieszenie zero, siła wypadkowa zero. Zwróć uwagę, że grawitacja i lód nadal działają; po prostu się znoszą.");
     }
     shell(); tick();
     // Registered centrally so a language switch cannot leave a second copy running.
@@ -430,9 +453,18 @@
       host.innerHTML =
         '<div class="ph-demo-h">' + T("Push something, see what happens", "Popchnij coś i zobacz, co się stanie") + "</div>" +
         '<p class="ph-demo-p">' +
-          T("Set the force and the mass. The acceleration is not a setting, it is the consequence, and it updates as you drag.",
-            "Ustaw siłę i masę. Przyspieszenie nie jest ustawieniem, tylko konsekwencją, i zmienia się w trakcie przeciągania.") +
+          T("Set the net force and the mass. The acceleration is not a setting, it is the consequence, and it updates as you drag.",
+            "Ustaw siłę wypadkową i masę. Przyspieszenie nie jest ustawieniem, tylko konsekwencją, i zmienia się w trakcie przeciągania.") +
         "</p>" +
+        '<div class="ph-assume"><b>' + T("What this demo assumes", "Co ta demonstracja zakłada") + "</b><ul>" +
+          [T("Motion along one straight line, and the force points along it",
+             "Ruch po jednej prostej, a siła działa wzdłuż niej"),
+           T("The slider is the NET force, everything already added up. If friction or gravity also acted, you would have to subtract them yourself before setting it",
+             "Suwak to siła WYPADKOWA, wszystko już zsumowane. Gdyby działało też tarcie albo grawitacja, trzeba by je najpierw odjąć samodzielnie"),
+           T("Starting from rest, with the mass and the net force both held constant",
+             "Start ze spoczynku, przy stałej masie i stałej sile wypadkowej"),
+           T("No friction and no air resistance", "Bez tarcia i bez oporu powietrza")]
+            .map(x => "<li>" + x + "</li>").join("") + "</ul></div>" +
         '<div class="ph-eq-live">' +
           '<div class="ph-eq-part"><span class="sym" data-sym="Fnet">F</span><b>' + fix(F, 0) + "</b><em>N</em></div>" +
           '<div class="ph-eq-op">=</div>' +
@@ -440,9 +472,9 @@
           '<div class="ph-eq-op">×</div>' +
           '<div class="ph-eq-part ph-eq-out"><span class="sym" data-sym="a">a</span><b>' + fix(a, 2) + "</b><em>m/s²</em></div>" +
         "</div>" +
-        '<label class="ph-slider"><span>' + T("Force you apply", "Siła, którą przykładasz") + "</span>" +
+        '<label class="ph-slider"><span>' + T("Net force along the line of motion", "Siła wypadkowa wzdłuż kierunku ruchu") + "</span>" +
           '<input type="range" id="phF" min="10" max="1200" step="10" value="' + F + '"><b>' + F + " N</b></label>" +
-        '<label class="ph-slider"><span>' + T("Mass being pushed", "Masa, którą pchasz") + "</span>" +
+        '<label class="ph-slider"><span>' + T("Mass being accelerated", "Masa, którą rozpędzasz") + "</span>" +
           '<input type="range" id="phM" min="2" max="300" step="1" value="' + mass + '"><b>' + mass + " kg</b></label>" +
         '<div class="ph-lane"><div class="ph-box" id="phBox" style="width:' + Math.min(90, 26 + mass * 0.22) + "px;height:" +
           Math.min(70, 22 + mass * 0.16) + 'px"></div></div>' +
@@ -502,8 +534,8 @@
             '<div class="ph-third-fig">🦵</div>' +
             '<div class="ph-arrow up" style="height:' + Math.min(120, push / 12) + 'px"></div>' +
             '<div class="ph-third-v">' + push + " N " + T("upwards", "w górę") + "</div>" +
-            '<p>' + T("Pushes them up and forwards. This is the force that a force plate measures, and the only thing that can move a body.",
-                      "Pcha go w górę i do przodu. To ta siła, którą mierzy platforma dynamometryczna, i jedyna, która może poruszyć ciało.") + "</p>" +
+            '<p>' + T("Pushes them up and forwards. This is the force a force plate measures, and on dry land it is your main source of external horizontal force.",
+                      "Pcha go w górę i do przodu. To ta siła, którą mierzy platforma dynamometryczna, a na suchym lądzie główne źródło zewnętrznej siły poziomej.") + "</p>" +
           "</div>" +
           '<div class="ph-third-side">' +
             '<div class="ph-third-t">' + T("On the planet", "Na planetę") + "</div>" +
@@ -515,8 +547,8 @@
           "</div>" +
         "</div>" +
         '<div class="ph-demo-note">' +
-          T("Both arrows grow together and neither can exist without the other. If you want a bigger push forwards, you have no option but to push the ground harder backwards. That is all sprinting is.",
-            "Obie strzałki rosną razem i żadna nie może istnieć bez drugiej. Jeśli chcesz mocniejszego pchnięcia do przodu, nie masz wyjścia: musisz mocniej odepchnąć podłoże do tyłu. Na tym polega cały sprint.") +
+          T("Both arrows grow together and neither can exist without the other. A bigger forward push requires a bigger backward push on the ground, with no way round it. Sprinting is more than this alone, since the direction of the force, how long the foot stays down and how the force is timed all matter too, but this pair is where it starts.",
+            "Obie strzałki rosną razem i żadna nie może istnieć bez drugiej. Mocniejsze pchnięcie do przodu wymaga mocniejszego odepchnięcia podłoża do tyłu i nie da się tego obejść. Sprint to więcej niż samo to, bo liczą się także kierunek siły, czas kontaktu stopy z podłożem i przebieg siły w czasie, ale ta para jest punktem wyjścia.") +
         "</div>";
       host.querySelector("#phP").oninput = e => { push = +e.target.value; paint(); };
     }
@@ -533,12 +565,20 @@
       host.innerHTML =
         '<div class="ph-demo-h">' + T("Why muscles pull so hard", "Dlaczego mięśnie ciągną tak mocno") + "</div>" +
         '<p class="ph-demo-p">' +
-          T("A weight in the hand, an elbow as the pivot, and the biceps attaching 4 cm along the forearm. Move the load out and watch what the muscle has to do about it.",
-            "Ciężar w dłoni, łokieć jako oś obrotu i biceps przyczepiony 4 cm wzdłuż przedramienia. Odsuń obciążenie i zobacz, co mięsień musi z tym zrobić.") +
+          T("A weight in the hand, the elbow as the pivot, and the biceps moment arm set to 4 cm. Move the load out and watch what the muscle has to do about it.",
+            "Ciężar w dłoni, łokieć jako oś obrotu i ramię siły bicepsa ustawione na 4 cm. Odsuń obciążenie i zobacz, co mięsień musi z tym zrobić.") +
         "</p>" +
+        '<div class="ph-assume"><b>' + T("What this demo assumes", "Co ta demonstracja zakłada") + "</b><ul>" +
+          [T("The forearm is horizontal and the load hangs vertically, so the distance along the forearm IS the perpendicular moment arm. Tilt the forearm and that stops being true.",
+             "Przedramię jest poziome, a obciążenie zwisa pionowo, więc odległość wzdłuż przedramienia JEST prostopadłym ramieniem siły. Przechyl przedramię, a przestaje to być prawdą."),
+           T("The biceps moment arm is held at 4 cm. In a real elbow it changes throughout the range of motion.",
+             "Ramię siły bicepsa jest utrzymywane na 4 cm. W prawdziwym łokciu zmienia się w całym zakresie ruchu."),
+           T("Held still, so the moments balance. The forearm's own weight is ignored, and one muscle is doing all the work, which is never the case.",
+             "Trzymane nieruchomo, więc momenty się równoważą. Ciężar samego przedramienia jest pominięty, a całą pracę wykonuje jeden mięsień, co nigdy nie zachodzi.")]
+            .map(x => "<li>" + x + "</li>").join("") + "</ul></div>" +
         '<label class="ph-slider"><span>' + T("Weight in the hand", "Ciężar w dłoni") + "</span>" +
           '<input type="range" id="phL" min="10" max="300" step="5" value="' + load + '"><b>' + load + " N</b></label>" +
-        '<label class="ph-slider"><span>' + T("Distance from elbow", "Odległość od łokcia") + "</span>" +
+        '<label class="ph-slider"><span>' + T("Perpendicular distance from elbow", "Odległość prostopadła od łokcia") + "</span>" +
           '<input type="range" id="phD" min="0.10" max="0.45" step="0.01" value="' + dist + '"><b>' + fix(dist, 2) + " m</b></label>" +
         '<div class="ph-lever"><div class="ph-pivot"></div>' +
           '<div class="ph-arm"></div>' +
@@ -547,6 +587,10 @@
         '<div class="ph-formula ph-formula-sm"><span class="sym" data-sym="M">M</span><span class="op">=</span>' +
           '<span class="sym" data-sym="F">' + load + "</span><span class=\"op\">·</span>" +
           '<span class="sym" data-sym="d">' + fix(dist, 2) + "</span><span class=\"op\">=</span><b>" + fix(M, 1) + " N·m</b></div>" +
+        '<div class="ph-demo-sub">' +
+          T("The muscle force below is what the biceps alone would need if it were the only thing holding the forearm up. It is not a measurement, and a real elbow shares the job between several muscles in a way mechanics alone cannot resolve.",
+            "Siła mięśnia poniżej to tyle, ile potrzebowałby sam biceps, gdyby jako jedyny utrzymywał przedramię. To nie jest pomiar, a prawdziwy łokieć dzieli tę pracę między kilka mięśni w sposób, którego sama mechanika nie rozstrzyga.") +
+        "</div>" +
         '<div class="ph-readout">' +
           '<div class="ph-read"><span>' + T("Turning effect of the load", "Moment od obciążenia") + "</span><b>" + fix(M, 1) + " N·m</b></div>" +
           '<div class="ph-read ph-read-move"><span>' + T("Force the biceps must make", "Siła, którą musi wytworzyć biceps") + "</span><b>" + fix(need, 0) + " N</b>" +
@@ -616,10 +660,32 @@
       o: [{ en: "Your push is slightly bigger really", pl: "Tak naprawdę Twoje pchnięcie jest trochę większe" },
           { en: "The two forces act on different objects, so they cannot cancel", pl: "Te siły działają na różne obiekty, więc nie mogą się znieść" },
           { en: "The ground's push arrives slightly later", pl: "Pchnięcie podłoża pojawia się nieco później" },
-          { en: "Friction adds an extra forward force", pl: "Tarcie dodaje dodatkową siłę do przodu" }],
+          { en: "Your muscles supply an extra force on top of the pair", pl: "Twoje mięśnie dokładają dodatkową siłę ponad tę parę" }],
       a: 1,
-      why: { en: "Different objects. Your force is on the ground; the ground's force is on you. Forces only cancel when they act on the SAME body. This is why the third law permits movement instead of forbidding it, and it is the most misunderstood sentence in mechanics.",
-             pl: "Różne obiekty. Twoja siła działa na podłoże; siła podłoża działa na Ciebie. Siły znoszą się tylko wtedy, gdy działają na TO SAMO ciało. Dlatego trzecia zasada pozwala na ruch, zamiast go zakazywać, i dlatego jest najczęściej źle rozumianym zdaniem w mechanice." },
+      why: { en: "Different objects. Your force is on the ground; the ground's force is on you. Forces only cancel when they act on the SAME body. Your muscles are not an extra external force either: they act inside you, and it is still the ground that provides the external push. This is why the third law permits movement instead of forbidding it, and it is the most misunderstood sentence in mechanics.",
+             pl: "Różne obiekty. Twoja siła działa na podłoże; siła podłoża działa na Ciebie. Siły znoszą się tylko wtedy, gdy działają na TO SAMO ciało. Twoje mięśnie też nie są dodatkową siłą zewnętrzną: działają wewnątrz Ciebie, a zewnętrzne pchnięcie nadal daje podłoże. Dlatego trzecia zasada pozwala na ruch, zamiast go zakazywać, i dlatego jest najczęściej źle rozumianym zdaniem w mechanice." },
+    },
+    {
+      q: { en: "An astronaut floats inside a space station in low Earth orbit. What is the gravitational force on them?",
+           pl: "Astronauta unosi się wewnątrz stacji kosmicznej na niskiej orbicie okołoziemskiej. Jaka siła grawitacji na niego działa?" },
+      o: [{ en: "Zero, that is why they float", pl: "Zerowa, dlatego się unosi" },
+          { en: "About 10% of its value on the ground", pl: "Około 10% wartości przy powierzchni" },
+          { en: "About 90% of its value on the ground", pl: "Około 90% wartości przy powierzchni" },
+          { en: "Exactly the same as on the ground", pl: "Dokładnie taka sama jak przy powierzchni" }],
+      a: 2,
+      why: { en: "About 90%. A space station is only a few hundred kilometres up, which is a small distance compared with the radius of the Earth, so gravity is barely weaker there. What is zero is their APPARENT weight, because they and the station are falling together and nothing is pushing back on them. Orbit is not the absence of gravity; it is falling sideways fast enough to keep missing the planet.",
+             pl: "Około 90%. Stacja kosmiczna jest zaledwie kilkaset kilometrów wyżej, co jest niewielką odległością w porównaniu z promieniem Ziemi, więc grawitacja jest tam ledwo słabsza. Zerowy jest jego ciężar POZORNY, bo on i stacja spadają razem i nic go nie podpiera. Orbita to nie brak grawitacji; to spadanie w bok na tyle szybko, by wciąż nie trafiać w planetę." },
+    },
+    {
+      q: { en: "A car goes round a roundabout at a perfectly constant 30 km/h. Is it accelerating?",
+           pl: "Samochód pokonuje rondo ze stale utrzymywaną prędkością 30 km/h. Czy przyspiesza?" },
+      o: [{ en: "No, its speed is not changing", pl: "Nie, jego szybkość się nie zmienia" },
+          { en: "Yes, because its direction is changing", pl: "Tak, bo zmienia się jego kierunek" },
+          { en: "Only if the driver touches the pedals", pl: "Tylko jeśli kierowca użyje pedałów" },
+          { en: "Only while entering and leaving the roundabout", pl: "Tylko przy wjeździe i zjeździe z ronda" }],
+      a: 1,
+      why: { en: "Yes, the whole way round. Velocity carries a direction as well as a size, and acceleration is the rate at which velocity changes, so turning is accelerating even at a constant speed. Something has to supply the force for it, and here that is friction between the tyres and the road, pointing towards the centre. It is also why you feel pushed sideways in a corner.",
+             pl: "Tak, przez cały łuk. Prędkość niesie kierunek, a nie tylko wartość, a przyspieszenie to tempo zmiany prędkości, więc skręcanie jest przyspieszaniem nawet przy stałej szybkości. Coś musi dostarczyć na to siłę, a tutaj jest to tarcie między oponami a jezdnią, skierowane do środka. Dlatego właśnie na zakręcie czujesz, że wypycha Cię w bok." },
     },
     {
       q: { en: "You hold a 40 N weight 0.35 m from your elbow. The biceps attaches 0.04 m from it. Roughly what force must the biceps make?",

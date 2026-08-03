@@ -689,6 +689,60 @@ group("Repository", () => {
   ok(/scripts\/extract_emg_demo\.py/.test(lic), "the redistributed excerpt says how to regenerate it");
 });
 
+
+// ============================================ 10. physics station, corrected
+//
+// A reviewer found six errors on the physics page that a weak student would have
+// carried away permanently. Each is pinned here, because prose has no type system
+// and the whole value of this station is that a beginner can trust it.
+group("Physics station", () => {
+  const js = read("physics.js"), html = read("physics.html"), i18n = read("i18n.js");
+  const all = js + html + i18n;
+
+  // 1. Gravity does not switch off in orbit. Apparent weight goes to zero.
+  ok(!/0 N in orbit/.test(all) && !/and 0 N on orbit/.test(all),
+     "does not claim weight is zero in orbit");
+  ok(/apparent weight/i.test(js) && /ciężar pozorny/i.test(all),
+     "distinguishes gravitational force from apparent weight, in both languages");
+  ok(/89%|90%/.test(all), "states that orbital gravity is still most of its surface value");
+
+  // 2. The Moon is a factor of about six, not four.
+  ok(!/four times the load/i.test(all), "does not claim the Moon lets you carry four times the load");
+  ok(/9\.81 \/ 1\.62|six times weaker/i.test(js), "gives the Moon ratio as about six");
+
+  // 3. Constant velocity is illustrated with a puck, never with walking.
+  ok(!/Steady walk/.test(js), "the zero-acceleration example is not called a steady walk");
+  ok(/puck/i.test(js), "the zero-acceleration example is a frictionless puck");
+  ok(!/Nothing is pushing, and nothing needs to/.test(js),
+     "does not say nothing is pushing when the net force is zero");
+
+  // 4. Acceleration is a change in the velocity vector, not only in speed.
+  ok(/its direction, or both/i.test(all), "defines acceleration as including a change of direction");
+
+  // 5. The second-law demo is about NET force and states its assumptions.
+  ok(!/Force you apply/.test(js), "the second-law slider is not labelled as the applied force");
+  ok(/Net force along the line of motion/.test(js), "the second-law slider is labelled net force");
+  ok(/ph-assume/.test(js), "the demos state what they assume");
+
+  // 6. A moment arm is a perpendicular distance, in the visible formula.
+  ok(/d<sub class="ph-sub">⊥<\/sub>/.test(html), "the moment formula shows the perpendicular symbol");
+  ok(/PERPENDICULAR distance/.test(js), "the moment arm is defined as a perpendicular distance");
+  ok(!/biceps attaching 4 cm/.test(js), "does not equate the attachment distance with the moment arm");
+
+  // secondary findings
+  ok(/inertial frame/i.test(html), "the first law mentions inertial frames");
+  ok(/impulse/i.test(html), "stopping a fall is explained through impulse");
+  ok(!/exactly 1 kg/.test(js), "does not claim a litre of water is exactly a kilogram");
+  ok(/9\.80665/.test(all), "distinguishes standard gravity from the local value");
+  ok(!/That is all sprinting is/.test(js), "does not reduce sprinting to pushing harder backwards");
+  ok(!/the only thing that can move a body/.test(js),
+     "does not claim the ground is the only thing that can move a body");
+
+  // the free-body-diagram section the review asked for
+  for (const k of ["ph.s4b.q1h", "ph.s4b.q2h", "ph.s4b.q3h", "ph.s4b.q4h"])
+    ok(html.includes(k), `free-body diagram step ${k.slice(-3)} is present`);
+});
+
 // ------------------------------------------------------------------- summary
 console.log("\n" + "=".repeat(64));
 console.log(`  ${pass} passed, ${fail} failed`);

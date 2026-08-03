@@ -251,8 +251,10 @@
         assumptions: [
           { en: "Newtonian mechanics, which is exact at the sizes and speeds a human body works at. Relativity and quantum mechanics are irrelevant here and are not mentioned.",
             pl: "Mechanika Newtona, dokładna przy rozmiarach i prędkościach, przy jakich pracuje ludzkie ciało. Teoria względności i mechanika kwantowa są tu nieistotne i nie są wspominane." },
-          { en: "Standard gravity of 9.81 m/s², which varies by a few tenths of a percent across the Earth's surface.",
-            pl: "Standardowe przyspieszenie ziemskie 9,81 m/s², które zmienia się o kilka dziesiątych procenta na powierzchni Ziemi." },
+          { en: "A gravitational field strength of 9.81 N/kg. Two distinct things share that symbol: standard gravity is fixed by convention at exactly 9.80665, while the local value varies by a few tenths of a percent with latitude and altitude. The page uses 9.81 as a convenient local value, not as a constant of nature.",
+            pl: "Natężenie pola grawitacyjnego 9,81 N/kg. Ten symbol dzielą dwie różne rzeczy: przyspieszenie standardowe jest ustalone konwencjonalnie jako dokładnie 9,80665, natomiast wartość lokalna zmienia się o kilka dziesiątych procenta wraz z szerokością geograficzną i wysokością. Strona używa 9,81 jako wygodnej wartości lokalnej, a nie jako stałej przyrody." },
+          { en: "Every worked example is one-dimensional, starts from rest, and holds mass and net force constant, with no friction or air resistance unless it says otherwise.",
+            pl: "Każdy przykład rachunkowy jest jednowymiarowy, zaczyna się ze spoczynku i utrzymuje stałą masę oraz stałą siłę wypadkową, bez tarcia i oporu powietrza, o ile nie napisano inaczej." },
         ],
         cannotConclude: [
           { en: "Anything about a real person. There is no data on this page. Every number is an illustration chosen to make a relationship visible, not a measurement of a body.",
@@ -261,6 +263,10 @@
             pl: "Że siła mięśnia policzona z ramienia siły jest siłą, którą ten mięsień faktycznie wytworzył. Prawdziwy staw przekracza wiele mięśni, a podziału obciążenia między nie nie da się rozstrzygnąć samą mechaniką." },
           { en: "That frictionless examples describe walking. Friction is not a detail here; without it the third law gives you nothing to push against and locomotion stops being possible.",
             pl: "Że przykłady bez tarcia opisują chód. Tarcie nie jest tu szczegółem; bez niego trzecia zasada nie daje się od czego odepchnąć i lokomocja przestaje być możliwa." },
+          { en: "That walking at a steady average speed means zero acceleration. The centre of mass speeds up and slows within every step; only the average over a stride is near zero. The constant-velocity demo uses a puck on ice for exactly this reason.",
+            pl: "Że chód ze stałą prędkością średnią oznacza zerowe przyspieszenie. Środek masy przyspiesza i zwalnia wewnątrz każdego kroku; dopiero średnia z całego cyklu jest bliska zeru. Demonstracja ruchu jednostajnego używa krążka na lodzie dokładnie z tego powodu." },
+          { en: "That a net force computed from mass and acceleration is the load on any particular joint or tissue. It is the total external force on the chosen body, and separating it into contributions needs inverse dynamics and further assumptions.",
+            pl: "Że siła wypadkowa policzona z masy i przyspieszenia jest obciążeniem konkretnego stawu lub tkanki. To całkowita siła zewnętrzna działająca na wybrane ciało, a rozdzielenie jej na składowe wymaga dynamiki odwrotnej i dalszych założeń." },
         ],
         primarySources: [
           { cite: "Newton I. Philosophiae Naturalis Principia Mathematica, 1687", url: "" },

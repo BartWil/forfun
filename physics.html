@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css?v=58" />
-<link rel="stylesheet" href="physics.css?v=58" />
+<link rel="stylesheet" href="style.css?v=59" />
+<link rel="stylesheet" href="physics.css?v=59" />
 </head>
 <body>
 
@@ -63,7 +63,7 @@
     </p>
 
     <div class="ph-formula-demo">
-      <div class="ph-formula ph-formula-lg" data-i18n-html="ph.demo.f">
+      <div class="ph-formula ph-formula-lg">
         <span class="sym" data-sym="F">F</span>
         <span class="op">=</span>
         <span class="sym" data-sym="m">m</span>
@@ -160,10 +160,19 @@
       <div class="ph-card ph-card-weight">
         <div class="ph-card-h"><span class="sym" data-sym="W">Weight</span> <em data-i18n="ph.s2.unit2">newtons, N</em></div>
         <p data-i18n-html="ph.s2.c2p">
-          The <b>force</b> with which gravity pulls that stuff downwards. It is a force,
-          so it is measured in newtons, and it absolutely does care where you are. The
-          same 70 kg person weighs about 687 N on Earth and about 114 N on the Moon,
-          because the Moon pulls more weakly.
+          The <b>force</b> with which gravity pulls that stuff. It is a force, so it is
+          measured in newtons, and it absolutely does care where you are. The same 70 kg
+          person is pulled with about 687 N on Earth and about 113 N on the Moon, because
+          the Moon pulls more weakly.
+        </p>
+      </div>
+      <div class="ph-card ph-card-app">
+        <div class="ph-card-h"><span class="sym" data-sym="Wapp">Apparent weight</span> <em data-i18n="ph.s2.unit3">newtons, N</em></div>
+        <p data-i18n-html="ph.s2.c3p">
+          What a <b>scale actually reads</b>: the force the support pushes back with.
+          Standing still it equals the gravitational force, which is why the two get
+          confused. Accelerate vertically and they part company, and in free fall this one
+          is zero while gravity carries on unchanged.
         </p>
       </div>
     </div>
@@ -197,6 +206,16 @@
       which is exactly what a force plate exploits: stand on one and rise up quickly and
       it will briefly read far more than your "weight", not because you gained mass, but
       because you added an acceleration on top of gravity.
+    </div>
+    <div class="ph-warn" data-i18n-html="ph.s2.orbit">
+      <b>And the one everybody gets told wrong at school.</b> Astronauts do not float
+      because there is no gravity up there. A space station orbits a few hundred
+      kilometres up, which is nothing next to the six and a half thousand kilometre
+      radius of the Earth, so gravity there is still about <b>90% as strong as it is in
+      your kitchen</b>. What has gone to zero is their apparent weight, because they and
+      the station are falling together and nothing is pushing back on them. An orbit is
+      not an escape from gravity. It is falling sideways fast enough to keep missing the
+      planet.
     </div>
 
     <div class="ph-ask">
@@ -237,9 +256,11 @@
 
     <p class="ph-p" data-i18n-html="ph.s3.p2">
       Here is the sentence to hold on to. <b>Acceleration is not how fast you are going.
-      Acceleration is how fast your speed is changing.</b> They are so different that you
-      can have a huge amount of one and none of the other, and it is worth seeing all
-      four combinations laid out, because at least two of them surprise people.
+      Acceleration is how quickly your velocity is changing: its size, its direction, or
+      both.</b> That last part matters and is usually left out. A car going round a
+      roundabout at a rock-steady 30 km/h is accelerating the entire way round, because
+      its velocity is turning even though its speed never moves. Velocity and speed are
+      not synonyms, and this is where the difference earns its keep.
     </p>
 
     <div class="ph-grid4">
@@ -248,8 +269,8 @@
         <p data-i18n-html="ph.s3.g1p">Velocity zero. Acceleration zero. Nothing is happening, which is the easy case.</p>
       </div>
       <div class="ph-quad">
-        <div class="ph-quad-h" data-i18n="ph.s3.g2h">Cruising on a motorway</div>
-        <p data-i18n-html="ph.s3.g2p"><b>Huge velocity. Zero acceleration.</b> You are covering ground fast, but your speed is not changing, so there is no acceleration at all. This is the one people find hardest to accept.</p>
+        <div class="ph-quad-h" data-i18n="ph.s3.g2h">Cruising in a straight line</div>
+        <p data-i18n-html="ph.s3.g2p"><b>Huge velocity. Zero acceleration.</b> You are covering ground fast, but neither your speed nor your direction is changing, so there is no acceleration at all. This is the one people find hardest to accept. Note that forces are still very much present, engine and drag and gravity and road; they simply add up to nothing.</p>
       </div>
       <div class="ph-quad">
         <div class="ph-quad-h" data-i18n="ph.s3.g3h">Lights go green</div>
@@ -259,13 +280,26 @@
         <div class="ph-quad-h" data-i18n="ph.s3.g4h">Braking hard</div>
         <p data-i18n-html="ph.s3.g4p"><b>Velocity forwards. Acceleration backwards.</b> Slowing down is acceleration too. It simply points the opposite way to your motion. Physics has no separate word for it; "deceleration" is everyday speech, not mechanics.</p>
       </div>
+      <div class="ph-quad ph-quad-extra">
+        <div class="ph-quad-h" data-i18n="ph.s3.g5h">Steady speed round a bend</div>
+        <p data-i18n-html="ph.s3.g5p"><b>Constant speed. Real acceleration.</b> The speedometer never moves, but the direction of travel does, so the velocity is changing and that is acceleration. Something must be supplying the force: on a road it is friction at the tyres, pointing towards the centre of the curve. This is the case that a definition mentioning only speed will quietly hide from you.</p>
+      </div>
     </div>
 
     <p class="ph-p" data-i18n-html="ph.s3.p3">
-      That last box matters more than it looks, because in walking and running the
-      interesting forces are mostly the slowing-down ones. Every time your foot lands you
-      are braking, and braking is acceleration pointing backwards, which by the second
-      law means a real force pointing backwards. It is not a metaphor.
+      These matter more than they look, because in walking and running the interesting
+      forces are mostly the slowing-down ones. Every time your foot lands you are braking,
+      and braking is acceleration pointing backwards, which by the second law means a real
+      force pointing backwards. It is not a metaphor.
+    </p>
+    <p class="ph-p" data-i18n-html="ph.s3.p4">
+      One warning before the demo below. It shows a puck sliding on frictionless ice
+      rather than a person walking, and that is deliberate. <b>Walking at a steady average
+      speed is not zero acceleration.</b> Your centre of mass rises and falls and speeds up
+      and slows within every single step, so there are substantial accelerations
+      throughout, and only the average over a whole stride comes out near zero. Using a
+      walker to illustrate constant velocity would teach you something false about the
+      exact activity this website is mostly about.
     </p>
 
     <div class="ph-note" data-i18n-html="ph.s3.units">
@@ -370,6 +404,70 @@
     <div class="ph-demo" id="phSecond"></div>
   </section>
 
+  <!-- ============================================ 4b. free-body diagrams -->
+  <section class="ph-sec">
+    <div class="ph-kicker" data-i18n="ph.s4b.k">The step everyone skips</div>
+    <h2 class="ph-h2" data-i18n="ph.s4b.h">Before you use the formula, draw the body</h2>
+    <p class="ph-p" data-i18n-html="ph.s4b.p1">
+      You can know <span class="sym" data-sym="Fnet">F</span> =
+      <span class="sym" data-sym="m">m</span><span class="sym" data-sym="a">a</span>
+      perfectly and still get every problem wrong, because knowing the formula does not
+      tell you <b>which forces to put into it</b>. That is a separate skill, it is the one
+      that actually gets used, and it is almost never taught explicitly. It has a name:
+      drawing a free-body diagram.
+    </p>
+    <p class="ph-p" data-i18n-html="ph.s4b.p2">
+      The idea is simple. You pick one object, mentally cut it out of the world, and draw
+      only the forces that the outside world applies <em>to that object</em>. Nothing else
+      goes on the drawing. Not the forces it applies to other things, not what is happening
+      inside it, not what it is about to do. Four questions, always in this order:
+    </p>
+    <div class="ph-fbd-steps">
+      <div class="ph-fbd-step">
+        <span class="ph-fbd-n">1</span>
+        <div>
+          <b data-i18n="ph.s4b.q1h">What exactly is my body or system?</b>
+          <p data-i18n-html="ph.s4b.q1p">The whole person? Just the forearm? The person and the crutches together? There is no right answer until you choose, and every later step depends on the choice. Write it down. Most confusion in biomechanics comes from silently changing this halfway through.</p>
+        </div>
+      </div>
+      <div class="ph-fbd-step">
+        <span class="ph-fbd-n">2</span>
+        <div>
+          <b data-i18n="ph.s4b.q2h">What external forces act on it?</b>
+          <p data-i18n-html="ph.s4b.q2p">Only things touching it, plus gravity, which reaches in without touching. For a standing person that is usually just two: gravity pulling down, and the ground pushing up. If you find yourself drawing more than about four, check whether some of them are really the same force counted twice.</p>
+        </div>
+      </div>
+      <div class="ph-fbd-step">
+        <span class="ph-fbd-n">3</span>
+        <div>
+          <b data-i18n="ph.s4b.q3h">Which forces belong to some other body?</b>
+          <p data-i18n-html="ph.s4b.q3p">This is where the third law does its damage if you are careless. The force your foot puts on the ground is <b>not</b> on your diagram, because it does not act on you. Leave it off. Muscle forces are also usually off, because if your chosen body is the whole person, the muscles are inside it and internal forces cancel in pairs.</p>
+        </div>
+      </div>
+      <div class="ph-fbd-step">
+        <span class="ph-fbd-n">4</span>
+        <div>
+          <b data-i18n="ph.s4b.q4h">Which way am I calling positive?</b>
+          <p data-i18n-html="ph.s4b.q4p">Pick a direction, state it, and stick to it for the whole problem. Up positive or down positive, either is fine, but a sign that changes meaning halfway through is the single most common source of an answer that is right in size and wrong in direction.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ph-note" data-i18n-html="ph.s4b.note">
+      <b>Worked in one line.</b> A 70 kg person stands still. Body: the whole person.
+      External forces: gravity, 687 N down; ground reaction, unknown, up. Not on the
+      diagram: the 687 N their feet press into the floor, which acts on the floor. Positive
+      is up. They are not accelerating, so the net force is zero, so the ground must be
+      pushing up with exactly 687 N. That is the entire calculation, and notice that the
+      hard part was deciding what to draw, not the arithmetic.
+    </div>
+    <p class="ph-p" data-i18n-html="ph.s4b.p3">
+      Every inverse dynamics calculation in biomechanics, including the one on the Inverse
+      Dynamics station, is this procedure applied segment by segment up a limb. Get
+      comfortable with the four questions here and that page will feel like more of the
+      same rather than something new.
+    </p>
+  </section>
+
   <!-- ============================================ 5. first law -->
   <section class="ph-sec">
     <div class="ph-kicker" data-i18n="ph.s5.k">Going back for the first</div>
@@ -383,11 +481,21 @@
       the same direction, unless a net force acts on it.
     </blockquote>
     <p class="ph-p" data-i18n-html="ph.s5.p2">
-      Look at what that is, given what you now know. Put zero into the second law: if
-      <span class="sym" data-sym="Fnet">F</span> is zero then
+      Look at what that is, given what you now know. Put zero into the second law: if the
+      <span class="sym" data-sym="Fnet">net force</span> is zero then
       <span class="sym" data-sym="a">a</span> must be zero, and zero acceleration means
-      the velocity never changes. <b>The first law is the second law with nothing pushing.</b>
-      That is why it feels like a special case rather than a separate discovery.
+      the velocity never changes. <b>The first law is the second law with the net force set
+      to zero</b>, which is not the same as saying nothing is pushing. Plenty may be
+      pushing, as long as it all cancels.
+    </p>
+    <p class="ph-p" data-i18n-html="ph.s5.p2b">
+      There is also a second job the first law quietly does, worth knowing about even if
+      you never use it. It tells you <em>where you are allowed to stand</em> while doing
+      the physics. The laws in this simple form only hold in a frame that is not itself
+      accelerating, called an inertial frame. Do your mechanics from inside a braking bus
+      and objects will appear to accelerate with nothing pushing them, and your sums will
+      come out wrong. This is why a gait laboratory measures against the room and not
+      against something moving.
     </p>
     <p class="ph-p" data-i18n-html="ph.s5.p3">
       What made it revolutionary is that it contradicts everyday experience. Slide a book
@@ -400,8 +508,12 @@
       <b>The word for this stubbornness is inertia</b>, and mass is the measure of it. A
       heavier body is harder to start moving <em>and</em> harder to stop once moving.
       This is why a falling patient is dangerous to catch, and why the catching is safer
-      done over a longer time: you are not changing how much velocity has to disappear,
-      only how quickly, and the second law says a slower change needs a smaller force.
+      done over a longer time. The reasoning runs through acceleration: the same change in
+      velocity spread over a longer time is a smaller acceleration, and a smaller
+      acceleration needs a smaller force. Physicists package this as impulse, force
+      multiplied by the time it acts, and it is the honest name for what a crumple zone, a
+      crash mat and a well-taught landing all do. They do not reduce how much velocity has
+      to disappear. They give it longer to disappear in.
     </div>
   </section>
 
@@ -429,10 +541,14 @@
     <p class="ph-p" data-i18n-html="ph.s6.p2">
       This is not a technicality. It is the entire reason locomotion is possible. You do
       not move yourself forwards. <b>You push the planet backwards, and the planet pushes
-      you forwards.</b> That forward push from the ground is the only meaningful
-      horizontal force available to you, and it is precisely what a force plate measures.
-      Take the friction away, on ice or a polished floor in socks, and your foot slides
-      instead of pushing, so the ground has nothing to push back with, and you go nowhere.
+      you forwards.</b> In ordinary walking and running that push from the ground is your
+      main source of horizontal external force, and it is precisely what a force plate
+      measures. It is not the only force that can ever move a body, of course: gravity does
+      it to a falling person, water does it to a swimmer, and another person does it when
+      they pull you up from a chair. But on dry land, on your own feet, the ground is what
+      you have. Take the friction away, on ice or a polished floor in socks, and your foot
+      slides instead of pushing, so the ground has nothing to push back with, and you go
+      nowhere.
     </p>
     <p class="ph-p" data-i18n-html="ph.s6.p3">
       The planet, incidentally, does accelerate backwards when you walk. Put the Earth's
@@ -461,13 +577,24 @@
         <span class="op">=</span>
         <span class="sym" data-sym="F">F</span>
         <span class="op">·</span>
-        <span class="sym" data-sym="d">d</span>
+        <span class="sym" data-sym="d">d<sub class="ph-sub">⊥</sub></span>
       </div>
       <p class="ph-formula-say" data-i18n-html="ph.s7.say">
-        Out loud: <b>"the turning effect equals the force times its distance from the
-        pivot"</b>. The unit is the newton metre, N·m, which is literally the two units
-        multiplied together.
+        Out loud: <b>"the turning effect equals the force times its perpendicular distance
+        from the pivot"</b>. The unit is the newton metre, N·m, which is literally the two
+        units multiplied together.
       </p>
+    </div>
+    <div class="ph-warn" data-i18n-html="ph.s7.perp">
+      <b>The word "perpendicular" is not decoration, so it is in the formula rather than
+      hidden in a tooltip.</b> The distance you need is not how far away you grabbed the
+      thing. It is the shortest distance from the pivot to the <em>line the force acts
+      along</em>. Push a spanner sideways and it turns the bolt. Push it along its own
+      length, however hard, and nothing happens at all, because that perpendicular
+      distance has become zero. Same force, same grip point, no turning effect. In the
+      demo below the forearm is kept horizontal and the load hangs straight down, which is
+      the one convenient case where the distance along the forearm and the perpendicular
+      distance are the same number. Tilt the arm and they separate.
     </div>
     <p class="ph-p" data-i18n-html="ph.s7.p2">
       You have used this your whole life without naming it. A door handle is placed as far
@@ -477,8 +604,12 @@
     </p>
     <p class="ph-p" data-i18n-html="ph.s7.p3">
       In a body, that distance is usually short and unhelpful. A muscle attaches close to
-      the joint it moves, so its distance from the pivot is small, and it therefore needs
-      a <b>large</b> force to produce a modest turning effect. Meanwhile the load in your
+      the joint it moves, so its moment arm is small, and it therefore needs a <b>large</b>
+      force to produce a modest turning effect. Be careful with that sentence though: the
+      moment arm is not simply the distance to where the tendon attaches. It depends on the
+      direction the muscle pulls, and it changes continuously as the joint angle changes,
+      which is a large part of why you are stronger at some points in a movement than
+      others. Meanwhile the load in your
       hand sits far out at the end of a long forearm, with a large distance and a
       correspondingly large turning effect from a small weight. That geometric unfairness
       is why muscles pull with forces far greater than the weights they lift, and it is
@@ -530,11 +661,11 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=58"></script>
-<script src="stations.js?v=58"></script>
-<script src="nav.js?v=58"></script>
-<script src="physics.js?v=58"></script>
-<script src="contract-panel.js?v=58"></script>
-<script src="abbr.js?v=58"></script>
+<script src="i18n.js?v=59"></script>
+<script src="stations.js?v=59"></script>
+<script src="nav.js?v=59"></script>
+<script src="physics.js?v=59"></script>
+<script src="contract-panel.js?v=59"></script>
+<script src="abbr.js?v=59"></script>
 </body>
 </html>

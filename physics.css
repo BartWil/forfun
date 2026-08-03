@@ -257,3 +257,30 @@
   .ph-cheat-row { grid-template-columns: 1fr; gap: 7px; }
   .sym-row { grid-template-columns: 60px 1fr; gap: 8px; }
 }
+
+/* Apparent weight sits beside mass and weight, as a third distinct quantity. */
+.ph-card-app { border-color: rgba(124,155,255,.4); }
+.ph-quad-extra { border-color: rgba(255,209,102,.4); background: rgba(255,209,102,.045); }
+
+/* Assumptions block: what a demo is quietly taking for granted. */
+.ph-assume { margin: 12px 0 16px; padding: 13px 16px; border-radius: 11px;
+  border: 1px dashed rgba(255,209,102,.4); background: rgba(255,209,102,.045); }
+.ph-assume > b { display: block; font-family: 'Space Grotesk', sans-serif; font-size: .64rem;
+  letter-spacing: .12em; text-transform: uppercase; color: #ffd166; margin-bottom: 8px; }
+.ph-assume ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.ph-assume li { color: var(--text-dim); font-size: .82rem; line-height: 1.6;
+  padding-left: 15px; position: relative; }
+.ph-assume li::before { content: "·"; position: absolute; left: 3px; color: #ffd166; font-weight: 700; }
+.ph-demo-sub { margin-top: 10px; color: var(--text-muted); font-size: .82rem; line-height: 1.6; }
+
+/* Free-body diagram: the four questions, numbered. */
+.ph-fbd-steps { display: flex; flex-direction: column; gap: 11px; margin: 22px 0; }
+.ph-fbd-step { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start;
+  padding: 16px 18px; border-radius: 13px; background: rgba(0,0,0,.26); border: 1px solid var(--border); }
+.ph-fbd-n { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(124,155,255,.16); border: 1px solid rgba(124,155,255,.45); color: #a9bfff;
+  font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: .95rem; }
+.ph-fbd-step b { display: block; font-family: 'Space Grotesk', sans-serif; font-size: .95rem;
+  color: var(--text); margin-bottom: 6px; }
+.ph-fbd-step p { color: var(--text-dim); font-size: .89rem; line-height: 1.7; }
+.ph-fbd-step p b { display: inline; font-family: inherit; font-size: inherit; margin: 0; }
