@@ -494,6 +494,8 @@
     "ph.s7.h3": "A teraz to samo w ramieniu",
     "ph.s7.p5": "Kiedy to już ustalone, przedramię staje się zwykłym zastosowaniem tej zasady, a nie nową ideą. Poniżej ramię jest trzymane poziomo, a obciążenie zwisa pionowo w dół, czyli mamy wygodny przypadek 90 stopni, w którym odległość wzdłuż przedramienia i odległość prostopadła to ta sama liczba. Dlatego rachunek jest tu łatwy i dlatego też prawdziwy łokieć jest trudniejszy: obróć staw, a te dwie wielkości znów się rozejdą, co w dużej mierze tłumaczy, dlaczego Twoja siła zmienia się w zakresie ruchu.",
 
+    "lp.orbit": "Wokół niego krążą cztery dziedziny, które obejmuje ta strona. <b>Otwórz jedną</b>, by zobaczyć jej stacje, albo przewiń po tę samą mapę rozłożoną na płasko.",
+
     // === Glossary ===
     "gs.label": "Prostym językiem",
     "gs.title": "Słownik pojęć",

@@ -1,0 +1,139 @@
+/* The orbital map.
+   Sits over the hero, between the skeleton and the copy. The layer itself is
+   click-through so the body can still be grabbed anywhere, including straight
+   through an orbit; only the nodes take a pointer. */
+
+.om {
+  position: absolute; inset: 0; z-index: 2;
+  pointer-events: none;
+}
+.om-orbits { position: absolute; inset: 0; width: 100%; height: 100%; }
+.om-nodes { position: absolute; inset: 0; }
+
+.om-ring {
+  fill: none;
+  stroke: var(--om-c, #5eead4);
+  stroke-width: 1;
+  opacity: .17;
+  transition: opacity .45s ease, stroke-width .45s ease;
+}
+.om-ring.on { opacity: .62; stroke-width: 1.8; }
+.om-ring.dim { opacity: .05; }
+
+/* ---------- track nodes ---------- */
+.om-track {
+  position: absolute; top: 0; left: 0;
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 14px 7px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--om-c) 42%, transparent);
+  background: color-mix(in srgb, var(--om-c) 9%, rgba(5, 7, 13, .82));
+  backdrop-filter: blur(7px);
+  color: var(--om-c);
+  cursor: pointer;
+  pointer-events: auto;
+  font-family: 'Space Grotesk', sans-serif;
+  white-space: nowrap;
+  transition: opacity .4s ease, box-shadow .3s ease, border-color .3s ease,
+              background .3s ease, scale .3s ease;
+  will-change: transform;
+}
+.om-track:hover, .om-track:focus-visible {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--om-c) 55%, transparent),
+              0 0 34px color-mix(in srgb, var(--om-c) 34%, transparent);
+  outline: none;
+  scale: 1.05;
+}
+.om-track.on {
+  box-shadow: 0 0 0 1px var(--om-c), 0 0 46px color-mix(in srgb, var(--om-c) 46%, transparent);
+  background: color-mix(in srgb, var(--om-c) 17%, rgba(5, 7, 13, .88));
+}
+.om-track.dim { opacity: .32; }
+
+.om-dot {
+  width: 11px; height: 11px; border-radius: 50%; flex: none;
+  background: var(--om-c);
+  box-shadow: 0 0 14px var(--om-c), 0 0 30px color-mix(in srgb, var(--om-c) 60%, transparent);
+}
+.om-label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+.om-label b { font-size: .82rem; font-weight: 600; letter-spacing: .01em; }
+.om-label em {
+  font-style: normal; font-size: .61rem; letter-spacing: .08em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--om-c) 72%, #8593b0);
+}
+
+/* ---------- satellites ---------- */
+.om-sat {
+  position: absolute; top: 0; left: 0;
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 12px 5px 6px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--om-c) 34%, transparent);
+  background: rgba(5, 7, 13, .9);
+  backdrop-filter: blur(6px);
+  color: #dbe3f4;
+  text-decoration: none;
+  white-space: nowrap;
+  font-size: .76rem;
+  opacity: 0; visibility: hidden;
+  pointer-events: none;
+  /* visibility is switched with no delay on the way in, and only after the fade
+     on the way out, so a satellite is never invisible yet interactive. */
+  transition: opacity .34s ease var(--om-d, 0ms), visibility 0s linear .34s,
+              transform .44s cubic-bezier(.2, .9, .3, 1.1) var(--om-d, 0ms),
+              border-color .2s ease, background .2s ease;
+  will-change: transform;
+}
+.om-sat.on {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transition: opacity .34s ease var(--om-d, 0ms), visibility 0s linear 0s,
+              transform .44s cubic-bezier(.2, .9, .3, 1.1) var(--om-d, 0ms),
+              border-color .2s ease, background .2s ease;
+}
+.om-sat:hover, .om-sat:focus-visible {
+  border-color: var(--om-c);
+  background: color-mix(in srgb, var(--om-c) 15%, rgba(5, 7, 13, .94));
+  color: #fff;
+  outline: none;
+}
+.om-sat-dot {
+  width: 21px; height: 21px; border-radius: 50%; flex: none;
+  display: grid; place-items: center; font-size: .8rem;
+  background: color-mix(in srgb, var(--om-c) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--om-c) 40%, transparent);
+}
+
+/* While a shell is open the hero copy steps back, so the two never compete. */
+.lp-hero:has(.om-focused) .lp-hero-inner { opacity: .18; transition: opacity .4s ease; }
+.lp-hero-inner { transition: opacity .4s ease; }
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .om-track, .om-sat, .om-ring { transition: none; }
+  .om-sat { transition: opacity .01ms, visibility .01ms; }
+  .lp-hero:has(.om-focused) .lp-hero-inner { transition: none; }
+}
+
+/* ---------- narrow screens ----------
+   An atom with sixteen satellites is unusable on a phone. The orbits stay as
+   atmosphere, the track nodes stack into a legible column, and opening one lists
+   its stations vertically instead of scattering them round a ring. */
+@media (max-width: 860px) {
+  .om-nodes { display: flex; flex-direction: column; align-items: center;
+    justify-content: flex-start; gap: 7px; padding-top: 14vh; }
+  .om-track, .om-sat {
+    position: relative; top: auto; left: auto;
+    transform: none !important; transition-delay: 0ms !important;
+  }
+  .om-sat { display: none; }
+  .om-sat.on { display: flex; }
+  .om-track { width: min(74vw, 300px); }
+  .om-label { flex: 1; }
+  .om-sat { width: min(66vw, 268px); }
+  .lp-hero:has(.om-focused) .lp-hero-inner { opacity: 1; }
+}
+
+/* Very short viewports: the map would crowd the copy, so it becomes atmosphere only. */
+@media (max-height: 560px) and (min-width: 861px) {
+  .om-nodes { display: none; }
+}

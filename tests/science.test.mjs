@@ -916,6 +916,71 @@ group("Physics station", () => {
     ok(html.includes(k), `free-body diagram step ${k.slice(-3)} is present`);
 });
 
+
+// ============================================ 11. the orbital map on the landing
+//
+// The map is navigation, so the thing that matters is not how it looks but that
+// it stays truthful to the catalogue and reachable without a mouse.
+group("Orbital map", () => {
+  const js = read("orbit-map.js"), html = read("index.html"), css = read("orbit-map.css");
+
+  ok(/<script src="orbit-map\.js/.test(html), "index.html loads the orbital map");
+  ok(/orbit-map\.css/.test(html), "index.html loads its stylesheet");
+  ok(html.indexOf("stations.js") < html.indexOf("orbit-map.js"),
+     "the catalogue loads before the map that is generated from it");
+
+  // Generated, never typed. A station name appearing literally in this file would
+  // mean a second inventory had started, which is how the old README rotted.
+  for (const st of STATIONS.list.filter(s => !s.hidden)) {
+    ok(!js.includes(st.page.replace(".html", "") + '"') || js.indexOf("st.page") > 0,
+       `orbit-map.js does not hard-code "${st.page}"`);
+  }
+  ok(/S\.inTrack\(id\)/.test(js), "the map takes its stations from STATIONS.inTrack");
+  ok(/a\.href = st\.page/.test(js), "satellite links come from the catalogue's own page field");
+  ok(/S\.TRACKS\[id\]/.test(js), "track names and colours come from the catalogue");
+
+  // Real links, real buttons. The point of the DOM/SVG split.
+  ok(/createElement\("a"\)/.test(js), "stations are anchors, not painted into a canvas");
+  ok(/createElement\("button"\)/.test(js), "tracks are buttons, since they open rather than navigate");
+  ok(/aria-expanded/.test(js), "track buttons report their expanded state");
+  ok(/role", "navigation"/.test(js), "the map is exposed as a navigation landmark");
+
+  // Focus management: a hidden satellite must never sit in the tab order.
+  ok(/tabIndex = state\.pinned === g\.id \? 0 : -1/.test(js),
+     "only a pinned shell puts its stations in the tab order");
+  ok(/e\.key === "Escape"/.test(js), "Escape closes an open shell");
+
+  // It must never become the only way in.
+  ok(/id="stations"/.test(html), "the flat station map is still on the page");
+  ok(/pointer-events: none/.test(css), "the map layer is click-through so the skeleton stays grabbable");
+  ok(/prefers-reduced-motion/.test(css) && /reduceMotion/.test(js),
+     "the map honours prefers-reduced-motion in both script and style");
+  ok(/max-width: 860px/.test(css), "there is a narrow-screen fallback");
+
+  // Geometry: every shell has to fit whatever box it is given.
+  const M = new Function(`
+    const noop = () => {};
+    const el = { style:{setProperty:noop}, classList:{add:noop,remove:noop,toggle:noop},
+                 appendChild:noop, remove:noop, addEventListener:noop, setAttribute:noop,
+                 querySelector:()=>null, querySelectorAll:()=>[], innerHTML:"", dataset:{},
+                 getBoundingClientRect:()=>({width:1280,height:720}) };
+    const document = { readyState:"complete", addEventListener:noop, getElementById:()=>null,
+                       createElement:()=>el, createElementNS:()=>el,
+                       querySelector:()=>null, querySelectorAll:()=>[], body:el, fonts:null };
+    const window = { addEventListener:noop, matchMedia:()=>({matches:false}),
+                     STATIONS:null, innerWidth:1280, innerHeight:720 };
+    ${js}
+    return window.__orbitMap;
+  `)();
+  ok(M === undefined, "the map does nothing when the catalogue is absent, rather than throwing");
+
+  // Polish counts in three forms; "4 stacji" would be wrong.
+  ok(/stacje/.test(js) && /stacja/.test(js) && /stacji/.test(js),
+     "the Polish station count uses all three plural forms");
+  ok(/t >= 2 && t <= 4 && !\(h >= 12 && h <= 14\)/.test(js),
+     "the Polish plural rule excludes the teens, as it must");
+});
+
 // ------------------------------------------------------------------- summary
 console.log("\n" + "=".repeat(64));
 console.log(`  ${pass} passed, ${fail} failed`);

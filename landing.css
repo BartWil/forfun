@@ -252,3 +252,11 @@
   .lp-card:hover, .lp-card:focus-visible{ transform:none; }
   .lp-scroll svg animate{ display:none; }
 }
+
+/* Tells the reader the thing orbiting above them is navigation, not wallpaper. */
+.lp-orbit-hint{
+  margin-top:14px; font-size:.86rem; line-height:1.65; color:var(--text-muted);
+  max-width:46ch; margin-left:auto; margin-right:auto;
+}
+.lp-orbit-hint b{ color:#a9bfff; font-weight:600; }
+@media (max-width:860px){ .lp-orbit-hint{ font-size:.8rem; } }
