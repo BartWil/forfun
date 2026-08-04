@@ -355,88 +355,31 @@ const PREVIEW = {
 // ============================================================
 //  station definitions
 // ============================================================
-const STATIONS = [
-  { id: "explorer", href: "explorer.html#explorer", emoji: "🧭", c: "#5eead4",
-    tag: { en: "Core", pl: "Rdzeń" },
-    title: { en: "The Explorer", pl: "Eksplorator" },
-    desc: { en: "Four movements, three signals. Scrub a gait cycle and watch force, joint angles and muscle activity move together.",
-            pl: "Cztery ruchy, trzy sygnały. Przewijaj cykl chodu i patrz, jak siła, kąty stawowe i aktywność mięśni poruszają się razem." } },
+// ============================================================
+//  the catalogue
+// ============================================================
+// There is no station list in this file, on purpose. It was here once, it drifted
+// from the real one within a few weeks, and the drift was not cosmetic: it kept
+// claiming ten stations when there were fifteen and kept repeating two scientific
+// phrasings that had already been corrected elsewhere. Everything below comes from
+// stations.js, which is the only catalogue.
+const CAT = window.STATIONS;
 
-  { id: "lesson", href: "lesson.html", emoji: "📖", c: "#7c9bff",
-    tag: { en: "Start here", pl: "Zacznij tu" },
-    title: { en: "Anatomy of a Step", pl: "Anatomia kroku" },
-    desc: { en: "A guided scroll through one walking step, heel strike to heel strike, one phase at a time.",
-            pl: "Prowadzona wędrówka przez jeden krok, od kontaktu pięty do kontaktu pięty, faza po fazie." } },
+// Live previews are keyed by station id and only some stations have one. A station
+// without a preview still gets a card; it just gets a still emblem instead of a
+// canvas, rather than being quietly left off the page.
+const hasPreview = id => typeof PREVIEW[id] === "function";
 
-  { id: "sandbox", href: "sandbox.html", emoji: "🦿", c: "#ffb43c",
-    tag: { en: "Clinical", pl: "Klinika" },
-    title: { en: "Gait Lab", pl: "Gait Lab" },
-    desc: { en: "Switch on a deficit such as foot drop, weak quadriceps or a painful limb, and watch the compensation appear.",
-            pl: "Włącz deficyt: opadanie stopy, słaby czworogłowy albo bolesną kończynę, i patrz, jak pojawia się kompensacja." } },
+const trackColour = st => (CAT.TRACKS[st.track] || {}).colour || "#7c9bff";
 
-  { id: "gait3d", href: "gait3d.html", emoji: "🚶", c: "#7c9bff",
-    tag: { en: "Motion capture", pl: "Mocap" },
-    title: { en: "Real Gait", pl: "Prawdziwy chód" },
-    desc: { en: "A rigged 3-D body walking on measured joint angles from 42 adults. No canned animation.",
-            pl: "Oszkieletowane ciało 3-D chodzące na zmierzonych kątach stawowych 42 osób. Żadnej gotowej animacji." } },
-
-  { id: "body3d", href: "body3d.html", emoji: "🦴", c: "#ff6f5e",
-    tag: { en: "3-D anatomy", pl: "Anatomia 3-D" },
-    title: { en: "The Anatomy", pl: "Anatomia" },
-    desc: { en: "An orbitable body with muscle volumes lighting up to real EMG as it moves.",
-            pl: "Obracalne ciało z objętościami mięśni rozświetlanymi rzeczywistym EMG podczas ruchu." } },
-
-  { id: "lab", href: "lab.html", emoji: "⚡", c: "#5eead4",
-    tag: { en: "Physics", pl: "Fizyka" },
-    title: { en: "The Forge", pl: "Kuźnia" },
-    desc: { en: "The same forces, rendered as physics particles, with ground reaction sprayed from the foot at every contact.",
-            pl: "Te same siły, pokazane jako cząstki fizyczne, z reakcją podłoża tryskającą spod stopy przy każdym kontakcie." } },
-
-  { id: "muscle", href: "muscle.html", emoji: "💪", c: "#ff6f5e",
-    tag: { en: "Mechanics", pl: "Mechanika" },
-    title: { en: "Muscle Levers", pl: "Dźwignie mięśniowe" },
-    desc: { en: "Hold 5 kg and your biceps pulls with 50. Drag the moment arm and watch the price a joint pays for speed.",
-            pl: "Trzymasz 5 kg, a biceps ciągnie z siłą 50. Przesuń ramię momentu i zobacz, czym staw płaci za prędkość." } },
-
-  { id: "dyno", href: "dyno.html", emoji: "🔬", c: "#5eead4",
-    tag: { en: "Physiology", pl: "Fizjologia" },
-    title: { en: "Muscle Dyno", pl: "Muscle Dyno" },
-    desc: { en: "Length–tension and force–velocity, with the Hill model running as real Ruby compiled to WebAssembly.",
-            pl: "Długość–napięcie i siła–prędkość, z modelem Hilla działającym jako prawdziwy Ruby skompilowany do WebAssembly." } },
-
-  { id: "spine", href: "spine.html", emoji: "🩻", c: "#ffb43c",
-    tag: { en: "Evidence", pl: "Dowody" },
-    title: { en: "Spine Under Load", pl: "Kręgosłup pod obciążeniem" },
-    desc: { en: "Disc pressure across postures, and the famous textbook claim that a modern re-measurement overturned.",
-            pl: "Ciśnienie w krążku w różnych pozycjach oraz słynne podręcznikowe twierdzenie obalone przez nowoczesny pomiar." } },
-
-  { id: "sls", href: "sls.html", emoji: "🦵", c: "#ff6f5e",
-    tag: { en: "Screening", pl: "Przesiew" },
-    title: { en: "Knee Control", pl: "Kontrola kolana" },
-    desc: { en: "The single-leg squat, in 3-D. Watch the knee cave into dynamic valgus as control fails.",
-            pl: "Przysiad na jednej nodze w 3-D. Patrz, jak kolano zapada się w dynamiczną koślawość, gdy zawodzi kontrola." } },
-];
-
-const PATH = [
-  { href: "lesson.html", k: { en: "Anatomy of a Step", pl: "Anatomia kroku" },
-    t: { en: "build the vocabulary: phases, rockers, what a gait cycle even is",
-         pl: "zbuduj słownictwo: fazy, przetoczenia, czym w ogóle jest cykl chodu" } },
-  { href: "explorer.html#explorer", k: { en: "The Explorer", pl: "Eksplorator" },
-    t: { en: "put numbers on it, and compare walking against running and jumping",
-         pl: "przypisz temu liczby i porównaj chód z biegiem oraz skokiem" } },
-  { href: "muscle.html", k: { en: "Levers", pl: "Dźwignie" },
-    t: { en: "why the forces inside a joint dwarf the load you are actually holding",
-         pl: "dlaczego siły wewnątrz stawu są wielokrotnie większe od trzymanego ciężaru" } },
-  { href: "dyno.html", k: { en: "Muscle Dyno", pl: "Muscle Dyno" },
-    t: { en: "the other half of the answer: why joint angle changes muscle strength",
-         pl: "druga połowa odpowiedzi: dlaczego kąt stawu zmienia siłę mięśnia" } },
-  { href: "sandbox.html", k: { en: "Gait Lab", pl: "Gait Lab" },
-    t: { en: "now break something, and predict the compensation before you look",
-         pl: "teraz coś zepsuj i przewidź kompensację, zanim spojrzysz" } },
-  { href: "spine.html", k: { en: "Spine Under Load", pl: "Kręgosłup pod obciążeniem" },
-    t: { en: "finish on evidence quality: how much a famous number is really worth",
-         pl: "zakończ na jakości dowodów: ile naprawdę warta jest słynna liczba" } },
-];
+// The card's tag says what kind of thing the station is, taken from the
+// scientific contract rather than invented per card.
+const STATUS_TAG = {
+  verified: { en: "Measured", pl: "Zmierzone" },
+  reconstructed: { en: "Reconstructed", pl: "Zrekonstruowane" },
+  synthetic: { en: "Teaching model", pl: "Model dydaktyczny" },
+  reference: { en: "Reference", pl: "Materiał źródłowy" },
+};
 
 // ============================================================
 //  build the DOM
@@ -447,14 +390,22 @@ const cards = [];
 function buildGrid() {
   grid.innerHTML = ""; cards.length = 0;
   const L = PL() ? "pl" : "en";
-  STATIONS.forEach(s => {
+  CAT.list.filter(st => !st.hidden).forEach(st => {
+    const colour = trackColour(st);
+    const tag = STATUS_TAG[st.status] || STATUS_TAG.reference;
+    const live = hasPreview(st.id);
     const a = document.createElement("a");
-    a.className = "lp-card"; a.href = s.href; a.style.setProperty("--c", s.c);
+    a.className = "lp-card" + (live ? "" : " lp-card-still");
+    a.href = st.page;
+    a.style.setProperty("--c", colour);
     a.innerHTML =
-      `<div class="lp-canvas-wrap"><span class="lp-tag">${s.tag[L]}</span><canvas></canvas></div>` +
+      `<div class="lp-canvas-wrap"><span class="lp-tag">${tag[L]}</span>` +
+        (live ? `<canvas></canvas>` : `<span class="lp-still">${st.icon}</span>`) +
+      `</div>` +
       `<div class="lp-card-body">` +
-        `<h3 class="lp-card-title"><span class="lp-emoji">${s.emoji}</span>${s.title[L]}</h3>` +
-        `<p class="lp-card-desc">${s.desc[L]}</p>` +
+        `<h3 class="lp-card-title"><span class="lp-emoji">${st.icon}</span>${st.title[L]}</h3>` +
+        `<p class="lp-card-desc">${st.blurb[L]}</p>` +
+        `<span class="lp-card-track">${CAT.TRACKS[st.track][L]}</span>` +
         `<span class="lp-card-go">${PL() ? "Otwórz" : "Open"}` +
           `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">` +
           `<path d="M5 12h14M13 6l6 6-6 6"/></svg></span>` +
@@ -463,7 +414,9 @@ function buildGrid() {
     // visible defaults to TRUE: the IntersectionObserver is an optimisation that switches
     // offscreen panels off, never the thing that switches them on. If IO is missing or
     // misbehaves the grid still animates correctly; it just costs a little more CPU.
-    cards.push({ el: a, canvas: a.querySelector("canvas"), draw: PREVIEW[s.id], visible: true, phase: Math.random() });
+    if (live) {
+      cards.push({ el: a, canvas: a.querySelector("canvas"), draw: PREVIEW[st.id], visible: true, phase: Math.random() });
+    }
   });
   observeCards();
   sizeCanvases();
@@ -472,9 +425,9 @@ function buildGrid() {
 function buildPath() {
   const ol = document.getElementById("lpPath");
   const L = PL() ? "pl" : "en";
-  ol.innerHTML = PATH.map((p, i) =>
+  ol.innerHTML = CAT.route().map((st, i) =>
     `<li><span class="lp-path-num">${i + 1}</span>` +
-    `<span class="lp-path-txt"><a href="${p.href}">${p.k[L]}</a> · ${p.t[L]}</span></li>`).join("");
+    `<span class="lp-path-txt"><a href="${st.page}">${st.title[L]}</a> · ${st.route.why[L]}</span></li>`).join("");
 }
 
 // ============================================================

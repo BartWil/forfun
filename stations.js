@@ -63,6 +63,7 @@
     // ---------------------------------------------------------------- movement
     {
       id: "explorer", page: "explorer.html", icon: "🔬", track: "movement",
+      route: { order: 3, why: { en: "put numbers on it, and compare walking against running and jumping", pl: "przypisz temu liczby i porównaj chód z biegiem oraz skokiem" } },
       level: "beginner", status: "verified", prerequisites: [],
       title: { en: "Explorer", pl: "Eksplorator" },
       blurb: { en: "Four movements, three signals, one cycle. The place to start.",
@@ -114,6 +115,7 @@
     },
     {
       id: "lesson", page: "lesson.html", icon: "📖", track: "movement",
+      route: { order: 1, why: { en: "build the vocabulary: phases, rockers, what a gait cycle even is", pl: "zbuduj słownictwo: fazy, przetoczenia, czym w ogóle jest cykl chodu" } },
       level: "beginner", status: "verified", prerequisites: [],
       title: { en: "Anatomy of a Step", pl: "Anatomia kroku" },
       blurb: { en: "One walking step, narrated phase by phase as you scroll.",
@@ -229,6 +231,7 @@
     // ------------------------------------------------------ forces & mechanics
     {
       id: "physics", page: "physics.html", icon: "🍎", track: "forces",
+      route: { order: 2, why: { en: "the mechanics everything else leans on, rebuilt from what a force is", pl: "mechanika, na której opiera się reszta, odbudowana od tego, czym jest siła" } },
       level: "beginner", status: "reference", prerequisites: [],
       title: { en: "Physics, from scratch", pl: "Fizyka od zera" },
       blurb: { en: "Newton's laws rebuilt for anyone who barely survived school physics.",
@@ -277,6 +280,7 @@
     },
     {
       id: "muscle", page: "muscle.html", icon: "💪", track: "forces",
+      route: { order: 4, why: { en: "why the forces inside a joint dwarf the load you are actually holding", pl: "dlaczego siły wewnątrz stawu są wielokrotnie większe od trzymanego ciężaru" } },
       level: "beginner", status: "reconstructed", prerequisites: [],
       title: { en: "Muscle Levers", pl: "Dźwignie mięśniowe" },
       blurb: { en: "Why holding 5 kg costs the biceps ten times that.",
@@ -308,6 +312,7 @@
     },
     {
       id: "dyno", page: "dyno.html", icon: "🔬", track: "forces",
+      route: { order: 5, why: { en: "the other half of the answer: why joint angle changes muscle strength", pl: "druga połowa odpowiedzi: dlaczego kąt stawu zmienia siłę mięśnia" } },
       level: "intermediate", status: "reconstructed", prerequisites: ["muscle"],
       title: { en: "Muscle Dyno", pl: "Dynamometr mięśniowy" },
       blurb: { en: "Length-tension and force-velocity, running as live Ruby.",
@@ -338,6 +343,7 @@
     },
     {
       id: "dynamics", page: "dynamics.html", icon: "🧮", track: "forces",
+      route: { order: 6, why: { en: "run the second law backwards to get the moment inside a joint", pl: "uruchom drugą zasadę wstecz, by wyznaczyć moment wewnątrz stawu" } },
       level: "intermediate", status: "verified", prerequisites: ["muscle", "explorer"],
       title: { en: "Inverse Dynamics", pl: "Dynamika odwrotna" },
       blurb: { en: "Solve the joint moments yourself, from the floor up.",
@@ -434,6 +440,7 @@
 
     {
       id: "emg", page: "emg.html", icon: "\u26a1", track: "measurement",
+      route: { order: 7, why: { en: "process a real muscle recording and watch how much of the answer was your choice", pl: "przetwórz prawdziwy zapis mięśnia i zobacz, ile z wyniku było Twoim wyborem" } },
       level: "beginner", status: "verified", prerequisites: [],
       title: { en: "EMG Lab", pl: "Laboratorium EMG" },
       blurb: { en: "Real unprocessed muscle electricity. Process it yourself and watch the answer move.",
@@ -488,6 +495,7 @@
     // --------------------------------------------------- clinical interpretation
     {
       id: "sandbox", page: "sandbox.html", icon: "🦿", track: "clinical",
+      route: { order: 8, why: { en: "now break something, and predict the compensation before you look", pl: "teraz coś zepsuj i przewidź kompensację, zanim spojrzysz" } },
       level: "intermediate", status: "synthetic", prerequisites: ["lesson"],
       title: { en: "Gait Lab", pl: "Laboratorium chodu" },
       blurb: { en: "Switch on a deficit and watch the compensation appear.",
@@ -548,6 +556,7 @@
     },
     {
       id: "spine", page: "spine.html", icon: "🩻", track: "clinical",
+      route: { order: 9, why: { en: "finish on evidence quality: how much a famous number is really worth", pl: "zakończ na jakości dowodów: ile naprawdę warta jest słynna liczba" } },
       level: "beginner", status: "verified", prerequisites: ["muscle"],
       title: { en: "Spine Under Load", pl: "Kręgosłup pod obciążeniem" },
       blurb: { en: "Two classic studies, and the textbook claim they disagree on.",
@@ -624,5 +633,8 @@
     TRACKS, list: S, byPage, byId,
     forPage(file) { return byPage[file] || null; },
     inTrack(t) { return S.filter(s => s.track === t && !s.hidden); },
+    route() {
+      return S.filter(s => s.route && !s.hidden).sort((a, b) => a.route.order - b.route.order);
+    },
   };
 });

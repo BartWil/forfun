@@ -981,6 +981,60 @@ group("Orbital map", () => {
      "the Polish plural rule excludes the teens, as it must");
 });
 
+
+// ==================================== 12. one catalogue, and only one
+//
+// The landing page kept its own list of stations. It drifted within weeks: still
+// ten entries when there were fifteen, and still carrying two scientific
+// phrasings that had been corrected everywhere else. These tests exist so that a
+// second inventory cannot quietly start again.
+group("Single catalogue", () => {
+  const landing = read("landing.js"), html = read("index.html");
+
+  ok(!/const\s+STATIONS\s*=\s*\[/.test(landing),
+     "landing.js has no station list of its own");
+  ok(!/const\s+PATH\s*=\s*\[/.test(landing),
+     "landing.js has no route list of its own");
+  ok(/window\.STATIONS/.test(landing), "landing.js reads the real catalogue");
+  ok(/CAT\.list\.filter/.test(landing), "the card grid comes from the catalogue");
+  ok(/CAT\.route\(\)/.test(landing), "the suggested route comes from the catalogue");
+  ok(/st\.blurb\[L\]/.test(landing), "card copy is the catalogue's blurb, not a second wording");
+  ok(/CAT\.TRACKS\[st\.track\]/.test(landing), "card colour and track label come from the catalogue");
+
+  // The specific drifted claims, pinned so they cannot come back anywhere.
+  for (const f of readdirSync(ROOT).filter(f => /\.(js|html)$/.test(f))) {
+    const src = read(f);
+    ok(!/valgus as control fails/i.test(src),
+       `${f}: does not describe the single-leg squat as valgus from failing control`);
+    ok(!/biceps pulls with 50/.test(src),
+       `${f}: does not state a unitless "biceps pulls with 50"`);
+  }
+
+  // Every station reachable from the landing grid, not just the ones with a preview.
+  const live = STATIONS.list.filter(s => !s.hidden);
+  ok(/hasPreview\(st\.id\)/.test(landing),
+     "stations without a live preview still get a card");
+  ok(live.length >= 15, `the catalogue has ${live.length} visible stations`);
+
+  // The route must point only at stations that exist.
+  const route = STATIONS.route();
+  ok(route.length > 0, `the catalogue defines a route of ${route.length} steps`);
+  for (const st of route) {
+    ok(existsSync(join(ROOT, st.page)), `route step "${st.id}" points at a page that exists`);
+    ok(st.route.why && st.route.why.en && st.route.why.pl,
+       `route step "${st.id}" explains itself in both languages`);
+  }
+  const orders = route.map(s => s.route.order);
+  ok(new Set(orders).size === orders.length, "route positions are unique");
+
+  // The meta description carried a station count, which is a catalogue in miniature.
+  const meta = spawnSync(process.execPath, [join(ROOT, "scripts/sync_meta.mjs"), "--check"],
+                         { encoding: "utf8" });
+  ok(meta.status === 0, "index.html's meta description matches the catalogue",
+     (meta.stderr || meta.stdout || "").trim());
+  ok(!/Ten interactive stations/.test(html), "the meta description no longer says ten");
+});
+
 // ------------------------------------------------------------------- summary
 console.log("\n" + "=".repeat(64));
 console.log(`  ${pass} passed, ${fail} failed`);
