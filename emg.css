@@ -155,3 +155,7 @@
 .eg-metric-note { grid-column: 1 / -1; margin-top: 4px; padding: 9px 11px;
   border-left: 2px solid rgba(255,111,94,.45); background: rgba(255,111,94,.045);
   border-radius: 0 8px 8px 0; color: var(--text-dim); font-size: .76rem; line-height: 1.55; }
+
+/* The share control lives beside the stage bar rather than inside it, because
+   the stage bar rewrites itself whenever the experiment changes. */
+.eg-share-row { display: flex; justify-content: flex-end; margin: -6px 0 12px; }

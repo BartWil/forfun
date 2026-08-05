@@ -1,0 +1,122 @@
+/* Shared chrome for the learning-state layer: the share control, the
+   arrived-from-a-link banner, and the Continue bar on the landing page. */
+
+/* ---------- arrived from a shared link ---------- */
+.bs-banner{
+  display:flex; align-items:center; gap:11px; flex-wrap:wrap;
+  padding:10px clamp(16px,4vw,44px);
+  background:rgba(124,155,255,.12); border-bottom:1px solid rgba(124,155,255,.34);
+  color:#a9bfff; font-size:.84rem;
+}
+.bs-banner-dot{
+  width:8px; height:8px; border-radius:50%; background:#7c9bff; flex:none;
+  box-shadow:0 0 12px #7c9bff;
+}
+.bs-banner-reset{
+  margin-left:auto; padding:5px 13px; border-radius:999px;
+  border:1px solid rgba(124,155,255,.5); background:transparent; color:#a9bfff;
+  cursor:pointer; font-size:.76rem; transition:background .15s ease,color .15s ease;
+}
+.bs-banner-reset:hover{ background:rgba(124,155,255,.2); color:#e8edf7; }
+
+/* ---------- share this experiment ---------- */
+.bs-share{ position:relative; margin-left:auto; }
+.bs-share-btn{
+  display:flex; align-items:center; gap:7px; padding:8px 14px; border-radius:10px;
+  border:1px solid var(--border); background:rgba(255,255,255,.03);
+  color:var(--text-dim); cursor:pointer; font-size:.79rem;
+  font-family:'Space Grotesk',sans-serif; transition:all .15s ease;
+}
+.bs-share-btn:hover{ border-color:#7c9bff; color:#a9bfff; }
+.bs-share-ico{ font-size:.9rem; }
+.bs-share-pop{
+  position:absolute; right:0; top:calc(100% + 8px); z-index:60;
+  width:min(330px,84vw); padding:15px 17px; border-radius:13px;
+  background:#0c1220; border:1px solid rgba(124,155,255,.4);
+  box-shadow:0 20px 54px rgba(0,0,0,.62);
+}
+.bs-pop-h{
+  font-family:'Space Grotesk',sans-serif; font-size:.62rem; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--text-muted); margin-bottom:9px;
+}
+.bs-row{
+  display:flex; justify-content:space-between; gap:14px; align-items:baseline;
+  padding:5px 0; border-top:1px solid rgba(255,255,255,.06); font-size:.79rem;
+}
+.bs-row:first-of-type{ border-top:none; }
+.bs-row span{ color:var(--text-muted); }
+.bs-row b{ color:var(--text); font-family:'JetBrains Mono',monospace; font-size:.78rem; text-align:right; }
+.bs-row-cp b{ color:#ffd166; }
+.bs-url{
+  margin-top:11px; padding:8px 10px; border-radius:8px; background:rgba(0,0,0,.4);
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; color:#5eead4;
+  word-break:break-all; line-height:1.45; max-height:76px; overflow:auto;
+}
+.bs-url-input{
+  width:100%; margin-top:11px; padding:8px 10px; border-radius:8px;
+  background:rgba(0,0,0,.4); border:1px solid rgba(94,234,212,.4);
+  font-family:'JetBrains Mono',monospace; font-size:.66rem; color:#5eead4;
+}
+.bs-pop-actions{ display:flex; gap:8px; align-items:center; margin-top:12px; }
+.bs-copy{
+  padding:8px 16px; border-radius:9px; border:1px solid #7c9bff;
+  background:rgba(124,155,255,.16); color:#cfd9ff; cursor:pointer; font-size:.78rem;
+  transition:background .15s ease;
+}
+.bs-copy:hover{ background:rgba(124,155,255,.28); }
+.bs-open{ font-size:.75rem; color:var(--text-muted); text-decoration:none; }
+.bs-open:hover{ color:#a9bfff; text-decoration:underline; }
+
+/* ---------- continue, on the landing page ---------- */
+.bs-continue{
+  margin:22px auto 0; max-width:640px; padding:0;
+  border-radius:14px; border:1px solid rgba(94,234,212,.32);
+  background:rgba(94,234,212,.055); overflow:hidden; text-align:left;
+}
+.bs-cont-main{
+  display:flex; align-items:center; gap:14px; padding:14px 17px;
+  text-decoration:none; color:inherit;
+}
+.bs-cont-main:hover{ background:rgba(94,234,212,.08); }
+.bs-cont-ico{ font-size:1.5rem; flex:none; }
+.bs-cont-txt{ flex:1; min-width:0; }
+.bs-cont-lab{
+  font-family:'Space Grotesk',sans-serif; font-size:.58rem; letter-spacing:.13em;
+  text-transform:uppercase; color:#5eead4; display:block; margin-bottom:2px;
+}
+.bs-cont-name{ color:var(--text); font-size:.94rem; font-weight:600; display:block; }
+.bs-cont-meta{
+  color:var(--text-muted); font-size:.72rem; font-family:'JetBrains Mono',monospace;
+  display:block; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.bs-cont-go{
+  flex:none; padding:7px 15px; border-radius:999px;
+  background:rgba(94,234,212,.16); border:1px solid rgba(94,234,212,.45);
+  color:#5eead4; font-size:.78rem;
+}
+.bs-cont-more{
+  width:100%; padding:8px 17px; border:none; border-top:1px solid rgba(94,234,212,.18);
+  background:transparent; color:var(--text-muted); cursor:pointer; font-size:.73rem;
+  text-align:left; transition:color .15s ease;
+}
+.bs-cont-more:hover{ color:var(--text-dim); }
+.bs-cont-rest{ border-top:1px solid rgba(94,234,212,.18); }
+.bs-cont-rest a{
+  display:flex; align-items:center; gap:11px; padding:10px 17px;
+  text-decoration:none; color:var(--text-dim); font-size:.82rem;
+  border-top:1px solid rgba(255,255,255,.05);
+}
+.bs-cont-rest a:first-child{ border-top:none; }
+.bs-cont-rest a:hover{ background:rgba(94,234,212,.06); color:var(--text); }
+.bs-cont-rest em{ font-style:normal; margin-left:auto; color:var(--text-muted); font-size:.7rem; }
+.bs-cont-clear{
+  display:block; width:100%; padding:8px 17px; border:none;
+  border-top:1px solid rgba(255,255,255,.06); background:transparent;
+  color:var(--text-muted); font-size:.7rem; cursor:pointer; text-align:left;
+}
+.bs-cont-clear:hover{ color:#ff9384; }
+
+@media (max-width:560px){
+  .bs-cont-main{ flex-wrap:wrap; }
+  .bs-cont-go{ margin-left:auto; }
+}

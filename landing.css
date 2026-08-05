@@ -276,3 +276,7 @@
   font-family:'Space Grotesk',sans-serif; font-size:.62rem; letter-spacing:.09em;
   text-transform:uppercase; color:color-mix(in srgb, var(--c) 78%, #8593b0);
 }
+
+/* The continue bar sits inside the click-through hero copy, so it needs its
+   pointer events back. */
+.lp-continue-host{ pointer-events:auto; }

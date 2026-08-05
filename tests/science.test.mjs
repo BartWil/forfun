@@ -1035,6 +1035,76 @@ group("Single catalogue", () => {
   ok(!/Ten interactive stations/.test(html), "the meta description no longer says ten");
 });
 
+
+// ============================= 13. the learning-state layer
+//
+// Continue, Share and later Predict and Provenance are one layer, not four
+// features. These tests pin the properties that make that worth doing: one
+// serialiser, readable URLs, untrusted input treated as untrusted, and storage
+// that can never break a page.
+group("Learning state", () => {
+  const core = read("biolab-state.js"), cont = read("continue-bar.js"), emg = read("emg.js");
+
+  // ---- one serialiser, used by both features
+  ok(/encode\(state\)/.test(core) && /decode\(search\)/.test(core),
+     "the layer has a single encode/decode pair");
+  ok(/BioLabState\.decode/.test(cont),
+     "Continue reads state through the same decoder Share writes with");
+  ok(!/JSON\.stringify\(state\)/.test(cont),
+     "Continue does not invent a second storage format");
+
+  // ---- readable URLs, as a deliberate choice
+  ok(!/btoa|base64/i.test(core), "state is not base64-encoded into an opaque blob");
+  ok(/URLSearchParams/.test(core), "state is ordinary query parameters");
+
+  // ---- untrusted input
+  ok(/validate/.test(core) && /adapter\.validate/.test(core),
+     "incoming links are validated before they are applied");
+  ok(/clampNum/.test(emg), "the EMG adapter clamps numeric state from a link");
+  ok(/if \(CH\[raw\.muscle\]\)/.test(emg),
+     "the EMG adapter accepts only muscles that exist");
+  ok(/v !== null && v !== SCHEMA/.test(core),
+     "a link from an unknown schema version is ignored rather than guessed at");
+
+  // ---- storage can never break a page
+  ok(/try \{[\s\S]{0,400}localStorage\.getItem/.test(core),
+     "reading storage is wrapped against private mode and corrupt data");
+  ok(/catch \(e\) \{\s*return false;/.test(core),
+     "a failed write is tolerated, since history is a convenience");
+  ok(/typeof e\.station === "string" &&/.test(core),
+     "stored entries are shape-checked before use");
+  ok(/MAX_ENTRIES = 3/.test(core), "history keeps at most three stations");
+
+  // ---- what it deliberately is not
+  // Comments are stripped first: these files SAY "no streaks, no leaderboard" in
+  // their own prose, and a grep that cannot tell code from commentary would flag
+  // the promise instead of a breach of it.
+  const codeOnly = f => read(f)
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .replace(/(^|[^:])\/\/[^\n]*/g, "$1");
+  for (const f of ["biolab-state.js", "continue-bar.js"]) {
+    const src = codeOnly(f);
+    ok(!/streak|leaderboard|badge|xp|points/i.test(src),
+       `${f}: no streaks, badges, points or leaderboards`);
+    ok(!/fetch\(|XMLHttpRequest|navigator\.sendBeacon/.test(src),
+       `${f}: sends nothing anywhere`);
+  }
+
+  // ---- history is earned, not automatic
+  ok(/trackEngagement/.test(core) && /dwellMs/.test(core),
+     "a visit is only recorded after real interaction or real dwell time");
+  ok(/minInteractions/.test(core), "a single stray click does not count as a visit");
+
+  // ---- wiring
+  const pages = readdirSync(ROOT).filter(f => f.endsWith(".html"));
+  for (const f of pages)
+    ok(read(f).includes("biolab-state.js"), `${f} loads the state layer`);
+  const idx = read("index.html");
+  ok(idx.includes('id="lpContinue"'), "the landing page has somewhere to show Continue");
+  ok(idx.indexOf("stations.js") < idx.indexOf("biolab-state.js"),
+     "the catalogue loads before the layer that looks stations up in it");
+});
+
 // ------------------------------------------------------------------- summary
 console.log("\n" + "=".repeat(64));
 console.log(`  ${pass} passed, ${fail} failed`);

@@ -724,6 +724,100 @@
     return { meta, cols };
   }
 
+  // ------------------------------------------------- shareable experiment state
+  // The station tells BioLabState what its experiment currently IS. Everything
+  // else, a link a teacher can send and Continue on the landing page, is built
+  // from this one description, so there is a single serialiser to get wrong.
+  function registerState() {
+    if (!window.BioLabState) return;
+    const B = window.BioLabState;
+
+    // emg.js formats inline elsewhere, so the adapter carries its own helper
+    // rather than depending on one that happens to exist in another station.
+    const fmt = (v, n) => Number(v).toFixed(n);
+
+    const clampNum = (v, lo, hi, dflt) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : dflt;
+    };
+
+    const snapshot = () => ({
+      muscle: S.muscle, hp: S.hp, lp: S.lp, mvc: S.mvc,
+      norm: S.norm, rectify: S.rectify, stage: S.stage,
+    });
+
+    const where = () => {
+      const st = STAGES.find(x => x.n === S.stage) || STAGES[0];
+      return { k: st.k, label: L(st) };
+    };
+
+    B.register("emg", {
+      read: snapshot,
+
+      // A shared URL is untrusted input like any other. Anything it cannot
+      // justify is dropped or clamped, so a link can never put the station into
+      // a state its own controls could not reach.
+      validate: raw => {
+        const out = {};
+        if (CH[raw.muscle]) out.muscle = raw.muscle;
+        if (raw.hp !== undefined) out.hp = clampNum(raw.hp, 1, 100, 50);
+        if (raw.lp !== undefined) out.lp = clampNum(raw.lp, 1, 40, 20);
+        if (raw.mvc !== undefined) out.mvc = clampNum(raw.mvc, 0.05, 0.60, 0.40);
+        if (["raw", "peak", "mvc"].indexOf(raw.norm) >= 0) out.norm = raw.norm;
+        if (raw.rectify !== undefined) out.rectify = String(raw.rectify) !== "0";
+        if (raw.stage !== undefined) out.stage = clampNum(Math.round(raw.stage), 1, 7, 1);
+        return out;
+      },
+
+      apply: st => {
+        Object.keys(st).forEach(k => { S[k] = st[k]; });
+        // A cutoff arriving by link need not match a preset, so the preset row
+        // falls back to Custom rather than claiming one of them is active.
+        S.hpMode = S.hp === 10 ? "min" : S.hp === 20 ? "compromise"
+                 : S.hp === 50 ? "santuz" : "custom";
+        cache = null; cacheKey = "";
+        emit();
+      },
+
+      describe: st => {
+        const rows = [
+          { label: T("Muscle", "Mięsień"), value: (PL() ? CH_PL : CH)[st.muscle] || st.muscle },
+          { label: T("High-pass", "Górnoprzepustowy"), value: fmt(st.hp, 0) + " Hz" },
+        ];
+        if (st.stage >= 3) rows.push({ label: T("Rectified", "Wyprostowany"),
+          value: st.rectify ? T("yes", "tak") : T("no", "nie") });
+        if (st.stage >= 4) rows.push({ label: T("Envelope low-pass", "Obwiednia, dolnoprzepustowy"),
+          value: fmt(st.lp, 0) + " Hz" });
+        if (st.stage >= 5) {
+          rows.push({ label: T("Normalisation", "Normalizacja"),
+            value: st.norm === "raw" ? T("raw millivolts", "surowe miliwolty")
+                 : st.norm === "peak" ? T("peak of trial", "szczyt próby")
+                 : T("percent MVC", "procent MVC") });
+          if (st.norm === "mvc") rows.push({ label: T("Hypothetical MVC", "Hipotetyczne MVC"),
+            value: fmt(st.mvc, 2) + " mV" });
+        }
+        return rows;
+      },
+
+      checkpoint: where,
+    });
+
+    // History is written only once the reader has actually worked the station.
+    B.trackEngagement("emg", snapshot, where);
+  }
+
+  function mountShare(host) {
+    if (!window.BioLabState) return;
+    const bar = host.querySelector(".eg-stages");
+    if (!bar || document.querySelector(".eg-share-row")) return;
+    // Its own row, not inside the stage bar: that bar rewrites its innerHTML on
+    // every state change, so anything mounted into it is wiped on the next paint.
+    const row = document.createElement("div");
+    row.className = "eg-share-row";
+    bar.insertAdjacentElement("afterend", row);
+    window.BioLabState.shareButton("emg", { mount: row });
+  }
+
   async function boot() {
     const host = document.getElementById("egLab");
     if (!host) return;
@@ -757,6 +851,8 @@
     buildQuiz(host, 2);
     buildQuiz(host, 6);
     buildBreak(host);
+    registerState();
+    mountShare(host);
     wireQuotes(document);
     document.addEventListener("i18n:changed", () => { hideTip(); wireQuotes(document); });
     emit();
