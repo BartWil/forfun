@@ -1043,62 +1043,96 @@ group("Single catalogue", () => {
 // serialiser, readable URLs, untrusted input treated as untrusted, and storage
 // that can never break a page.
 group("Learning state", () => {
-  const core = read("biolab-state.js"), cont = read("continue-bar.js"), emg = read("emg.js");
+  const core = read("biolab-state.js"), cont = read("continue-bar.js"),
+        emg = read("emg.js"), cod = read("state-codecs.js");
 
-  // ---- one serialiser, used by both features
+  // ---- the split: meaning is pure, running is DOM
+  ok(/define\(id, codec\)/.test(core) && /bind\(id, runtime\)/.test(core),
+     "the layer separates the pure codec from the DOM-bound runtime");
+  ok(/B\.define\("emg"/.test(cod) && /B\.define\("physics"/.test(cod),
+     "codecs live in state-codecs.js, away from any station");
+  ok(!/document\./.test(cod.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/[^\n]*/g, "$1")),
+     "a codec touches no DOM, so it can run on the landing page");
+  ok(/B\.bind\("emg"/.test(emg) && !/B\.define\("emg"/.test(emg),
+     "emg.js binds a runtime and does not define meaning");
+
+  // ---- the landing page must not know what any station contains
+  ok(/B\.summary\(entry\.station/.test(cont),
+     "Continue asks the codec to summarise, rather than reading station fields");
+  for (const field of ["muscle", "\bhp\b", "\bmvc\b", "theta"])
+    ok(!new RegExp('st\.' + field).test(cont),
+       `continue-bar.js does not reach into station-specific field ${field.replace(/\b/g, "")}`);
+  ok(!/station === "|=== "emg"|=== "physics"/.test(cont),
+     "Continue has no per-station branches");
+
+  // A codec registered but never bound still describes: this is the property
+  // that stops the landing page needing a change per new station.
+  ok(/B\.define\("physics"/.test(cod) && !/BioLabState\.bind\("physics"/.test(read("physics.js")),
+     "physics has a codec with no runtime yet, and Continue can still describe it");
+
+  // ---- one serialiser
   ok(/encode\(state\)/.test(core) && /decode\(search\)/.test(core),
      "the layer has a single encode/decode pair");
-  ok(/BioLabState\.decode/.test(cont),
+  ok(/BioLabState\.decode|B\.decode/.test(cont),
      "Continue reads state through the same decoder Share writes with");
-  ok(!/JSON\.stringify\(state\)/.test(cont),
-     "Continue does not invent a second storage format");
-
-  // ---- readable URLs, as a deliberate choice
+  ok(!/JSON\.stringify\(state\)/.test(cont), "Continue does not invent a second storage format");
   ok(!/btoa|base64/i.test(core), "state is not base64-encoded into an opaque blob");
   ok(/URLSearchParams/.test(core), "state is ordinary query parameters");
 
   // ---- untrusted input
-  ok(/validate/.test(core) && /adapter\.validate/.test(core),
-     "incoming links are validated before they are applied");
-  ok(/clampNum/.test(emg), "the EMG adapter clamps numeric state from a link");
-  ok(/if \(CH\[raw\.muscle\]\)/.test(emg),
-     "the EMG adapter accepts only muscles that exist");
+  ok(/API\.validate\(id, raw\)/.test(core), "incoming links are validated before they are applied");
   ok(/v !== null && v !== SCHEMA/.test(core),
      "a link from an unknown schema version is ignored rather than guessed at");
+  ok(/num\(raw\.hp, 1, 100/.test(cod), "the EMG codec clamps numeric state from a link");
+  ok(/if \(EMG_CH\[raw\.muscle\]\)/.test(cod), "the EMG codec accepts only muscles that exist");
+
+  // ---- the framework escapes, whatever a future codec returns
+  ok(/function esc\(v\)/.test(core), "the layer has one escaping helper");
+  ok(/esc\(r\.label\)/.test(core) && /esc\(r\.value\)/.test(core),
+     "codec-supplied labels and values are escaped before rendering");
+  ok(/const E = B\.esc/.test(cont), "Continue escapes everything it interpolates");
+  ok(/\.href = url/.test(core), "the share link is assigned as a property, never parsed as markup");
+
+  // ---- engagement means the experiment changed
+  ok(/API\.touch = function/.test(core), "stations report a change rather than the layer guessing");
+  ok(/if \(now === lastSeen\) return false/.test(core),
+     "a touch whose state matches the last one does not count as work");
+  ok(!/\.eg-stage|\.ph-chip|\.eg-preset/.test(core),
+     "the layer holds no station-specific CSS selectors");
+  ok(!/document\.addEventListener\("(input|change)"/.test(core),
+     "the layer does not listen to every input in the document");
+  ok(/BioLabState\.touch\(\)/.test(emg), "EMG reports its own state changes");
+  ok(/MIN_CHANGES = 2/.test(core), "a single change does not yet count as a visit");
+  ok(/dwellMs/.test(core), "a reader who stays long enough is recorded without touching anything");
 
   // ---- storage can never break a page
   ok(/try \{[\s\S]{0,400}localStorage\.getItem/.test(core),
      "reading storage is wrapped against private mode and corrupt data");
-  ok(/catch \(e\) \{\s*return false;/.test(core),
-     "a failed write is tolerated, since history is a convenience");
-  ok(/typeof e\.station === "string" &&/.test(core),
-     "stored entries are shape-checked before use");
+  ok(/catch \(e\) \{\s*return false;/.test(core), "a failed write is tolerated");
+  ok(/typeof e\.station === "string" &&/.test(core), "stored entries are shape-checked before use");
   ok(/MAX_ENTRIES = 3/.test(core), "history keeps at most three stations");
 
-  // ---- what it deliberately is not
-  // Comments are stripped first: these files SAY "no streaks, no leaderboard" in
-  // their own prose, and a grep that cannot tell code from commentary would flag
-  // the promise instead of a breach of it.
+  // ---- what it deliberately is not. Comments are stripped first: these files
+  // SAY "no streaks" in their own prose, and the first version of this test
+  // flagged the promise instead of a breach of it.
   const codeOnly = f => read(f)
     .replace(/\/\*[\s\S]*?\*\//g, " ")
     .replace(/(^|[^:])\/\/[^\n]*/g, "$1");
-  for (const f of ["biolab-state.js", "continue-bar.js"]) {
+  for (const f of ["biolab-state.js", "continue-bar.js", "state-codecs.js"]) {
     const src = codeOnly(f);
-    ok(!/streak|leaderboard|badge|xp|points/i.test(src),
+    ok(!/streak|leaderboard|badge|\bxp\b|\bpoints\b/i.test(src),
        `${f}: no streaks, badges, points or leaderboards`);
-    ok(!/fetch\(|XMLHttpRequest|navigator\.sendBeacon/.test(src),
-       `${f}: sends nothing anywhere`);
+    ok(!/fetch\(|XMLHttpRequest|navigator\.sendBeacon/.test(src), `${f}: sends nothing anywhere`);
   }
 
-  // ---- history is earned, not automatic
-  ok(/trackEngagement/.test(core) && /dwellMs/.test(core),
-     "a visit is only recorded after real interaction or real dwell time");
-  ok(/minInteractions/.test(core), "a single stray click does not count as a visit");
-
   // ---- wiring
-  const pages = readdirSync(ROOT).filter(f => f.endsWith(".html"));
-  for (const f of pages)
-    ok(read(f).includes("biolab-state.js"), `${f} loads the state layer`);
+  for (const f of readdirSync(ROOT).filter(f => f.endsWith(".html"))) {
+    const h = read(f);
+    ok(h.includes("biolab-state.js"), `${f} loads the state layer`);
+    ok(h.includes("state-codecs.js"), `${f} loads the codecs`);
+    ok(h.indexOf("biolab-state.js") < h.indexOf("state-codecs.js"),
+       `${f} loads the layer before the codecs that register into it`);
+  }
   const idx = read("index.html");
   ok(idx.includes('id="lpContinue"'), "the landing page has somewhere to show Continue");
   ok(idx.indexOf("stations.js") < idx.indexOf("biolab-state.js"),

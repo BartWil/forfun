@@ -17,15 +17,11 @@
   const L = o => (o ? (PL() ? o.pl : o.en) : "");
 
   function summarise(entry) {
-    // A short, human line describing the saved experiment, read back out of the
-    // stored query rather than kept as a second copy of the same facts.
-    const st = window.BioLabState.decode("?" + entry.query);
-    const bits = [];
-    if (st.muscle) bits.push(String(st.muscle).toUpperCase());
-    if (st.hp !== undefined) bits.push("HP " + st.hp + " Hz");
-    if (st.lp !== undefined && Number(st.stage) >= 4) bits.push("LP " + st.lp + " Hz");
-    if (st.norm === "mvc" && st.mvc !== undefined) bits.push("MVC " + st.mvc + " mV");
-    return bits.join(" · ");
+    // The landing page does not know what a muscle or a moment arm is. It hands
+    // the decoded state to the station's own codec and prints whatever comes
+    // back, so a new station needs no change here at all.
+    const B = window.BioLabState;
+    return B.summary(entry.station, B.decode("?" + entry.query));
   }
 
   function checkpointLabel(entry) {
@@ -57,30 +53,34 @@
     const cp = checkpointLabel(first.e);
     const sum = summarise(first.e);
 
+    const E = B.esc;
     const wrap = document.createElement("div");
     wrap.className = "bs-continue";
+    // Everything interpolated here came out of localStorage or a station codec.
+    // Both are outside this file's control, so both are escaped.
     wrap.innerHTML =
-      '<a class="bs-cont-main" href="' + hrefFor(first.e, first.st) + '">' +
-        '<span class="bs-cont-ico">' + first.st.icon + "</span>" +
+      '<a class="bs-cont-main" href="' + E(hrefFor(first.e, first.st)) + '">' +
+        '<span class="bs-cont-ico">' + E(first.st.icon) + "</span>" +
         '<span class="bs-cont-txt">' +
-          '<span class="bs-cont-lab">' + T("Continue where you left off", "Wróć tam, gdzie skończyłeś") + "</span>" +
-          '<span class="bs-cont-name">' + L(first.st.title) + (cp ? " · " + cp : "") + "</span>" +
-          '<span class="bs-cont-meta">' + (sum ? sum + " · " : "") + B.ago(first.e.updated) + "</span>" +
+          '<span class="bs-cont-lab">' + E(T("Continue where you left off", "Wróć tam, gdzie skończyłeś")) + "</span>" +
+          '<span class="bs-cont-name">' + E(L(first.st.title) + (cp ? " · " + cp : "")) + "</span>" +
+          '<span class="bs-cont-meta">' + E((sum ? sum + " · " : "") + B.ago(first.e.updated)) + "</span>" +
         "</span>" +
-        '<span class="bs-cont-go">' + T("Resume", "Wznów") + "</span>" +
+        '<span class="bs-cont-go">' + E(T("Resume", "Wznów")) + "</span>" +
       "</a>" +
       (rest.length
         ? '<button type="button" class="bs-cont-more" aria-expanded="false">' +
-            T("and " + rest.length + " earlier", "oraz " + rest.length + " wcześniej") + " ▾</button>" +
+            E(T("and " + rest.length + " earlier", "oraz " + rest.length + " wcześniej")) + " ▾</button>" +
           '<div class="bs-cont-rest" hidden>' +
             rest.map(x =>
-              '<a href="' + hrefFor(x.e, x.st) + '">' + x.st.icon + " " + L(x.st.title) +
-              (checkpointLabel(x.e) ? " · " + checkpointLabel(x.e) : "") +
-              "<em>" + B.ago(x.e.updated) + "</em></a>").join("") +
+              '<a href="' + E(hrefFor(x.e, x.st)) + '">' +
+              E(x.st.icon + " " + L(x.st.title) +
+                (checkpointLabel(x.e) ? " · " + checkpointLabel(x.e) : "")) +
+              "<em>" + E(B.ago(x.e.updated)) + "</em></a>").join("") +
           "</div>"
         : "") +
       '<button type="button" class="bs-cont-clear">' +
-        T("Forget my history", "Zapomnij moją historię") + "</button>";
+        E(T("Forget my history", "Zapomnij moją historię")) + "</button>";
 
     host.appendChild(wrap);
 

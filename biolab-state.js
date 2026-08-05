@@ -1,31 +1,33 @@
 // BioLab learning state: one layer, not four features.
 //
-// Continue-where-you-left-off, shareable experiment links and (later) predictions
+// Continue-where-you-left-off, shareable experiment links and later predictions
 // and provenance all need the same thing: a station able to say what its current
 // experiment IS, in a form that survives a URL and a page reload. Built as four
-// separate features they would have grown four different notions of "state" and
-// drifted apart, exactly as the landing catalogue did. So there is one adapter
-// interface and everything hangs off it.
+// separate features they would have grown four notions of "state" and drifted
+// apart, exactly as the landing catalogue did.
 //
-// A station registers an adapter:
+// TWO HALVES, DELIBERATELY SEPARATE
 //
-//   BioLabState.register("emg", {
-//     read()            -> a flat object of plain values
-//     apply(state)      -> put those values back into the page
-//     validate(state)   -> clamp and drop anything unrecognised
-//     describe(state)   -> [{label, value}] for humans
-//     checkpoint()      -> {k, label} for where in the station the reader is
-//   });
+//   define(id, codec)    validate / describe / summary
+//                        Pure. No DOM. Lives in state-codecs.js and loads on
+//                        every page, so the landing page can describe a saved
+//                        experiment for a station it has never opened.
 //
-// TWO DELIBERATE CHOICES
+//   bind(id, runtime)    read / apply / checkpoint
+//                        Touches the live page. Only ever called by the station
+//                        itself.
 //
-// 1. URLs are readable. emg.html?v=1&muscle=ta&hp=50#filter, never ?s=eyJoc...
-//    A teacher sending a link to a class should be able to see what they are
-//    sending, debug it by eye, and have it not look like tracking.
+// Keeping these together would push `if (station === "emg")` into the landing
+// page the moment a second station registered, and that is a second catalogue of
+// meaning starting up again.
 //
-// 2. Resume is a deep link. Continue does not have its own storage format; it
-//    stores the same serialised state the share button produces, so there is one
-//    serialiser and one thing that can be wrong.
+// TWO MORE DELIBERATE CHOICES
+//
+//   URLs are readable. emg.html?v=1&muscle=ta&hp=50#filter, never ?s=eyJoc...
+//   A teacher sending a link to a class should see what they are sending.
+//
+//   Resume is a deep link. Continue stores the same serialised state the share
+//   button produces, so there is one serialiser that can be wrong instead of two.
 
 (function () {
   "use strict";
@@ -36,22 +38,33 @@
   const KEY = "biolab.progress.v1";
   const MAX_ENTRIES = 3;
   const SCHEMA = 1;
+  const MIN_CHANGES = 2;
 
-  const adapters = {};
+  const codecs = {};     // pure, everywhere
+  const runtimes = {};   // DOM-bound, station pages only
+
+  // Everything the framework renders passes through here. The adapters happen to
+  // be trustworthy today; the framework must not depend on that staying true,
+  // and a codec written in six months should not be able to inject markup by
+  // returning an unlucky label.
+  function esc(v) {
+    return String(v === null || v === undefined ? "" : v)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
 
   // -------------------------------------------------------------- storage
   // Every read is defensive. localStorage can be unavailable (private mode,
-  // embedded webview), full, or hold something another version of this site
-  // wrote. None of those may break the page, so the worst case is silently
-  // having no history.
+  // embedded webview), full, or hold what another version of this site wrote.
+  // None of that may break a page, so the worst case is having no history.
   function safeRead() {
     try {
       const raw = window.localStorage.getItem(KEY);
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       if (!Array.isArray(parsed)) return [];
-      // Shape only. The landing page reads this history without registering any
-      // adapter, so requiring one here would make Continue permanently empty.
+      // Shape only. The landing page reads this without binding any runtime, so
+      // requiring one here would make Continue permanently empty.
       return parsed.filter(e =>
         e && typeof e === "object" &&
         typeof e.station === "string" &&
@@ -72,21 +85,15 @@
   }
 
   // ------------------------------------------------------------ serialising
-  // Values are written as plain strings. Numbers keep a sensible number of
-  // digits rather than 0.30000000000000004.
   function encode(state) {
     const p = new URLSearchParams();
     p.set("v", String(SCHEMA));
-    Object.keys(state).sort().forEach(k => {
+    Object.keys(state || {}).sort().forEach(k => {
       const val = state[k];
       if (val === null || val === undefined) return;
-      if (typeof val === "number") {
-        p.set(k, String(Math.round(val * 1e4) / 1e4));
-      } else if (typeof val === "boolean") {
-        p.set(k, val ? "1" : "0");
-      } else {
-        p.set(k, String(val));
-      }
+      if (typeof val === "number") p.set(k, String(Math.round(val * 1e4) / 1e4));
+      else if (typeof val === "boolean") p.set(k, val ? "1" : "0");
+      else p.set(k, String(val));
     });
     return p.toString();
   }
@@ -95,8 +102,7 @@
     const p = new URLSearchParams(search || "");
     const out = {};
     p.forEach((v, k) => {
-      if (k === "v") return;
-      if (v === "") return;
+      if (k === "v" || v === "") return;
       const n = Number(v);
       out[k] = (v.trim() !== "" && Number.isFinite(n)) ? n : v;
     });
@@ -112,23 +118,39 @@
   // ------------------------------------------------------------------- API
   const API = {
     SCHEMA, KEY, MAX_ENTRIES,
-    encode, decode,
+    encode, decode, esc,
 
-    register(stationId, adapter) {
-      adapters[stationId] = adapter;
-      current = stationId;
-      // A link that arrived with state applies it before anything else runs.
-      applyIncoming(stationId, adapter);
+    // ---- pure half
+    define(id, codec) { codecs[id] = codec; return API; },
+    codec(id) { return codecs[id] || null; },
+    validate(id, raw) {
+      const c = codecs[id];
+      return c && c.validate ? c.validate(raw) : {};
+    },
+    describe(id, state) {
+      const c = codecs[id];
+      return c && c.describe ? c.describe(state) : [];
+    },
+    summary(id, state) {
+      const c = codecs[id];
+      return c && c.summary ? c.summary(state) : "";
+    },
+
+    // ---- DOM half
+    bind(id, runtime) {
+      runtimes[id] = runtime;
+      current = id;
+      applyIncoming(id);
+      // The baseline against which "the experiment changed" is measured.
+      try { lastSeen = encode(runtime.read()); } catch (e) { lastSeen = null; }
       return API;
     },
 
-    // Build the full shareable URL for a station's present state.
-    link(stationId, state, checkpointKey) {
-      const st = window.STATIONS && window.STATIONS.byId[stationId];
+    link(id, state, checkpointKey) {
+      const st = window.STATIONS && window.STATIONS.byId[id];
       const page = st ? st.page : location.pathname.split("/").pop();
-      const q = encode(state);
       return location.origin + location.pathname.replace(/[^/]*$/, "") + page +
-        "?" + q + (checkpointKey ? "#" + checkpointKey : "");
+        "?" + encode(state) + (checkpointKey ? "#" + checkpointKey : "");
     },
 
     // ---------------------------------------------------------- history
@@ -138,15 +160,10 @@
         .sort((a, b) => (b.updated || 0) - (a.updated || 0));
     },
 
-    // Only a meaningful interaction should write history: opening a page and
-    // leaving immediately is not a place worth returning to.
-    record(stationId, state, checkpoint) {
-      const adapter = adapters[stationId];
-      if (!adapter) return false;
-      const list = safeRead().filter(e => e.station !== stationId);
+    record(id, state, checkpoint) {
+      const list = safeRead().filter(e => e.station !== id);
       list.unshift({
-        schema: SCHEMA,
-        station: stationId,
+        schema: SCHEMA, station: id,
         checkpoint: checkpoint || null,
         query: encode(state || {}),
         updated: Date.now(),
@@ -154,13 +171,9 @@
       return safeWrite(list);
     },
 
-    forget(stationId) {
-      return safeWrite(safeRead().filter(e => e.station !== stationId));
-    },
-
+    forget(id) { return safeWrite(safeRead().filter(e => e.station !== id)); },
     clear() { return safeWrite([]); },
 
-    // ------------------------------------------------------- describing
     ago(ts) {
       const s = Math.max(0, (Date.now() - ts) / 1000);
       if (s < 90) return T("just now", "przed chwilą");
@@ -177,35 +190,37 @@
   // --------------------------------------------------- incoming deep links
   let current = null, arrived = false;
 
-  function applyIncoming(stationId, adapter) {
+  function applyIncoming(id) {
+    const rt = runtimes[id];
     const search = location.search;
-    if (!search || search.length < 2) return;
+    if (!rt || !search || search.length < 2) return;
     const v = schemaOf(search);
-    // An unknown or future schema is ignored rather than guessed at.
-    if (v !== null && v !== SCHEMA) return;
+    if (v !== null && v !== SCHEMA) return;   // unknown version: ignore, never guess
     const raw = decode(search);
     if (!Object.keys(raw).length) return;
-    const clean = adapter.validate ? adapter.validate(raw) : raw;
+    const clean = API.validate(id, raw);
     if (!clean || !Object.keys(clean).length) return;
     try {
-      adapter.apply(clean);
+      rt.apply(clean);
       arrived = true;
-      banner(stationId, adapter);
+      banner();
     } catch (e) { /* a bad link must never break the station */ }
   }
 
-  function banner(stationId, adapter) {
+  function banner() {
     const b = document.createElement("div");
     b.className = "bs-banner";
     b.setAttribute("role", "status");
-    b.innerHTML =
-      '<span class="bs-banner-dot"></span>' +
-      "<span>" + T("Shared experiment state loaded", "Wczytano udostępniony stan eksperymentu") + "</span>" +
-      '<button type="button" class="bs-banner-reset">' +
-        T("Reset to default", "Przywróć domyślne") + "</button>";
-    b.querySelector(".bs-banner-reset").onclick = () => {
-      location.href = location.pathname;
-    };
+    const dot = document.createElement("span");
+    dot.className = "bs-banner-dot";
+    const msg = document.createElement("span");
+    msg.textContent = T("Shared experiment state loaded", "Wczytano udostępniony stan eksperymentu");
+    const reset = document.createElement("button");
+    reset.type = "button";
+    reset.className = "bs-banner-reset";
+    reset.textContent = T("Reset to default", "Przywróć domyślne");
+    reset.onclick = () => { location.href = location.pathname; };
+    b.append(dot, msg, reset);
     const put = () => document.body.insertBefore(b, document.body.firstChild);
     if (document.body) put(); else document.addEventListener("DOMContentLoaded", put);
   }
@@ -213,42 +228,58 @@
   API.arrivedFromLink = () => arrived;
 
   // --------------------------------------------------------- share control
-  // Shows what is about to be copied before copying it. A teacher should never
-  // have to paste a link somewhere to find out what is in it.
-  API.shareButton = function (stationId, opts) {
-    const adapter = adapters[stationId];
-    if (!adapter) return null;
+  API.shareButton = function (id, opts) {
+    const rt = runtimes[id];
+    if (!rt) return null;
+
     const wrap = document.createElement("div");
     wrap.className = "bs-share";
-    wrap.innerHTML =
-      '<button type="button" class="bs-share-btn">' +
-        '<span class="bs-share-ico">🔗</span>' +
-        T("Share this experiment", "Udostępnij ten eksperyment") + "</button>" +
-      '<div class="bs-share-pop" hidden></div>';
 
-    const btn = wrap.querySelector(".bs-share-btn");
-    const pop = wrap.querySelector(".bs-share-pop");
-
-    function close() { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); }
-
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "bs-share-btn";
     btn.setAttribute("aria-expanded", "false");
+    const ico = document.createElement("span");
+    ico.className = "bs-share-ico";
+    ico.textContent = "🔗";
+    const lbl = document.createElement("span");
+    btn.append(ico, lbl);
+    // The popup is rebuilt on every open so it is always in the current
+    // language; this label is not, so it has to be told when the language moves.
+    const relabel = () => { lbl.textContent = T("Share this experiment", "Udostępnij ten eksperyment"); };
+    relabel();
+    document.addEventListener("i18n:changed", relabel);
+
+    const pop = document.createElement("div");
+    pop.className = "bs-share-pop";
+    pop.hidden = true;
+    wrap.append(btn, pop);
+
+    const close = () => { pop.hidden = true; btn.setAttribute("aria-expanded", "false"); };
+
     btn.onclick = () => {
       if (!pop.hidden) return close();
-      const state = adapter.read();
-      const cp = adapter.checkpoint ? adapter.checkpoint() : null;
-      const url = API.link(stationId, state, cp && cp.k);
-      const rows = (adapter.describe ? adapter.describe(state) : [])
-        .map(r => '<div class="bs-row"><span>' + r.label + "</span><b>" + r.value + "</b></div>").join("");
+      const state = rt.read();
+      const cp = rt.checkpoint ? rt.checkpoint() : null;
+      const url = API.link(id, state, cp && cp.k);
+      const rows = API.describe(id, state);
+
+      // Built by escaping every adapter-supplied string. The framework must be
+      // safe regardless of how carefully a future codec was written.
       pop.innerHTML =
-        '<div class="bs-pop-h">' + T("This link will open", "Ten link otworzy") + "</div>" +
-        rows +
-        (cp ? '<div class="bs-row bs-row-cp"><span>' + T("Step", "Krok") + "</span><b>" + cp.label + "</b></div>" : "") +
-        '<div class="bs-url">' + url.replace(/^https?:\/\//, "") + "</div>" +
+        '<div class="bs-pop-h">' + esc(T("This link will open", "Ten link otworzy")) + "</div>" +
+        rows.map(r => '<div class="bs-row"><span>' + esc(r.label) + "</span><b>" +
+                      esc(r.value) + "</b></div>").join("") +
+        (cp ? '<div class="bs-row bs-row-cp"><span>' + esc(T("Step", "Krok")) +
+              "</span><b>" + esc(cp.label) + "</b></div>" : "") +
+        '<div class="bs-url">' + esc(url.replace(/^https?:\/\//, "")) + "</div>" +
         '<div class="bs-pop-actions">' +
-          '<button type="button" class="bs-copy">' + T("Copy link", "Kopiuj link") + "</button>" +
-          '<a class="bs-open" href="' + url + '" target="_blank" rel="noopener">' +
-            T("Open in a new tab", "Otwórz w nowej karcie") + "</a>" +
+          '<button type="button" class="bs-copy">' + esc(T("Copy link", "Kopiuj link")) + "</button>" +
+          '<a class="bs-open" target="_blank" rel="noopener">' +
+            esc(T("Open in a new tab", "Otwórz w nowej karcie")) + "</a>" +
         "</div>";
+      // href is set as a property, so it is never parsed as markup
+      pop.querySelector(".bs-open").href = url;
       pop.hidden = false;
       btn.setAttribute("aria-expanded", "true");
 
@@ -258,8 +289,8 @@
           await navigator.clipboard.writeText(url);
           el.textContent = T("Copied", "Skopiowano");
         } catch (err) {
-          // Clipboard needs a secure context and permission. Falling back to a
-          // selectable field is better than a button that silently does nothing.
+          // Clipboard needs a secure context and permission. A selectable field
+          // beats a button that silently does nothing.
           const ta = document.createElement("input");
           ta.value = url; ta.className = "bs-url-input";
           pop.querySelector(".bs-url").replaceWith(ta);
@@ -272,51 +303,56 @@
 
     document.addEventListener("click", e => { if (!wrap.contains(e.target)) close(); });
     document.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+    document.addEventListener("i18n:changed", close);
 
     if (opts && opts.mount) opts.mount.appendChild(wrap);
     return wrap;
   };
 
   // ------------------------------------------------- meaningful interaction
-  // History is written after the reader has actually done something: touched a
-  // control, moved through the station, or stayed long enough to be reading.
-  // Wandering in and straight out is not a place worth being sent back to.
-  API.trackEngagement = function (stationId, getState, getCheckpoint, opts) {
+  //
+  // The station says when its experiment changed. The framework does not guess
+  // by listening to every click in the document: that counted the share button,
+  // the language toggle and any other button as scientific work, and it would
+  // have needed a new CSS selector for every station added.
+  //
+  // A touch only counts if the serialised state actually differs from the last
+  // one seen, so switching language or opening a popup is not an experiment.
+  let lastSeen = null, changes = 0, committed = false, timer = null, tracked = null;
+
+  API.touch = function () {
+    const id = current, rt = runtimes[id];
+    if (!id || !rt || !tracked) return false;
+    let now;
+    try { now = encode(rt.read()); } catch (e) { return false; }
+    if (now === lastSeen) return false;    // the UI moved, the experiment did not
+    lastSeen = now;
+    changes++;
+    if (changes < MIN_CHANGES && !committed) return false;
+    committed = true;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      API.record(id, rt.read(), rt.checkpoint ? rt.checkpoint() : null);
+    }, 700);
+    return true;
+  };
+
+  API.trackEngagement = function (id, opts) {
     const o = opts || {};
-    const dwellMs = o.dwellMs || 25000;
-    let done = false, interactions = 0;
-
-    function commit(reason) {
-      if (done) return;
-      done = true;
-      API.record(stationId, getState(), getCheckpoint ? getCheckpoint() : null);
-      API.lastCommit = reason;
-    }
-    // Re-record later changes too, so Continue points at where they finished
-    // rather than the first thing they touched.
-    function refresh() {
-      if (!done) return;
-      API.record(stationId, getState(), getCheckpoint ? getCheckpoint() : null);
-    }
-
-    const onInteract = () => {
-      interactions++;
-      if (interactions >= (o.minInteractions || 2)) commit("interaction");
-      else return;
-      clearTimeout(refreshTimer);
-      refreshTimer = setTimeout(refresh, 1200);
-    };
-    let refreshTimer = null;
-
-    ["input", "change"].forEach(ev =>
-      document.addEventListener(ev, onInteract, { passive: true, capture: true }));
-    document.addEventListener("click", e => {
-      if (e.target.closest("button, .eg-stage, .eg-chip, .eg-preset, .ph-chip")) onInteract();
-    }, { passive: true, capture: true });
-
-    const dwell = setTimeout(() => commit("dwell"), dwellMs);
-    window.addEventListener("pagehide", () => { clearTimeout(dwell); refresh(); });
-    return { commit, isCommitted: () => done };
+    tracked = id;
+    const rt = runtimes[id];
+    if (!rt) return null;
+    // A reader who stays long enough is reading, even without touching anything.
+    const dwell = setTimeout(() => {
+      if (committed) return;
+      committed = true;
+      API.record(id, rt.read(), rt.checkpoint ? rt.checkpoint() : null);
+    }, o.dwellMs || 25000);
+    window.addEventListener("pagehide", () => {
+      clearTimeout(dwell);
+      if (committed) API.record(id, rt.read(), rt.checkpoint ? rt.checkpoint() : null);
+    });
+    return { isCommitted: () => committed, changes: () => changes };
   };
 
   window.BioLabState = API;

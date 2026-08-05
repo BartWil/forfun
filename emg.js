@@ -257,11 +257,19 @@
     stage: 1,
     answered: {},
   };
-  const CH = { ta: "Tibialis anterior", gm: "Gastrocnemius medialis", rf: "Rectus femoris" };
-  const CH_PL = { ta: "Piszczelowy przedni", gm: "Brzuchaty łydki, głowa przyśrodkowa", rf: "Prosty uda" };
+  // One list of muscles, owned by the codec so the landing page can name them too.
+  const CHAN = (window.BioLabState && window.BioLabState.codec("emg") || {}).channels ||
+    { ta: { en: "Tibialis anterior", pl: "Piszczelowy przedni", short: "TA" },
+      gm: { en: "Gastrocnemius medialis", pl: "Brzuchaty łydki, głowa przyśrodkowa", short: "GM" },
+      rf: { en: "Rectus femoris", pl: "Prosty uda", short: "RF" } };
+  const CH = {}, CH_PL = {};
+  Object.keys(CHAN).forEach(k => { CH[k] = CHAN[k].en; CH_PL[k] = CHAN[k].pl; });
 
   const subs = [];
-  const emit = () => subs.forEach(f => f());
+  const emit = () => {
+    subs.forEach(f => f());
+    if (window.BioLabState && window.BioLabState.touch) window.BioLabState.touch();
+  };
 
   // ------------------------------------------------------------------ derive
   let cache = null, cacheKey = "";
@@ -725,50 +733,25 @@
   }
 
   // ------------------------------------------------- shareable experiment state
-  // The station tells BioLabState what its experiment currently IS. Everything
-  // else, a link a teacher can send and Continue on the landing page, is built
-  // from this one description, so there is a single serialiser to get wrong.
+  // Only the runtime half lives here: how to read the page, how to put a state
+  // back into it, and where the reader is. What the state MEANS, and how to
+  // check or describe it, is in state-codecs.js, which the landing page loads
+  // too so it can summarise a saved EMG experiment without EMG Lab running.
   function registerState() {
-    if (!window.BioLabState) return;
     const B = window.BioLabState;
-
-    // emg.js formats inline elsewhere, so the adapter carries its own helper
-    // rather than depending on one that happens to exist in another station.
-    const fmt = (v, n) => Number(v).toFixed(n);
-
-    const clampNum = (v, lo, hi, dflt) => {
-      const n = Number(v);
-      return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : dflt;
-    };
+    if (!B || !B.codec("emg")) return;
 
     const snapshot = () => ({
       muscle: S.muscle, hp: S.hp, lp: S.lp, mvc: S.mvc,
       norm: S.norm, rectify: S.rectify, stage: S.stage,
     });
-
     const where = () => {
       const st = STAGES.find(x => x.n === S.stage) || STAGES[0];
       return { k: st.k, label: L(st) };
     };
 
-    B.register("emg", {
+    B.bind("emg", {
       read: snapshot,
-
-      // A shared URL is untrusted input like any other. Anything it cannot
-      // justify is dropped or clamped, so a link can never put the station into
-      // a state its own controls could not reach.
-      validate: raw => {
-        const out = {};
-        if (CH[raw.muscle]) out.muscle = raw.muscle;
-        if (raw.hp !== undefined) out.hp = clampNum(raw.hp, 1, 100, 50);
-        if (raw.lp !== undefined) out.lp = clampNum(raw.lp, 1, 40, 20);
-        if (raw.mvc !== undefined) out.mvc = clampNum(raw.mvc, 0.05, 0.60, 0.40);
-        if (["raw", "peak", "mvc"].indexOf(raw.norm) >= 0) out.norm = raw.norm;
-        if (raw.rectify !== undefined) out.rectify = String(raw.rectify) !== "0";
-        if (raw.stage !== undefined) out.stage = clampNum(Math.round(raw.stage), 1, 7, 1);
-        return out;
-      },
-
       apply: st => {
         Object.keys(st).forEach(k => { S[k] = st[k]; });
         // A cutoff arriving by link need not match a preset, so the preset row
@@ -778,32 +761,10 @@
         cache = null; cacheKey = "";
         emit();
       },
-
-      describe: st => {
-        const rows = [
-          { label: T("Muscle", "Mięsień"), value: (PL() ? CH_PL : CH)[st.muscle] || st.muscle },
-          { label: T("High-pass", "Górnoprzepustowy"), value: fmt(st.hp, 0) + " Hz" },
-        ];
-        if (st.stage >= 3) rows.push({ label: T("Rectified", "Wyprostowany"),
-          value: st.rectify ? T("yes", "tak") : T("no", "nie") });
-        if (st.stage >= 4) rows.push({ label: T("Envelope low-pass", "Obwiednia, dolnoprzepustowy"),
-          value: fmt(st.lp, 0) + " Hz" });
-        if (st.stage >= 5) {
-          rows.push({ label: T("Normalisation", "Normalizacja"),
-            value: st.norm === "raw" ? T("raw millivolts", "surowe miliwolty")
-                 : st.norm === "peak" ? T("peak of trial", "szczyt próby")
-                 : T("percent MVC", "procent MVC") });
-          if (st.norm === "mvc") rows.push({ label: T("Hypothetical MVC", "Hipotetyczne MVC"),
-            value: fmt(st.mvc, 2) + " mV" });
-        }
-        return rows;
-      },
-
       checkpoint: where,
     });
 
-    // History is written only once the reader has actually worked the station.
-    B.trackEngagement("emg", snapshot, where);
+    B.trackEngagement("emg", {});
   }
 
   function mountShare(host) {
