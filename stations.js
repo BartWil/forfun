@@ -440,6 +440,10 @@
 
     {
       id: "emg", page: "emg.html", icon: "\u26a1", track: "measurement",
+      example: {
+        url: "emg.html?v=1&hp=50&lp=20&muscle=ta&mvc=0.1&norm=mvc&rectify=1&stage=5#normalize",
+        why: { en: "The same recording reporting 159% of maximum. Nothing about the muscle changed.",
+               pl: "Ten sam zapis raportujący 159% maksimum. W mięśniu nie zmieniło się nic." } },
       route: { order: 7, why: { en: "process a real muscle recording and watch how much of the answer was your choice", pl: "przetwórz prawdziwy zapis mięśnia i zobacz, ile z wyniku było Twoim wyborem" } },
       level: "beginner", status: "verified", prerequisites: [],
       title: { en: "EMG Lab", pl: "Laboratorium EMG" },

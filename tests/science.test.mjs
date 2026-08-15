@@ -1139,6 +1139,57 @@ group("Learning state", () => {
      "the catalogue loads before the layer that looks stations up in it");
 });
 
+
+// ============================================ 13. rama stacji
+//
+// Obietnica na górze i droga dalej na dole, generowane z katalogu. Testy pilnują
+// tego, co zawiodło już raz gdzie indziej: żeby nie powstał drugi opis stacji
+// obok tego w stations.js i żeby przycisk nie obiecywał działania, którego nie ma.
+group("Station frame", () => {
+  const js = read("station-frame.js"), css = read("station-frame.css");
+
+  ok(/CAT\.forPage\(page\)/.test(js), "rama rozpoznaje stację po katalogu, nie po nazwie pliku w kodzie");
+  ok(/contract\.learningGoal/.test(js), "obietnica pochodzi z learningGoal w kontrakcie");
+  ok(/ME\.prerequisites/.test(js) && /CAT\.route\(\)/.test(js),
+     "droga dalej pochodzi z prerequisites i z trasy");
+  ok(!/"emg"|"physics"|"dynamics"/.test(js), "rama nie zna żadnej stacji z nazwy");
+
+  // Czas czytania i liczba kontrolek muszą być liczone, nie wpisane.
+  ok(/words \/ 180/.test(js), "czas czytania liczony z rzeczywistego tekstu strony");
+  ok(/querySelectorAll\("input, button, select"\)/.test(js), "kontrolki liczone z rzeczywistej strony");
+  ok(/MutationObserver/.test(js),
+     "pomiar powtarzany po zbudowaniu stacji, bo stacje ładują się asynchronicznie");
+  ok(/i === 1 && m\.controls === 0/.test(js), "chip o zerowej liczbie kontrolek znika, zamiast kłamać");
+
+  // Pole example wolno mieć tylko stacji, która potrafi taki stan zastosować.
+  const withExample = STATIONS.list.filter(s => s.example);
+  for (const st of withExample) {
+    ok(/^[a-z0-9-]+\.html\?/.test(st.example.url), `${st.id}: example wskazuje na stronę z parametrami`);
+    ok(existsSync(join(ROOT, st.example.url.split("?")[0])), `${st.id}: strona z example istnieje`);
+    ok(st.example.why && st.example.why.en && st.example.why.pl, `${st.id}: example tłumaczy się w obu językach`);
+    const src = read(st.page.replace(".html", ".js"));
+    ok(/BioLabState\.bind\(|B\.bind\(/.test(src),
+       `${st.id}: ma podpięty runtime, więc link do stanu naprawdę zadziała`);
+  }
+  ok(withExample.length >= 1, `${withExample.length} stacja z gotowym przykładem`);
+
+  // Polskie liczebniki mają trzy formy.
+  ok(/plMinut/.test(js) && /plKontrolek/.test(js), "polskie liczebniki odmieniane, nie doklejane");
+  ok(/t >= 2 && t <= 4 && !\(h >= 12 && h <= 14\)/.test(js), "reguła liczebnika wyklucza nastki");
+
+  // Struktura stron nie jest jednolita.
+  ok(/document\.querySelector\("main"\)/.test(js) && /sf-loose/.test(js),
+     "rama radzi sobie ze stroną bez <main>");
+  ok(/prefers-reduced-motion/.test(css), "rama szanuje ograniczony ruch");
+  ok(/min-height:44px/.test(css), "cele dotykowe w ramie mają 44 px");
+
+  // Rama należy do stacji, nie do strony startowej.
+  ok(!read("index.html").includes("station-frame.js"), "strona startowa nie dostaje ramy stacji");
+  for (const st of STATIONS.list.filter(s => !s.hidden)) {
+    ok(read(st.page).includes("station-frame.js"), `${st.page} ładuje ramę`);
+  }
+});
+
 // ------------------------------------------------------------------- summary
 console.log("\n" + "=".repeat(64));
 console.log(`  ${pass} passed, ${fail} failed`);

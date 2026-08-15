@@ -1,0 +1,89 @@
+/* Rama stacji: obietnica na górze, droga dalej na dole.
+   Wszystko generowane z katalogu, więc nowa stacja dostaje to samo bez
+   dopisywania czegokolwiek. */
+
+/* ---------- góra: po co ta stacja ---------- */
+.sf-top{
+  margin:0 0 34px; padding:20px 24px; border-radius:16px;
+  border:1px solid color-mix(in srgb, var(--sf-c) 34%, transparent);
+  background:linear-gradient(160deg,
+    color-mix(in srgb, var(--sf-c) 8%, transparent),
+    rgba(0,0,0,.22));
+}
+.sf-top-lab{
+  font-family:'Space Grotesk',sans-serif; font-size:.62rem; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--sf-c); margin-bottom:9px;
+}
+.sf-goal{
+  color:var(--text-dim); font-size:1rem; line-height:1.7; margin:0 0 14px; max-width:72ch;
+}
+.sf-goal b{ color:var(--text); font-weight:600; }
+
+.sf-chips{ display:flex; flex-wrap:wrap; gap:7px; }
+.sf-chip{
+  padding:5px 12px; border-radius:999px; font-size:.72rem;
+  background:rgba(255,255,255,.05); border:1px solid var(--border);
+  color:var(--text-muted); white-space:nowrap;
+}
+.sf-chip:first-child{
+  color:color-mix(in srgb, var(--sf-c) 80%, #fff);
+  border-color:color-mix(in srgb, var(--sf-c) 40%, transparent);
+}
+
+/* przycisk „pokaż przykład”: prowadzi do gotowego stanu eksperymentu */
+.sf-example{
+  display:flex; align-items:center; gap:12px; margin-top:15px;
+  padding:12px 16px; border-radius:12px; text-decoration:none;
+  min-height:44px;
+  border:1px solid color-mix(in srgb, var(--sf-c) 42%, transparent);
+  background:color-mix(in srgb, var(--sf-c) 11%, transparent);
+  transition:background .16s ease, border-color .16s ease;
+}
+.sf-example:hover, .sf-example:focus-visible{
+  background:color-mix(in srgb, var(--sf-c) 20%, transparent);
+  border-color:var(--sf-c);
+}
+.sf-example-ico{
+  width:30px; height:30px; flex:none; border-radius:50%; display:grid; place-items:center;
+  background:color-mix(in srgb, var(--sf-c) 24%, transparent); color:var(--sf-c); font-size:.7rem;
+}
+.sf-example b{ display:block; color:var(--text); font-size:.88rem; font-weight:600; }
+.sf-example em{ display:block; font-style:normal; color:var(--text-muted); font-size:.78rem; line-height:1.5; margin-top:2px; }
+
+/* ---------- dół: dokąd dalej ---------- */
+.sf-next{ margin:56px 0 8px; }
+.sf-next-lab{
+  font-family:'Space Grotesk',sans-serif; font-size:.62rem; letter-spacing:.13em;
+  text-transform:uppercase; color:var(--text-muted); margin:26px 0 11px;
+}
+.sf-next-lab:first-child{ margin-top:0; }
+.sf-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:11px; }
+.sf-card{
+  display:flex; align-items:flex-start; gap:12px; padding:14px 16px;
+  border-radius:13px; text-decoration:none; min-height:44px;
+  border:1px solid var(--border); background:rgba(0,0,0,.24);
+  transition:border-color .16s ease, background .16s ease, transform .16s ease;
+}
+.sf-card:hover, .sf-card:focus-visible{
+  border-color:var(--sf-c); background:color-mix(in srgb, var(--sf-c) 9%, rgba(0,0,0,.3));
+  transform:translateY(-2px);
+}
+.sf-card-ico{ font-size:1.4rem; flex:none; line-height:1.2; }
+.sf-card-txt{ min-width:0; }
+.sf-card-txt b{ display:block; color:var(--text); font-size:.9rem; font-weight:600; margin-bottom:3px; }
+.sf-card-txt em{ display:block; font-style:normal; color:var(--text-muted); font-size:.78rem; line-height:1.55; }
+
+@media (prefers-reduced-motion: reduce){
+  .sf-card{ transition:none; }
+  .sf-card:hover, .sf-card:focus-visible{ transform:none; }
+}
+@media (max-width:640px){
+  .sf-top{ padding:16px 17px; }
+  .sf-goal{ font-size:.94rem; }
+}
+
+/* Strony bez <main> (explorer) trzymają sekcje wprost w <body>, więc rama
+   musi sama zadbać o marginesy strony. */
+.sf-loose{ max-width:1180px; margin-left:auto; margin-right:auto;
+  padding-left:clamp(20px,5vw,32px); padding-right:clamp(20px,5vw,32px); }
+.sf-top.sf-loose{ margin-top:34px; }
