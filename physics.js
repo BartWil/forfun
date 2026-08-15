@@ -308,6 +308,11 @@
   }
   document.addEventListener("keydown", e => { if (e.key === "Escape") hideSym(); });
   window.addEventListener("scroll", hideSym, { passive: true });
+  // Bez myszy nie ma zdarzenia mouseleave, więc na telefonie karta zamykała się
+  // tylko przewinięciem. Tapnięcie poza symbolem musi ją zamykać tak samo.
+  document.addEventListener("pointerdown", e => {
+    if (!e.target.closest(".sym") && !e.target.closest(".sym-card")) hideSym();
+  }, { passive: true });
 
   // ============================================================ weight demo
   const BODIES = [
@@ -1230,6 +1235,51 @@
     wireSyms(host);
   }
 
+
+  // ------------------------------------------------- orientacja na długiej stronie
+  // Ponad pięćdziesiąt ekranów przewijania na telefonie. Pasek mówi, gdzie
+  // jesteś, i daje drogę powrotną do spisu bez przewijania na samą górę.
+  function jumpBar() {
+    if (!document.getElementById("phToc")) return;
+    const heads = [...document.querySelectorAll("main .ph-sec > .ph-h2")];
+    if (!heads.length) return;
+
+    const bar = document.createElement("div");
+    bar.className = "ph-jump-bar";
+    document.body.appendChild(bar);
+
+    const box = document.createElement("div");
+    box.className = "ph-jump";
+    box.innerHTML = '<b></b><a href="#phToc"></a>';
+    const label = box.querySelector("b"), back = box.querySelector("a");
+    back.textContent = T("Contents", "Spis treści");
+    const main = document.querySelector("main");
+    main.insertBefore(box, main.firstChild);
+
+    // Aktualizacja liczona wprost w obsłudze przewijania, z prostym dławieniem
+    // czasowym. Wersja oparta na requestAnimationFrame zawieszała pasek
+    // wszędzie tam, gdzie przeglądarka wstrzymuje klatki: w karcie w tle,
+    // w trybie oszczędzania energii i przy zredukowanym ruchu.
+    let lastRun = 0;
+    const update = () => {
+      lastRun = Date.now();
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      bar.style.width = (max > 0 ? Math.min(100, (doc.scrollTop / max) * 100) : 0) + "%";
+      let cur = heads[0];
+      for (const h of heads) {
+        if (h.getBoundingClientRect().top <= 120) cur = h; else break;
+      }
+      const n = heads.indexOf(cur) + 1;
+      label.textContent = n + "/" + heads.length + " · " + cur.textContent.trim();
+    };
+    addEventListener("scroll", () => {
+      if (Date.now() - lastRun > 80) update();
+    }, { passive: true });
+    addEventListener("resize", update, { passive: true });
+    update();
+  }
+
   // ============================================================ boot
   function boot() {
     const w = document.getElementById("phWeight");
@@ -1246,6 +1296,7 @@
     cheat(document.getElementById("phCheat"));
     wireSyms(document);
     toc(document.getElementById("phToc"));
+    if (!document.querySelector(".ph-jump")) jumpBar();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

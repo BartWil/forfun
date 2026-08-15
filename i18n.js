@@ -1,3 +1,13 @@
+// Klucz nosił nazwę porzuconego projektu. Migracja jednorazowa, żeby nikt,
+// kto ustawił język wcześniej, nie wrócił nagle do angielskiego.
+try {
+  var _old = localStorage.getItem("motionlab.lang");
+  if (_old && !localStorage.getItem("biolab.lang")) {
+    localStorage.setItem("biolab.lang", _old);
+    localStorage.removeItem("motionlab.lang");
+  }
+} catch (e) {}
+
 // ==========================================================================
 // i18n.js: lightweight English/Polish switcher for BioLab Play.
 //
@@ -22,7 +32,7 @@
 (function () {
   "use strict";
 
-  const STORE_KEY = "motionlab.lang";
+  const STORE_KEY = "biolab.lang";
   let lang = localStorage.getItem(STORE_KEY) === "pl" ? "pl" : "en";
 
   // Flag + native label shown on the toggle. Regional-indicator flags fall back
@@ -496,6 +506,9 @@
 
     "lp.orbit": "Wokół niego krążą cztery dziedziny, które obejmuje ta strona. <b>Otwórz jedną</b>, by zobaczyć jej stacje, albo przewiń po tę samą mapę rozłożoną na płasko.",
 
+    "a11y.skip": "Przejdź do treści",
+    "lp.cta.map": "Obudź ciało →",
+
     // === Glossary ===
     "gs.label": "Prostym językiem",
     "gs.title": "Słownik pojęć",
@@ -512,7 +525,7 @@
     "lp.grab": "chwyć bark albo kolano i pociągnij",
     "lp.ded.main": "dla moich wspaniałych studentów",
     "lp.ded.sub": "to Wy jesteście napięciem, które to wszystko spina",
-    "lp.cta.map": "Otwórz mapę",
+
     "lp.cta.new": "Jesteś tu nowy? Zacznij od kroku →",
     "lp.scroll": "Przewiń",
     "lp.map.label": "Mapa stacji",

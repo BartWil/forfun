@@ -102,8 +102,15 @@
 .q-cleared a{ font-size:.78rem; color:var(--text-dimmer); text-decoration:none; border-bottom:1px dotted var(--panel-border); }
 .q-cleared a:hover{ color:var(--accent); border-color:var(--accent); }
 
-/* the soft gate: the map is hidden until the seals are cleared, or skipped */
-.lp-stations.locked{ display:none; }
+/* The gate invites, it does not block.
+   Hiding the station map cost more than it bought: the primary hero button
+   pointed at a display:none element and silently did nothing, while the menu,
+   the orbital map and the suggested route all reached the same stations anyway.
+   So the gate guarded nothing and only hid the best overview of the site.
+   The map now stays visible; solving the seals still lights it up. */
+.lp-stations.locked{ opacity:.82; }
+.lp-stations.locked .lp-grid{ filter:saturate(.72); transition:filter .6s ease; }
+.lp-stations:not(.locked) .lp-grid{ filter:none; }
 
 @media (prefers-reduced-motion: reduce){
   .lp-gate.cleared{ transition:none; }

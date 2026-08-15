@@ -136,6 +136,9 @@
   }
   document.addEventListener("keydown", e => { if (e.key === "Escape") hideTip(); });
   window.addEventListener("scroll", hideTip, { passive: true });
+  document.addEventListener("pointerdown", e => {
+    if (!e.target.closest(".q") && !e.target.closest(".eg-tip, .dy-tip, .isb-tip")) hideTip();
+  }, { passive: true });
 
   // ============================================================
   //  minimal 3-D: rotation matrices + an orthographic camera

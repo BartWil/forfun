@@ -17,7 +17,7 @@
 /* ---- hover quotations ---- */
 .q { border-bottom: 1.5px dashed rgba(255,209,102,.6); cursor: help; color: var(--text);
   transition: background .16s ease; border-radius: 2px; }
-.q:hover, .q:focus { background: rgba(255,209,102,.12); outline: none; }
+.q:hover { background: rgba(255,209,102,.12); }
 .eg-tip { position: fixed; z-index: 9999; max-width: 400px; padding: 13px 15px;
   background: #0d1220; border: 1px solid rgba(255,209,102,.45); border-radius: 12px;
   box-shadow: 0 18px 50px rgba(0,0,0,.6); opacity: 0; visibility: hidden;

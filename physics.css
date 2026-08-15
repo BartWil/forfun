@@ -26,7 +26,7 @@
 .sym { display: inline-block; padding: 0 3px; border-radius: 4px; cursor: help;
   color: #5eead4; font-weight: 600; border-bottom: 1.5px dotted rgba(94,234,212,.55);
   transition: background .16s ease, color .16s ease; }
-.sym:hover, .sym:focus { background: rgba(94,234,212,.15); color: #7ff5e0; outline: none; }
+.sym:hover { background: rgba(94,234,212,.15); color: #7ff5e0; }
 .sym-card { position: fixed; z-index: 9999; width: min(420px, calc(100vw - 24px));
   padding: 0; background: #0c1220; border: 1px solid rgba(94,234,212,.4); border-radius: 14px;
   box-shadow: 0 22px 60px rgba(0,0,0,.66); opacity: 0; visibility: hidden;
@@ -441,3 +441,32 @@
 @media (max-width: 560px) {
   .fbd-eq-row { grid-template-columns: 1fr; gap: 3px; }
 }
+
+
+/* ---- orientacja na długiej stronie ----
+   Na telefonie ta strona ma ponad pięćdziesiąt ekranów przewijania, a spis
+   treści zostaje na samej górze. Pasek pokazuje, w której sekcji jesteś,
+   i pozwala wrócić do spisu jednym dotknięciem. */
+.ph-jump{
+  position:sticky; top:56px; z-index:40; display:none;
+  align-items:center; gap:10px; margin:0 0 10px;
+  padding:9px 14px; border-radius:999px;
+  background:rgba(12,18,32,.93); backdrop-filter:blur(9px);
+  border:1px solid rgba(124,155,255,.32);
+  font-size:.78rem; color:var(--text-dim);
+}
+.ph-jump b{
+  flex:1; min-width:0; color:#a9bfff; font-weight:600;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.ph-jump a{
+  flex:none; min-height:32px; display:inline-flex; align-items:center;
+  padding:0 12px; border-radius:999px; text-decoration:none;
+  background:rgba(124,155,255,.16); color:#cfd9ff; font-size:.72rem;
+}
+.ph-jump-bar{
+  position:fixed; left:0; top:0; height:2px; z-index:41;
+  background:linear-gradient(90deg,#5eead4,#7c9bff); width:0;
+}
+@media (max-width:860px){ .ph-jump{ display:flex; } }
+@media (prefers-reduced-motion: reduce){ .ph-jump-bar{ transition:none; } }

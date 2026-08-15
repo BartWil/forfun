@@ -21,7 +21,7 @@
 /* ---- quotation hover, same affordance as the ISB page ---- */
 .q { border-bottom: 1.5px dashed rgba(94,234,212,.55); cursor: help; color: var(--text);
   transition: background .16s ease; border-radius: 2px; }
-.q:hover, .q:focus { background: rgba(94,234,212,.10); outline: none; }
+.q:hover { background: rgba(94,234,212,.10); }
 
 .id-tip { position: fixed; z-index: 9999; max-width: 380px; padding: 13px 15px;
   background: #0d1220; border: 1px solid rgba(94,234,212,.42); border-radius: 12px;
