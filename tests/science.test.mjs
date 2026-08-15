@@ -1190,6 +1190,38 @@ group("Station frame", () => {
   }
 });
 
+
+// ============================================ 14. kanał zwrotny
+//
+// CONTRIBUTING obiecuje, że zgłoszenie od studenta jest raportem, na którym
+// projektowi zależy najbardziej. Przez długi czas nie było jak go wysłać.
+group("Feedback channel", () => {
+  const js = read("feedback.js"), css = read("feedback.css");
+
+  ok(/b\.wilczynski\.fizjoterapia@gmail\.com/.test(js), "adres zwrotny jest w kodzie");
+  ok(/encodeURIComponent/.test(js), "temat i treść są kodowane do URL");
+  ok(/CAT\.forPage/.test(js), "nazwa strony pochodzi z katalogu, nie z nazwy pliku");
+  ok(!/"emg"|"physics"/.test(js), "kanał nie zna żadnej stacji z nazwy");
+
+  // Kanał dla studenta nie może zbierać niczego o studencie.
+  ok(!/fetch\(|XMLHttpRequest|sendBeacon|localStorage|navigator\.userAgent|screen\./.test(js),
+     "nic nie jest wysyłane ani zapisywane poza samym mailto");
+  ok(/No account, nothing tracked/.test(js) && /Bez konta, bez śledzenia/.test(js),
+     "obietnica braku śledzenia napisana w obu językach");
+
+  ok(/getElementById\("footer"\)/.test(js), "kanał dopisuje się do stopki");
+  ok(/old\.remove\(\)/.test(js), "przy zmianie języka nie powstaje drugi odnośnik");
+  ok(/min-height:44px/.test(css), "odnośnik ma 44 px celu dotykowego");
+
+  for (const f of readdirSync(ROOT).filter(f => f.endsWith(".html"))) {
+    ok(read(f).includes("feedback.js"), `${f} ma kanał zwrotny`);
+  }
+
+  // Obietnica z CONTRIBUTING ma teraz pokrycie.
+  ok(/found it misleading/.test(read("CONTRIBUTING.md")),
+     "CONTRIBUTING nadal prosi studentów o zgłoszenia");
+});
+
 // ------------------------------------------------------------------- summary
 console.log("\n" + "=".repeat(64));
 console.log(`  ${pass} passed, ${fail} failed`);
