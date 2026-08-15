@@ -1,0 +1,89 @@
+/* Force Plate Lab. Rytm wspólny z EMG Lab, bo to ta sama idea: jeden zapis,
+   kilka decyzji, inny wynik. */
+
+.fp-title { background: linear-gradient(96deg, #e8edf7 6%, #7c9bff 50%, #5eead4 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.fp-prov { margin-top: 12px; padding: 10px 14px; border-radius: 10px;
+  border-left: 3px solid #ffd166; background: rgba(255,209,102,.08);
+  font-size: .82rem; color: var(--text-dim); max-width: 74ch; }
+.fp-prov b { color: #ffd166; }
+
+.fp-sec { margin: 54px 0; }
+.fp-h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+  font-weight: 600; color: var(--text); margin: 6px 0 16px; letter-spacing: -.01em; }
+.fp-p { max-width: 74ch; color: var(--text-dim); line-height: 1.78; margin-bottom: 14px; }
+.fp-p b { color: var(--text); font-weight: 600; }
+.fp-warn { padding: 18px 22px; border-radius: 14px; max-width: 78ch;
+  border: 1px solid rgba(255,209,102,.34); background: rgba(255,209,102,.055);
+  color: var(--text-dim); line-height: 1.75; font-size: .93rem; }
+.fp-warn b { color: #ffd166; }
+
+/* ---- laboratorium ---- */
+.fp-lab { margin: 30px 0 8px; }
+.fp-stages { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.fp-stage { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 10px;
+  min-height: 40px;
+  border: 1px solid var(--border); background: rgba(255,255,255,.03); color: var(--text-dim);
+  font-family: 'Space Grotesk', sans-serif; font-size: .8rem; cursor: pointer;
+  transition: all .15s ease; }
+.fp-stage:hover { color: var(--text); border-color: var(--text-muted); }
+.fp-stage.on { background: rgba(94,234,212,.13); border-color: var(--accent); color: var(--accent); }
+.fp-stage-n { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,.08);
+  display: grid; place-items: center; font-size: .66rem; font-weight: 700; flex: none; }
+.fp-stage.on .fp-stage-n { background: var(--accent); color: #04120f; }
+.fp-stage-break.on { background: rgba(255,111,94,.14); border-color: #ff6f5e; color: #ff9384; }
+.fp-stage-break.on .fp-stage-n { background: #ff6f5e; }
+
+.fp-scope { background: radial-gradient(130% 100% at 50% 0%, #121a2c 0%, #0b1020 100%);
+  border: 1px solid var(--border); border-radius: 16px; height: 400px; overflow: hidden; }
+.fp-scope canvas { width: 100%; height: 100%; display: block; }
+
+.fp-controls { margin-top: 14px; display: flex; flex-direction: column; gap: 13px; }
+.fp-block { border: 1px solid var(--border); border-radius: 13px; background: rgba(0,0,0,.24);
+  padding: 14px 16px; }
+.fp-block-h { font-family: 'Space Grotesk', sans-serif; font-size: .68rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 9px; }
+.fp-note { color: var(--text-dim); font-size: .85rem; line-height: 1.65; margin-bottom: 11px; max-width: 72ch; }
+
+.fp-btn { padding: 9px 17px; border-radius: 10px; min-height: 40px;
+  border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text-dim);
+  cursor: pointer; font-size: .82rem; transition: all .15s ease; }
+.fp-btn:hover { border-color: var(--text-muted); color: var(--text); }
+.fp-btn.on { background: rgba(94,234,212,.14); border-color: var(--accent); color: var(--accent); }
+
+.fp-chips { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 11px; }
+.fp-chip { padding: 8px 15px; border-radius: 999px; min-height: 40px;
+  border: 1px solid var(--border); background: rgba(255,255,255,.03); color: var(--text-dim);
+  cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: .78rem;
+  transition: all .15s ease; }
+.fp-chip:hover { border-color: var(--text-muted); color: var(--text); }
+.fp-chip.on { background: rgba(124,155,255,.14); border-color: #7c9bff; color: #a9bfff; }
+
+.fp-slider { display: grid; grid-template-columns: 1fr 2fr auto; align-items: center; gap: 13px;
+  margin: 10px 0; font-size: .84rem; color: var(--text-dim); }
+.fp-slider b { font-family: 'JetBrains Mono', monospace; color: var(--accent); min-width: 72px; text-align: right; }
+.fp-slider input[type=range] { width: 100%; }
+
+.fp-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(146px, 1fr)); gap: 8px; }
+.fp-metric { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border);
+  background: rgba(0,0,0,.28); display: flex; flex-direction: column; gap: 3px; }
+.fp-metric span { font-size: .67rem; color: var(--text-muted); }
+.fp-metric b { font-family: 'JetBrains Mono', monospace; font-size: .98rem; color: var(--text); font-weight: 500; }
+.fp-metric.ok b { color: #5eead4; }
+.fp-metric.warn b { color: #ffd166; }
+.fp-metric.bad b { color: #ff6f5e; }
+
+.fp-formula { font-family: 'JetBrains Mono', monospace; font-size: .95rem; color: var(--text);
+  padding: 11px 14px; margin-bottom: 11px; border-radius: 9px; background: rgba(0,0,0,.3);
+  border: 1px solid rgba(94,234,212,.24); }
+
+.fp-alarm { margin-top: 11px; padding: 12px 15px; border-radius: 10px;
+  border-left: 3px solid #ff6f5e; background: rgba(255,111,94,.08);
+  color: var(--text-dim); font-size: .85rem; line-height: 1.65; }
+.fp-alarm b { color: #ff9384; }
+
+@media (max-width: 640px) {
+  .fp-slider { grid-template-columns: 1fr; gap: 5px; }
+  .fp-slider b { text-align: left; }
+  .fp-scope { height: 300px; }
+}

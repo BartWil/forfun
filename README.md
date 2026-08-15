@@ -20,7 +20,7 @@ No accounts, no tracking, no build step, no backend. Open a file and it runs.
 
 ## What is in it
 
-15 stations across four tracks (5 movement, 4 forces & mechanics, 3 measurement, 3 clinical interpretation). You can wander in anywhere, or
+16 stations across four tracks (5 movement, 4 forces & mechanics, 4 measurement, 3 clinical interpretation). You can wander in anywhere, or
 follow a track in order.
 
 ### Movement
@@ -52,6 +52,7 @@ Where the numbers come from, and how far you can trust them.
 
 | Station | Level | Scientific status | Page |
 |---|---|---|---|
+| ⬛ **Force Plate Lab**<br><sub>One jump, six channels, and eight decisions that change the answer.</sub> | intermediate | synthetic teaching model | [`forceplate.html`](forceplate.html) |
 | 📐 **The ISB Standard**<br><sub>Why the same knee gives different numbers in different labs.</sub> | intermediate | reference material | [`isb.html`](isb.html) |
 | 📗 **Glossary**<br><sub>Every term the rest of the site assumes you know.</sub> | beginner | reference material | [`glossary.html`](glossary.html) |
 | ⚡ **EMG Lab**<br><sub>Real unprocessed muscle electricity. Process it yourself and watch the answer move.</sub> | beginner | traceable to a published measurement | [`emg.html`](emg.html) |

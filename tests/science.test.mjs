@@ -1222,6 +1222,97 @@ group("Feedback channel", () => {
      "CONTRIBUTING nadal prosi studentów o zgłoszenia");
 });
 
+
+// ============================================ 15. Force Plate Lab
+//
+// Sygnał jest syntetyczny i mówi o tym wprost, ale ma być fizycznie spójny.
+// Gdyby był rysowany zamiast całkowany, impuls nie zgadzałby się z czasem lotu
+// i stacja uczyłaby zależności, która w jej własnych danych nie zachodzi.
+group("Force plate", () => {
+  const FPL = new Function(`
+    const noop = () => {};
+    const el = { style:{}, classList:{add:noop,remove:noop,toggle:noop}, appendChild:noop,
+                 querySelectorAll:()=>[], querySelector:()=>null, innerHTML:"",
+                 getContext:()=>new Proxy({},{get:()=>noop}),
+                 getBoundingClientRect:()=>({width:800,height:400}) };
+    const document = { readyState:"complete", addEventListener:noop, getElementById:()=>null,
+                       createElement:()=>el, querySelectorAll:()=>[], querySelector:()=>null, body:el };
+    const window = { addEventListener:noop, devicePixelRatio:1 };
+    function ResizeObserver(){ this.observe = noop; }
+    ${read("forceplate.js")}
+    return window.__forcePlate;
+  `)();
+  ok(!!FPL, "forceplate.js wystawia swoją fizykę do testów");
+  if (!FPL) return;
+
+  const { SIG, FP } = FPL;
+
+  // Zerowanie musi odzyskać dokładnie wstrzyknięte przesunięcie, i to z okna
+  // PUSTEJ płyty. Okno stania dałoby 693,70 N zamiast 7 N.
+  const off = FP.offset(SIG.Fz, 0.05, 0.55);
+  ok(Math.abs(off - FP.BIAS) < 0.5, "zerowanie odzyskuje wstrzyknięte przesunięcie",
+     off.toFixed(2) + " N wobec " + FP.BIAS + " N");
+  const standing = FP.offset(SIG.Fz, 1.0, 1.5);
+  ok(standing > 600, "okno stania to NIE jest okno zerowania", standing.toFixed(0) + " N");
+
+  const fz = FP.zeroed(SIG.Fz, off);
+  ok(Math.abs(FP.offset(fz, 0.05, 0.55)) < 0.3, "po wyzerowaniu pusta płyta wskazuje zero");
+  ok(Math.abs(FP.offset(fz, 1.0, 1.5) - FP.BW) < 3,
+     "po wyzerowaniu stanie daje ciężar ciała", FP.offset(fz, 1.0, 1.5).toFixed(1) + " N");
+
+  // Sedno: dwie niezależne drogi do wysokości muszą się zgodzić.
+  const ev = FP.events(fz, 20);
+  ok(ev.takeoff > 2 && ev.landing > ev.takeoff, "zdarzenia wykryte w sensownej kolejności");
+  const J = FP.impulse(fz, 1.60, ev.takeoff);
+  const v = FP.velocityFromImpulse(J);
+  const hImp = FP.heightFromVelocity(v), hFly = FP.heightFromFlight(ev.flight);
+  ok(J > 0, "impuls netto jest dodatni, bo człowiek się odbił", J.toFixed(1) + " N.s");
+  ok(Math.abs(hImp - hFly) < 0.01,
+     "wysokość z impulsu zgadza się z wysokością z czasu lotu do 1 cm",
+     (hImp*100).toFixed(1) + " cm wobec " + (hFly*100).toFixed(1) + " cm");
+  ok(hImp > 0.15 && hImp < 0.60, "wysokość skoku jest fizjologicznie sensowna",
+     (hImp*100).toFixed(1) + " cm");
+
+  // Zależność J = m*dv jest tożsamością, nie zbiegiem okoliczności.
+  ok(Math.abs(v - J / FP.M) < 1e-12, "predkosc odbicia to dokladnie J/m");
+
+  // Próg kontaktu to decyzja analityka i MUSI zmieniać wynik, inaczej
+  // najważniejsza lekcja stacji nie ma pokrycia w danych.
+  const h5 = FP.heightFromFlight(FP.events(fz, 5).flight);
+  const h50 = FP.heightFromFlight(FP.events(fz, 50).flight);
+  ok(Math.abs(h50 - h5) > 0.003, "próg kontaktu realnie zmienia policzoną wysokość",
+     (h5*100).toFixed(1) + " cm przy 5 N wobec " + (h50*100).toFixed(1) + " cm przy 50 N");
+  ok(h50 > h5, "wyższy próg daje dłuższy lot, bo wykrywa odbicie wcześniej");
+  ok(Math.abs(h50 - h5) < 0.05, "różnica pozostaje wiarygodna, a nie karykaturalna");
+
+  // Środek nacisku: odwrócenie wzoru musi odtworzyć zadaną trajektorię.
+  const iStand = Math.round(1.3 * FP.FS);
+  const c = FP.cop(iStand, fz);
+  ok(Math.abs(c.x) < 0.25 && Math.abs(c.y) < 0.25,
+     "przy staniu środek nacisku leży na płycie",
+     (c.x*1000).toFixed(0) + " mm, " + (c.y*1000).toFixed(0) + " mm");
+  ok(FP.copValid(fz[iStand], 100), "przy staniu siła pionowa jest wystarczająca");
+
+  // I musi przestać mieć sens, gdy siła znika. To jest lekcja, nie usterka.
+  const iFly = Math.round(((ev.takeoff + ev.landing) / 2) * FP.FS);
+  ok(!FP.copValid(fz[iFly], 100), "w locie środek nacisku jest oznaczony jako nieważny");
+  ok(Math.abs(fz[iFly]) < 20, "w locie płyta jest praktycznie nieobciążona");
+
+  // Zapis musi zawierać wszystkie sześć kanałów, bo bez momentów nie ma CoP.
+  for (const ch of ["Fx", "Fy", "Fz", "Mx", "My", "Mz"])
+    ok(SIG[ch] && SIG[ch].length === SIG.n, `kanał ${ch} obecny na pełnej długości`);
+
+  // Uczciwość pochodzenia: syntetyczny i tak nazwany, wszędzie.
+  const st = STATIONS.byId.forceplate;
+  ok(st.status === "synthetic", "katalog oznacza stację jako model, nie pomiar");
+  ok(st.contract.measured.length === 0, "stacja nie deklaruje niczego jako zmierzone");
+  ok(/synthetic/i.test(JSON.stringify(st.contract.modelled)), "kontrakt mówi wprost, że zapis jest syntetyczny");
+  ok(/synthetic/i.test(read("forceplate.html")) && /syntetyczny/i.test(read("i18n.js")),
+     "strona mówi o tym w obu językach");
+  ok(/Mx|My/.test(read("forceplate.html")) || /M<sub>y<\/sub>/.test(read("forceplate.js")),
+     "strona pokazuje, że CoP potrzebuje momentów, nie tylko sił");
+});
+
 // ------------------------------------------------------------------- summary
 console.log("\n" + "=".repeat(64));
 console.log(`  ${pass} passed, ${fail} failed`);

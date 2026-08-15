@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Force Plate Lab · BioLab Play</title>
+<meta name="description" content="One jump, six channels and eight decisions an analyst has to make. A synthetic but physically self-consistent force plate recording you process yourself." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=80" />
+<link rel="stylesheet" href="biolab-state.css?v=80" />
+<link rel="stylesheet" href="station-frame.css?v=80" />
+<link rel="stylesheet" href="feedback.css?v=80" />
+<link rel="stylesheet" href="forceplate.css?v=80" />
+</head>
+<body>
+
+<a class="skip-link" href="#main-content" data-i18n="a11y.skip">Przejdź do treści</a>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks"></ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label" data-i18n="fp.label">Six channels, eight decisions</div>
+    <h1 class="lab-title fp-title" data-i18n="fp.title">Force Plate Lab</h1>
+    <p class="lab-sub" data-i18n-html="fp.sub">
+      A force plate does not measure a jump. It measures three forces and three moments,
+      a thousand times a second, and every number a coach or a clinician ever quotes from
+      it is something <b>an analyst decided to compute</b>. Here you make those decisions
+      yourself, in order, and watch the answer move when you change your mind.
+    </p>
+    <p class="fp-prov" id="fpProv" data-i18n-html="fp.prov">
+      <b>This recording is synthetic.</b> It is a teaching model, not a measurement of a
+      person, and it says so on every screen.
+    </p>
+  </div>
+</header>
+
+<main id="main-content" class="container">
+
+  <section class="fp-sec">
+    <div class="fp-warn" data-i18n-html="fp.honest">
+      <b>Why the data are made up, and why that is the honest choice here.</b>
+      A centre of pressure cannot be computed from three forces alone. It needs the plate
+      moments as well, and a stated coordinate system, and no open dataset we could find
+      publishes all six channels together with an unambiguous convention. A recording that
+      pretended to be a measurement would be worse than an admitted model on a page whose
+      entire subject is where numbers come from. So this signal is generated, and generated
+      the hard way: an acceleration of the centre of mass is <b>integrated</b> into a
+      velocity and a height, and the vertical force follows from Newton's second law. Nothing
+      is drawn to look convincing. That is why the impulse you compute below and the flight
+      time you measure agree with each other, and it is the only reason they can.
+    </div>
+  </section>
+
+  <div id="fpLab" class="fp-lab"></div>
+
+  <section class="fp-sec">
+    <h2 class="fp-h2" data-i18n="fp.s1.h">Zero comes before everything</h2>
+    <p class="fp-p" data-i18n-html="fp.s1.p">
+      The amplifier in this recording has an offset of a few newtons, which is ordinary and
+      which every plate has. If you never remove it, every force you report afterwards is
+      wrong by that constant, and the error hides inside results that otherwise look
+      completely reasonable. The window you must average is the one where <b>nobody is on
+      the plate</b>, not any quiet-looking stretch. The first version of this station had no
+      unloaded period at all, and the check caught it immediately: a student would have
+      subtracted 693.70 N instead of 7 N and zeroed away their own body weight along with
+      the offset.
+    </p>
+  </section>
+
+  <section class="fp-sec">
+    <h2 class="fp-h2" data-i18n="fp.s2.h">Where the foot leaves the plate is your decision</h2>
+    <p class="fp-p" data-i18n-html="fp.s2.p">
+      Nothing in the file says "take-off happened here". You pick a force below which you
+      declare the foot to be off the plate, and that choice is an assumption you are making
+      about the measurement, not a fact you are reading from it. A toe does not release in
+      one sample: the force falls quickly and then lingers, so a low threshold declares
+      take-off later than a high one. In this recording moving from 5 N to 50 N changes the
+      computed jump height from <b>26.6 cm to 27.4 cm</b>. Eight millimetres, from nothing
+      but the number you typed.
+    </p>
+  </section>
+
+  <section class="fp-sec">
+    <h2 class="fp-h2" data-i18n="fp.s3.h">Two roads to the same height</h2>
+    <p class="fp-p" data-i18n-html="fp.s3.p">
+      The impulse route adds up the force above body weight over time and converts it to a
+      take-off velocity, because impulse equals change of momentum. The flight-time route
+      ignores the force entirely and uses only how long the person was in the air. They come
+      from different parts of the signal and they land within half a centimetre of each
+      other. That agreement is not decoration: it is the check that tells you the processing
+      was done correctly, and it is the first thing worth computing when a plate gives you a
+      number you were not expecting.
+    </p>
+  </section>
+
+  <section class="fp-sec">
+    <h2 class="fp-h2" data-i18n="fp.s4.h">When the centre of pressure stops existing</h2>
+    <p class="fp-p" data-i18n-html="fp.s4.p">
+      The centre of pressure is a quotient, and its denominator is the vertical force. While
+      the person stands on the plate it sits sensibly under the feet, wandering a centimetre
+      or two as they sway. During the flight phase the denominator goes to zero and the
+      quotient goes wherever the noise sends it, reporting positions metres outside a plate
+      that is only half a metre across. <b>The person did not move.</b> There is simply no
+      centre of pressure without meaningful contact, and any software that keeps drawing one
+      is drawing an artefact. Scrub the time slider into the flight phase and watch it
+      happen.
+    </p>
+  </section>
+
+  <section class="fp-sec">
+    <h2 class="fp-h2" data-i18n="fp.s5.h">The last question</h2>
+    <p class="fp-p" data-i18n-html="fp.s5.p">
+      Suppose the peak vertical force in a landing rises from 2.1 to 2.5 times body weight
+      between two sessions. Did the load on the knee joint rise by the same proportion? It
+      is tempting, it is what the number seems to say, and it does not follow. The plate
+      measures what passes between the whole body and the ground. What passes through one
+      joint depends on how the limb was arranged and how the muscles shared the work, and
+      neither of those is in this file. <b>Cannot be determined</b> is the correct answer,
+      and being able to give it with confidence is most of what this station is for.
+    </p>
+  </section>
+
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p data-i18n="footer.tagline">BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=80"></script>
+<script src="stations.js?v=80"></script>
+<script src="biolab-state.js?v=80"></script>
+<script src="state-codecs.js?v=80"></script>
+<script src="station-frame.js?v=80"></script>
+<script src="feedback.js?v=80"></script>
+<script src="nav.js?v=80"></script>
+<script src="forceplate.js?v=80"></script>
+<script src="contract-panel.js?v=80"></script>
+<script src="abbr.js?v=80"></script>
+</body>
+</html>
