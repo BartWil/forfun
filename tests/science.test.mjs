@@ -1356,6 +1356,9 @@ group("Przewiduj, zanim zobaczysz", () => {
     ok(c.outcome && c.outcome.selector && c.outcome.label instanceof RegExp &&
        c.outcome.name && c.outcome.name.en && c.outcome.name.pl,
        `${tag}: wskaznik ma selektor, wzorzec etykiety i nazwe w obu jezykach`);
+    ok(Number.isInteger(c.outcome.decimals) && c.outcome.decimals >= 0,
+       `${tag}: wskaznik deklaruje, ile miejsc po przecinku drukuje stacja`,
+       String(c.outcome.decimals));
     // Granica wniosku jest tu obowiazkowa. Bez niej cwiczylibysmy wylacznie
     // przewidywanie liczby, a to najmniej wazna czesc tej stacji.
     ok(!!c.cannotConclude, `${tag}: mowi, czego z tej zmiany NADAL nie wolno wywnioskowac`);
@@ -1364,12 +1367,18 @@ group("Przewiduj, zanim zobaczysz", () => {
   });
 
   // ---- etykieta wskaznika musi trafiac w to, co stacja naprawde drukuje
-  const emgSrc = read("emg.js");
-  CH.filter(c => c.station === "emg").forEach((c, i) => {
+  //
+  // To jest jedyne spoiwo miedzy wyzwaniem a stacja. Gdy ktos przetlumaczy
+  // etykiete inaczej, sekcja przestanie znajdowac liczbe i pokaze pusto,
+  // zamiast pokazac zla. Ale lepiej dowiedziec sie o tym tutaj.
+  const emgSrc = read("emg.js"), fpSrc = read("forceplate.js");
+  const SRC = { emg: emgSrc, forceplate: fpSrc };
+  CH.forEach((c, i) => {
     ok(c.outcome.label.test(c.outcome.name.en) && c.outcome.label.test(c.outcome.name.pl),
-       `wyzwanie EMG ${i + 1}: wzorzec pasuje do etykiety w obu jezykach`);
-    ok(emgSrc.includes(c.outcome.name.en) && emgSrc.includes(c.outcome.name.pl),
-       `wyzwanie EMG ${i + 1}: etykieta jest doslownie ta, ktora drukuje emg.js`,
+       `wyzwanie ${i + 1}: wzorzec pasuje do etykiety w obu jezykach`);
+    const src = SRC[c.station];
+    ok(src && src.includes(c.outcome.name.en) && src.includes(c.outcome.name.pl),
+       `wyzwanie ${i + 1}: etykieta jest doslownie ta, ktora drukuje ${c.station}.js`,
        c.outcome.name.en);
   });
 
@@ -1487,6 +1496,11 @@ group("Przewiduj, zanim zobaczysz", () => {
     };
   }
 
+  // Ile musi sie zmienic, zeby student to zobaczyl: trzy jednostki ostatniej
+  // drukowanej cyfry. Kryterium wzgledne bylo za surowe dla platformy, gdzie
+  // 7 ms na czasie lotu to 1,5 procent i jednoczesnie osiem milimetrow skoku.
+  const visible = (a, b, dec) => Math.abs(b - a) >= 3 * Math.pow(10, -dec);
+
   const PICK = [
     { label: /Mean-square/, key: "msDrop" },
     { label: /Median frequency filtered/, key: "mfFilt" },
@@ -1503,12 +1517,90 @@ group("Przewiduj, zanim zobaczysz", () => {
     ok(real === c.answer,
        `wyzwanie EMG ${i + 1}: zadeklarowany kierunek zgadza sie z prawdziwym sygnalem (${which.key})`,
        before.toFixed(4) + " -> " + after.toFixed(4) + ", policzono " + real + ", zadeklarowano " + c.answer);
-    // Zmiana ma byc widoczna golym okiem, a nie miescic sie w zaokragleniu,
-    // ktore stacja i tak wydrukuje. Cwiczenie przewidywania kierunku wymaga,
-    // zeby kierunek dalo sie zobaczyc.
-    ok(rel > 0.05, `wyzwanie EMG ${i + 1}: roznica jest widoczna, a nie w szumie zaokraglenia`,
-       "zmiana o " + (rel * 100).toFixed(1) + " %");
+    // Zmiana ma byc widoczna golym okiem. Kryterium bierze sie z tego, ile
+    // miejsc po przecinku stacja NAPRAWDE drukuje: roznica mniejsza niz kilka
+    // jednostek ostatniej cyfry byla by wyzwaniem, ktorego nie da sie
+    // rozstrzygnac patrzac na ekran.
+    ok(visible(before, after, c.outcome.decimals),
+       `wyzwanie EMG ${i + 1}: roznica jest widoczna przy precyzji, ktora stacja drukuje`,
+       "zmiana o " + Math.abs(after - before).toFixed(4) +
+       ", najmniejsza widoczna " + (3 * Math.pow(10, -c.outcome.decimals)));
   });
+
+  // ---- TO SAMO DLA PLATFORMY
+  //
+  // Panel platformy nie wystawia gotowych wskaznikow, tylko sklada je z FP.
+  // Test sklada je tak samo, z tych samych czesci, bo to one sa fizyka tej
+  // stacji. Sprawdzamy nie ich poprawnosc, ta jest przypieta w grupie
+  // "Force plate", tylko czy kierunek zadeklarowany w wyzwaniu zgadza sie
+  // z tym, co student naprawde zobaczy.
+  const FPL = new Function(`
+    const noop = () => {};
+    const el = { style:{}, classList:{add:noop,remove:noop,toggle:noop}, appendChild:noop,
+                 querySelectorAll:()=>[], querySelector:()=>null, innerHTML:"",
+                 getContext:()=>new Proxy({},{get:()=>noop}),
+                 getBoundingClientRect:()=>({width:800,height:400}) };
+    const document = { readyState:"complete", addEventListener:noop, getElementById:()=>null,
+                       createElement:()=>el, querySelectorAll:()=>[], querySelector:()=>null, body:el };
+    const window = { addEventListener:noop, devicePixelRatio:1 };
+    function ResizeObserver(){ this.observe = noop; }
+    ${fpSrc}
+    return window.__forcePlate;
+  `)();
+
+  function fpOutcomes(st) {
+    const { SIG, FP } = FPL;
+    const off = FP.offset(SIG.Fz, 0.05, 0.55);
+    const fz = st.zeroed ? FP.zeroed(SIG.Fz, off) : SIG.Fz;
+    const ev = FP.events(fz, st.threshold);
+    const to = ev.takeoff > 0 ? ev.takeoff : 2.46;
+    const J = FP.impulse(fz, 1.60, to);
+    const hImp = FP.heightFromVelocity(FP.velocityFromImpulse(J));
+    const hFly = ev.flight ? FP.heightFromFlight(ev.flight) : null;
+    return {
+      "Net impulse": J,
+      "Height from flight time": hFly === null ? null : hFly * 100,
+      "Height from impulse": hImp * 100,
+      "Flight time": ev.flight,
+      "Difference": hFly === null ? null : Math.abs(hImp - hFly) * 100,
+    };
+  }
+
+  CH.filter(c => c.station === "forceplate").forEach((c, i) => {
+    const key = c.outcome.name.en;
+    const before = fpOutcomes(c.baseline)[key];
+    const after = fpOutcomes(c.intervention)[key];
+    if (before === undefined || before === null || after === null) {
+      ok(false, `wyzwanie platformy ${i + 1}: test umie policzyc ten wskaznik`, key);
+      return;
+    }
+    const real = visible(before, after, c.outcome.decimals)
+      ? (after > before ? "up" : "down") : "same";
+    ok(real === c.answer,
+       `wyzwanie platformy ${i + 1}: zadeklarowany kierunek zgadza sie z prawdziwym sygnalem (${key})`,
+       before.toFixed(3) + " -> " + after.toFixed(3) + ", policzono " + real + ", zadeklarowano " + c.answer);
+    ok(visible(before, after, c.outcome.decimals),
+       `wyzwanie platformy ${i + 1}: roznica jest widoczna przy precyzji, ktora stacja drukuje`,
+       "zmiana o " + Math.abs(after - before).toFixed(4));
+  });
+
+  // Prog kontaktu ma sens tylko po wyzerowaniu: przy przesunieciu zera o 7 N
+  // prog 5 N nigdy nie zostaje przekroczony i stacja nie wykrywa lotu w ogole.
+  // Wyzwanie o progu, ktore o tym nie pamieta, pokazaloby studentowi kreske
+  // zamiast liczby.
+  CH.filter(c => c.station === "forceplate" && c.baseline.threshold < 10).forEach((c, i) => {
+    ok(c.baseline.zeroed === true && c.intervention.zeroed === true,
+       `wyzwanie platformy o niskim progu ${i + 1}: zaczyna od zapisu wyzerowanego`);
+  });
+
+  // Stacja musi umiec przyjac zadany stan, inaczej sekcja sie nie pokaze.
+  ok(/B\.bind\("forceplate"/.test(fpSrc) && !/B\.define\("forceplate"/.test(fpSrc),
+     "forceplate.js podpina runtime i nie definiuje znaczenia");
+  ok(/B\.define\("forceplate"/.test(read("state-codecs.js")),
+     "znaczenie stanu platformy mieszka w kodeku, nie w stacji");
+  const fph = read("forceplate.html");
+  ok(/challenges\.js/.test(fph) && /predict\.js/.test(fph) && /predict\.css/.test(fph),
+     "forceplate.html laduje wyzwania, orkiestrator i styl");
 
   // ---- wpiecie i tlumaczenie
   const eh = read("emg.html");

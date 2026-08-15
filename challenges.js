@@ -43,6 +43,7 @@
         name: { en: "Mean-square power, lower by", pl: "Moc średniokwadratowa, niższa o" },
         selector: ".eg-metric",
         label: /Mean-square|średniokwadratowa/i,
+        decimals: 1,
       },
       answer: "up",
       why: {
@@ -71,6 +72,7 @@
         name: { en: "Median frequency filtered", pl: "Częstotliwość mediany, po filtracji" },
         selector: ".eg-metric",
         label: /Median frequency filtered|mediany, po filtracji/i,
+        decimals: 0,
       },
       answer: "up",
       why: {
@@ -98,6 +100,7 @@
         name: { en: "Envelope peak", pl: "Szczyt obwiedni" },
         selector: ".eg-metric",
         label: /Envelope peak|Szczyt obwiedni/i,
+        decimals: 4,
       },
       answer: "up",
       why: {
@@ -107,6 +110,94 @@
       cannotConclude: {
         en: "That the muscle produced more. It produced exactly the same thing twice. This matters more than it looks: when you normalise to the peak of the trial, this peak is your denominator, so a smoothing choice quietly rescales every percentage you report afterwards.",
         pl: "Że mięsień wytworzył więcej. Wytworzył dwa razy dokładnie to samo. To waży więcej, niż wygląda: przy normalizacji do szczytu próby ten szczyt jest Twoim mianownikiem, więc wybór wygładzania po cichu przeskalowuje każdy procent, który potem podasz.",
+      },
+    },
+
+
+    // ------------------------------------------------------ platforma 1
+    // Osiem milimetrów z wpisanej liczby. To jest teza tej stacji, więc niech
+    // student najpierw obstawi, czy w ogóle cokolwiek się ruszy.
+    {
+      station: "forceplate",
+      question: {
+        en: "The contact threshold is 5 N: below that force you have declared the foot to be off the plate. You are about to move it to 50 N. It is the same jump, the same file and the same person. What happens to the jump height computed from flight time?",
+        pl: "Próg kontaktu stoi na 5 N: poniżej tej siły uznajesz, że stopa jest już poza płytą. Zaraz przesuniesz go na 50 N. To ten sam skok, ten sam plik i ta sama osoba. Co stanie się z wysokością skoku policzoną z czasu lotu?",
+      },
+      change: { en: "Contact threshold 5 N → 50 N", pl: "Próg kontaktu 5 N → 50 N" },
+      baseline:     { stage: 5, zeroed: true, threshold: 5,  normalize: false, scrub: 1.2 },
+      intervention: { stage: 5, zeroed: true, threshold: 50, normalize: false, scrub: 1.2 },
+      outcome: {
+        name: { en: "Height from flight time", pl: "Wysokość z czasu lotu" },
+        selector: ".fp-metric",
+        label: /Height from flight time|Wysokość z czasu lotu/i,
+        decimals: 1,
+      },
+      answer: "up",
+      why: {
+        en: "A toe does not release in one sample. The force falls quickly and then lingers, so a high threshold is crossed while there is still contact and declares take-off about six milliseconds earlier, while landing barely moves. The flight window is therefore longer, and height goes as the square of it. Eight millimetres, out of a number you typed into a box.",
+        pl: "Palce nie odrywają się w jednej próbce. Siła spada szybko, a potem długo dogasa, więc wysoki próg zostaje przekroczony jeszcze przy kontakcie i ogłasza odbicie o jakieś sześć milisekund wcześniej, podczas gdy lądowanie prawie się nie rusza. Okno lotu jest przez to dłuższe, a wysokość rośnie z jego kwadratem. Osiem milimetrów z liczby, którą wpisałeś do okienka.",
+      },
+      cannotConclude: {
+        en: "Which of the two heights is the real one. Neither is: both are what this recording gives under a stated assumption. The lesson is not to pick the better threshold but to stop quoting a jump height without saying which threshold produced it, because a height from another lab is not comparable with yours unless both are stated.",
+        pl: "Która z dwóch wysokości jest prawdziwa. Żadna: obie są tym, co ten zapis daje przy jawnie przyjętym założeniu. Lekcja nie polega na wybraniu lepszego progu, tylko na tym, żeby przestać podawać wysokość skoku bez powiedzenia, jaki próg ją wyprodukował, bo wysokość z innej pracowni nie jest porównywalna z Twoją, dopóki obie nie są podane.",
+      },
+    },
+
+    // ------------------------------------------------------ platforma 2
+    // Najostrzejsza rzecz na tej stronie: kontrola krzyżowa NIE jest niezależna
+    // od decyzji, którą właśnie podjąłeś.
+    {
+      station: "forceplate",
+      question: {
+        en: "The same threshold, 5 N to 50 N. This time watch the net impulse, which comes from the force trace, from a different part of the signal and by a completely different route than flight time. Does it hold still?",
+        pl: "Ten sam próg, z 5 N na 50 N. Tym razem patrz na impuls netto, który bierze się z przebiegu siły, z innego fragmentu zapisu i zupełnie inną drogą niż czas lotu. Czy pozostanie na miejscu?",
+      },
+      change: { en: "Contact threshold 5 N → 50 N", pl: "Próg kontaktu 5 N → 50 N" },
+      baseline:     { stage: 5, zeroed: true, threshold: 5,  normalize: false, scrub: 1.2 },
+      intervention: { stage: 5, zeroed: true, threshold: 50, normalize: false, scrub: 1.2 },
+      outcome: {
+        name: { en: "Net impulse", pl: "Impuls netto" },
+        selector: ".fp-metric",
+        label: /Net impulse|Impuls netto/i,
+        decimals: 1,
+      },
+      answer: "up",
+      why: {
+        en: "The integration stops at the take-off you declared, and in the last few milliseconds before a foot leaves the plate the force is already less than body weight. That tail contributes negative area. Cut it off earlier and less negative area is subtracted, so the impulse grows.",
+        pl: "Całkowanie kończy się na odbiciu, które ogłosiłeś, a w ostatnich milisekundach przed oderwaniem stopy siła jest już mniejsza niż ciężar ciała. Ten ogon wnosi pole ujemne. Utnij go wcześniej, a mniej pola ujemnego zostanie odjęte, więc impuls urośnie.",
+      },
+      cannotConclude: {
+        en: "That the two routes agreeing proves the processing was right. They both moved, and they moved the same way, because they share one decision: the take-off you declared. A cross-check only checks what it does not itself depend on, and this one depends on the threshold as much as the answer does.",
+        pl: "Że zgodność dwóch dróg dowodzi poprawności przetwarzania. Obie się przesunęły i przesunęły się w tę samą stronę, bo dzielą jedną decyzję: ogłoszone przez Ciebie odbicie. Kontrola krzyżowa sprawdza tylko to, od czego sama nie zależy, a ta zależy od progu dokładnie tak samo jak wynik.",
+      },
+    },
+
+    // ------------------------------------------------------ platforma 3
+    // A tu kontrola krzyżowa działa, i na tym polega różnica między jedną
+    // a drugą.
+    {
+      station: "forceplate",
+      question: {
+        en: "The amplifier offset is 7 newtons, one percent of this person's body weight, and right now it has not been removed. You are about to subtract it. What happens to the gap between the two independently computed jump heights?",
+        pl: "Przesunięcie zera wzmacniacza wynosi 7 niutonów, czyli jeden procent ciężaru tej osoby, i na razie nie zostało usunięte. Zaraz je odejmiesz. Co stanie się z rozbieżnością między dwiema niezależnie policzonymi wysokościami skoku?",
+      },
+      change: { en: "Zeroing: off → on", pl: "Zerowanie: wyłączone → włączone" },
+      baseline:     { stage: 5, zeroed: false, threshold: 20, normalize: false, scrub: 1.2 },
+      intervention: { stage: 5, zeroed: true,  threshold: 20, normalize: false, scrub: 1.2 },
+      outcome: {
+        name: { en: "Difference", pl: "Różnica" },
+        selector: ".fp-metric",
+        label: /^\s*(Difference|Różnica)/i,
+        decimals: 2,
+      },
+      answer: "down",
+      why: {
+        en: "The impulse route integrates the force over the whole push, so a constant seven newtons is added several hundred times and becomes almost two centimetres of height. The flight-time route never touches the force, so it does not care. Remove the offset and the two routes stop disagreeing.",
+        pl: "Droga impulsowa całkuje siłę przez cały wypych, więc stałe siedem niutonów zostaje dodane kilkaset razy i zamienia się w prawie dwa centymetry wysokości. Droga czasu lotu w ogóle nie dotyka siły, więc jej to nie obchodzi. Usuń przesunięcie, a obie drogi przestaną się rozjeżdżać.",
+      },
+      cannotConclude: {
+        en: "That agreement proves you are right, in general. Here it works because the two routes really do differ in what they depend on, unlike in the challenge above. That is the whole skill: knowing which of your checks is independent of the thing being checked, and which one is quietly repeating your own assumption back at you.",
+        pl: "Że zgodność w ogólności dowodzi poprawności. Tutaj działa, bo obie drogi naprawdę różnią się tym, od czego zależą, inaczej niż w wyzwaniu powyżej. I na tym polega cała umiejętność: wiedzieć, która z Twoich kontroli jest niezależna od sprawdzanej rzeczy, a która po cichu powtarza Ci Twoje własne założenie.",
       },
     },
 

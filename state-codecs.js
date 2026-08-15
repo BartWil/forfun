@@ -95,6 +95,52 @@
     },
   });
 
+  // ----------------------------------------------------------- force plate
+  // Osiem decyzji analityka sprowadza sie do piatki liczb. Kazda z nich jest
+  // wyborem, nie odczytem, wiec kazda musi dac sie zapisac w odnosniku: bez
+  // tego zdanie "u mnie wychodzi 27,4 cm" nie znaczy nic.
+  const FP_STAGES = ["raw", "zero", "contact", "normalize", "impulse", "cop", "interpret", "break"];
+
+  B.define("forceplate", {
+    stages: FP_STAGES,
+
+    validate(raw) {
+      const out = {};
+      if (raw.stage !== undefined) out.stage = num(Math.round(raw.stage), 1, 8, 1);
+      if (raw.zeroed !== undefined) out.zeroed = String(raw.zeroed) !== "0" && raw.zeroed !== false;
+      // Prog kontaktu: przyciski oferuja 5, 10, 20 i 50 N, ale odnosnik moze
+      // niesc dowolna wartosc z sensownego zakresu. Klucz w tym, ze prog jest
+      // deklaracja analityka, wiec ma podrozowac razem z wynikiem.
+      if (raw.threshold !== undefined) out.threshold = num(Math.round(raw.threshold), 1, 200, 20);
+      if (raw.normalize !== undefined) out.normalize = String(raw.normalize) !== "0" && raw.normalize !== false;
+      if (raw.scrub !== undefined) out.scrub = num(raw.scrub, 0, 4.99, 1.2);
+      return out;
+    },
+
+    describe(st) {
+      const rows = [];
+      const stage = Number(st.stage) || 1;
+      if (st.zeroed !== undefined)
+        rows.push({ label: T("Zeroed", "Wyzerowane"), value: st.zeroed ? T("yes", "tak") : T("no", "nie") });
+      if (stage >= 3 && st.threshold !== undefined)
+        rows.push({ label: T("Contact threshold", "Prog kontaktu"), value: fmt(st.threshold, 0) + " N" });
+      if (stage >= 4 && st.normalize !== undefined)
+        rows.push({ label: T("Force shown as", "Sila pokazana jako"),
+          value: st.normalize ? T("body weights", "krotnosci ciezaru") : T("newtons", "niutony") });
+      if (stage >= 6 && st.scrub !== undefined)
+        rows.push({ label: T("Time cursor", "Kursor czasu"), value: fmt(st.scrub, 2) + " s" });
+      return rows;
+    },
+
+    summary(st) {
+      const bits = [];
+      if (st.zeroed !== undefined) bits.push(st.zeroed ? T("zeroed", "wyzerowane") : T("not zeroed", "bez zerowania"));
+      if (st.threshold !== undefined) bits.push(fmt(st.threshold, 0) + " N");
+      if (st.normalize) bits.push("BW");
+      return bits.join(" · ");
+    },
+  });
+
   // --------------------------------------------------------------- physics
   // Registered now, with nothing bound to it yet, precisely to prove the split
   // works: Continue can already describe a physics state it has never run.

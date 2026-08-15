@@ -478,12 +478,44 @@
     paint();
   }
 
+  // ------------------------------------------------- stan eksperymentu
+  // Tylko polowa runtime: jak odczytac strone i jak wstawic w nia stan.
+  // Co ten stan ZNACZY, opisuje kodek w state-codecs.js, ktory laduje sie
+  // takze na stronie startowej, zeby umiala strescic zapisany eksperyment
+  // bez uruchamiania tej stacji.
+  function registerState() {
+    const B = window.BioLabState;
+    if (!B || !B.codec("forceplate")) return;
+
+    B.bind("forceplate", {
+      read: () => ({
+        stage: S.stage, zeroed: S.zeroed, threshold: S.threshold,
+        normalize: S.normalize, scrub: S.scrub,
+      }),
+      apply: st => {
+        Object.keys(st).forEach(k => { S[k] = st[k]; });
+        emit();
+      },
+      checkpoint: () => {
+        const x = STAGES.find(s => s.n === S.stage) || STAGES[0];
+        return { k: x.k, label: L(x) };
+      },
+    });
+
+    // Celowo BEZ trackEngagement i bez przycisku udostepniania. Pasek
+    // "kontynuuj" na stronie startowej dziala i nie ma powodu zmieniac tego,
+    // co robi, przy okazji dokladania cwiczenia na dole tej stacji. Runtime
+    // jest tu po to, zeby stacja umiala przyjac zadany stan i przeliczyc sie
+    // wlasnym kodem. To wszystko, czego potrzebuje sekcja przewidywania.
+  }
+
   function boot() {
     const host = document.getElementById("fpLab");
     if (!host) return;
     stages(host);
     scope(host);
     controls(host);
+    registerState();
     emit();
   }
 
