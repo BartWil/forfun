@@ -146,6 +146,22 @@
       return API;
     },
 
+    // Czy jakaś stacja podpięła runtime, który potrafi zastosować stan.
+    // predict.js pyta o to, zanim cokolwiek pokaże: bez runtime przycisk
+    // wyglądałby sensownie i nie robiłby nic.
+    canApply(id) { return !!(runtimes[id] && runtimes[id].apply); },
+
+    // Ustawia stan stacji przez JEJ WŁASNY runtime. Warstwa nic nie przelicza,
+    // tylko prosi stację, żeby przeliczyła się sama, dokładnie tak jak po
+    // wejściu z udostępnionego odnośnika.
+    apply(id, state) {
+      const rt = runtimes[id];
+      if (!rt || !rt.apply) return false;
+      const clean = API.validate(id, state);
+      if (!clean || !Object.keys(clean).length) return false;
+      try { rt.apply(clean); return true; } catch (e) { return false; }
+    },
+
     link(id, state, checkpointKey) {
       const st = window.STATIONS && window.STATIONS.byId[id];
       const page = st ? st.page : location.pathname.split("/").pop();

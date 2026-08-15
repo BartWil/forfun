@@ -38,7 +38,10 @@
   function measure() {
     const main = document.querySelector("main") || document.body;
     const clone = main.cloneNode(true);
-    clone.querySelectorAll("#scientific-contract, .sf-top, .sf-next, script, style, canvas, svg")
+    // .pr-sec odpada razem z panelem kontraktu i samą ramą: to ćwiczenie
+    // dołożone pod treścią, a nie treść stacji. Bez tego czas czytania rósł o
+    // tekst, którego student nie czyta, żeby dojść do końca lekcji.
+    clone.querySelectorAll("#scientific-contract, .sf-top, .sf-next, .pr-sec, script, style, canvas, svg")
       .forEach(n => n.remove());
     const words = (clone.textContent || "").trim().split(/\s+/).filter(Boolean).length;
     const minutes = Math.max(1, Math.round(words / 180));
@@ -46,7 +49,10 @@
     // Kontrolki: to, czym student faktycznie może poruszyć. Bez nawigacji,
     // stopki, panelu kontraktu i samej ramy.
     const controls = [...main.querySelectorAll("input, button, select")]
-      .filter(el => !el.closest("#navbar, #footer, #scientific-contract, .sf-top, .sf-next, .bs-share"))
+      // Przyciski sekcji przewidywania nie są kontrolkami stacji, a ich liczba
+      // zmienia się w trakcie ćwiczenia. Policzone, sprawiałyby, że ten sam
+      // student widzi na tej samej stronie raz 30, raz 33 kontrolki.
+      .filter(el => !el.closest("#navbar, #footer, #scientific-contract, .sf-top, .sf-next, .bs-share, .pr-sec"))
       .length;
     return { minutes, controls, words };
   }

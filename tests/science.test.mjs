@@ -1313,6 +1313,225 @@ group("Force plate", () => {
      "strona pokazuje, że CoP potrzebuje momentów, nie tylko sił");
 });
 
+group("Przewiduj, zanim zobaczysz", () => {
+  const pj = read("predict.js"), cj = read("challenges.js"), core = read("biolab-state.js");
+
+  // ---- warstwa istnieje po obu stronach
+  ok(/canApply\(id\)/.test(core) && /apply\(id, state\)/.test(core),
+     "warstwa stanu udostępnia canApply i apply");
+  ok(/rt\.apply\(clean\)/.test(core) && /API\.validate\(id, state\)/.test(core),
+     "apply przepuszcza stan przez kodek, zanim odda go stacji");
+
+  // ---- framework orkiestruje, nigdy nie liczy
+  // To jest cała umowa tej sekcji. Gdyby predict.js sam wyliczał spodziewany
+  // wynik, w projekcie istniałyby dwie fizyki i predzej czy pozniej pokazalby
+  // studentowi wynik, ktorego stacja nigdy nie policzyla.
+  const noComments = pj.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/[^\n]*/g, "$1");
+  for (const forbidden of ["filtfilt", "butter", "Math.sqrt", "Math.PI", "medianFreq", "9.81"])
+    ok(!noComments.includes(forbidden),
+       `predict.js nie liczy fizyki: brak ${forbidden}`);
+  ok(/querySelectorAll\(o\.selector\)/.test(pj) && /o\.label\.test/.test(pj),
+     "wynik jest ODCZYTYWANY z tego, co stacja narysowala, a nie liczony ponownie");
+  ok(/B\.apply\(ME\.id, state\)/.test(pj),
+     "zmiane stanu wykonuje stacja przez wlasny runtime");
+
+  // ---- plik wyzwan to dane, nie mechanika
+  const cNoComments = cj.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/[^\n]*/g, "$1");
+  ok(!/document\.|querySelector|addEventListener/.test(cNoComments),
+     "challenges.js nie dotyka DOM: to sam material dydaktyczny");
+
+  // ---- wczytaj wyzwania tak, jak wczytuje je przegladarka
+  const CH = new Function(`const window = {}; ${cj}; return window.BioLabChallenges;`)();
+  ok(Array.isArray(CH) && CH.length > 0, "challenges.js publikuje liste wyzwan",
+     "n = " + (CH ? CH.length : "brak"));
+
+  const ids = new Set(STATIONS.list.map(s => s.id));
+  const DIRS = ["up", "down", "same"];
+  CH.forEach((c, i) => {
+    const tag = "wyzwanie " + (i + 1);
+    ok(ids.has(c.station), `${tag}: wskazuje stacje z katalogu`, c.station);
+    ok(DIRS.includes(c.answer), `${tag}: odpowiedz jest kierunkiem`, c.answer);
+    for (const f of ["question", "change", "why", "cannotConclude"])
+      ok(c[f] && c[f].en && c[f].pl, `${tag}: pole ${f} jest w obu jezykach`);
+    ok(c.outcome && c.outcome.selector && c.outcome.label instanceof RegExp &&
+       c.outcome.name && c.outcome.name.en && c.outcome.name.pl,
+       `${tag}: wskaznik ma selektor, wzorzec etykiety i nazwe w obu jezykach`);
+    // Granica wniosku jest tu obowiazkowa. Bez niej cwiczylibysmy wylacznie
+    // przewidywanie liczby, a to najmniej wazna czesc tej stacji.
+    ok(!!c.cannotConclude, `${tag}: mowi, czego z tej zmiany NADAL nie wolno wywnioskowac`);
+    ok(JSON.stringify(c.baseline) !== JSON.stringify(c.intervention),
+       `${tag}: stan przed i po faktycznie sie roznia`);
+  });
+
+  // ---- etykieta wskaznika musi trafiac w to, co stacja naprawde drukuje
+  const emgSrc = read("emg.js");
+  CH.filter(c => c.station === "emg").forEach((c, i) => {
+    ok(c.outcome.label.test(c.outcome.name.en) && c.outcome.label.test(c.outcome.name.pl),
+       `wyzwanie EMG ${i + 1}: wzorzec pasuje do etykiety w obu jezykach`);
+    ok(emgSrc.includes(c.outcome.name.en) && emgSrc.includes(c.outcome.name.pl),
+       `wyzwanie EMG ${i + 1}: etykieta jest doslownie ta, ktora drukuje emg.js`,
+       c.outcome.name.en);
+  });
+
+  // ---- stan wyzwania musi przejsc przez kodek bez obcinania
+  // Wyzwanie proszace o stan, ktorego kodek nie przepusci, ustawiloby cos
+  // innego, niz zapowiada studentowi, i porownywaloby dwie rzeczy, o ktorych
+  // nie mowi. Kodeki sa czyste, wiec daja sie uruchomic tutaj.
+  const CODECS = new Function(`
+    const codecs = {};
+    const window = { BioLabState: { define: (id, c) => { codecs[id] = c; } },
+                     i18n: { lang: "en" } };
+    ${read("state-codecs.js")}
+    return codecs;
+  `)();
+  CH.forEach((c, i) => {
+    const cod = CODECS[c.station];
+    if (!cod) { ok(false, `wyzwanie ${i + 1}: stacja ma kodek`, c.station); return; }
+    // Porownujemy zawartosc, nie kolejnosc kluczy: kodek buduje swoj obiekt
+    // we wlasnej kolejnosci i to nie jest roznica, o ktora tu chodzi.
+    const sameState = (a, b) => {
+      const ka = Object.keys(a).sort(), kb = Object.keys(b).sort();
+      return ka.join() === kb.join() && ka.every(k => a[k] === b[k]);
+    };
+    for (const pair of [["przed", c.baseline], ["po", c.intervention]]) {
+      const clean = cod.validate(pair[1]);
+      ok(sameState(clean, pair[1]),
+         `wyzwanie ${i + 1}: stan "${pair[0]}" przechodzi przez kodek bez zmian`,
+         JSON.stringify(clean));
+    }
+  });
+
+  // ---- ZADEKLAROWANY KIERUNEK KONTRA PRAWDZIWY SYGNAL
+  //
+  // Wynik pokazywany studentowi zawsze pochodzi z ekranu, wiec jest prawdziwy.
+  // Ale werdykt "trafiles" bierze sie z pola answer, i to pole moze klamac.
+  // Dlatego kazdy kierunek jest tu przeliczany prawdziwym filtrem na prawdziwym
+  // pliku EMG. Gdy ktos zmieni filtr albo dane tak, ze kierunek sie odwroci,
+  // padnie ten test, a nie zaufanie studenta.
+  const DSP = new Function(`
+    const noop = () => {};
+    const el = { style:{}, classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},
+                 appendChild:noop, remove:noop, addEventListener:noop, setAttribute:noop,
+                 querySelector:()=>null, querySelectorAll:()=>[], innerHTML:"", textContent:"",
+                 dataset:{}, getBoundingClientRect:()=>({left:0,top:0,width:0,height:0,bottom:0}) };
+    const document = { readyState:"complete", addEventListener:noop, getElementById:()=>null,
+                       querySelector:()=>null, querySelectorAll:()=>[], createElement:()=>el, body:el };
+    const window = { addEventListener:noop, devicePixelRatio:1, innerWidth:1280, innerHeight:800 };
+    const location = { pathname:"/emg.html" };
+    const fetch = () => Promise.reject(new Error("no network in tests"));
+    ${emgSrc}
+    return window.__emgDSP;
+  `)();
+
+  // Ten sam plik i to samo parsowanie, ktorego uzywa stacja.
+  const csv = read("data/emg/santuz2021_demo.csv").split(/\r?\n/);
+  let header = null; const rows = [];
+  for (const line of csv) {
+    if (!line.trim()) continue;
+    if (/^"?#/.test(line)) continue;
+    if (!header) { header = line.split(","); continue; }
+    rows.push(line.split(","));
+  }
+  const COL = {};
+  header.forEach((h, i) => {
+    COL[h.trim().replace(/_mv$/, "").replace(/_s$/, "")] =
+      Float64Array.from(rows, r => parseFloat(r[i]));
+  });
+  const FS = COL.t ? Math.round(1 / (COL.t[1] - COL.t[0])) : 1000;
+  const EDGE = 0.5;                       // to samo okno wnetrza, co w emg.js
+
+  const rmsOf = (a, i0, i1) => {
+    let s = 0; for (let i = i0; i < i1; i++) s += a[i] * a[i];
+    return Math.sqrt(s / (i1 - i0));
+  };
+  // Czestotliwosc mediany liczona tu NIEZALEZNIE, wprost z definicji, przez
+  // powolna transformate na krotkim wycinku. Powtorzenie kodu stacji
+  // sprawdzaloby kopie samego siebie.
+  function medianFreqIndep(x, fs) {
+    const N = 1024;
+    const p = new Float64Array(N / 2);
+    let segs = 0;
+    for (let s = 0; s + N <= x.length && segs < 3; s += N) {
+      for (let k = 1; k < N / 2; k++) {
+        let re = 0, im = 0;
+        for (let n = 0; n < N; n++) {
+          const w = 0.5 - 0.5 * Math.cos(2 * Math.PI * n / (N - 1));
+          const ang = -2 * Math.PI * k * n / N;
+          re += x[s + n] * w * Math.cos(ang);
+          im += x[s + n] * w * Math.sin(ang);
+        }
+        p[k] += re * re + im * im;
+      }
+      segs++;
+    }
+    let tot = 0; for (let k = 1; k < p.length; k++) tot += p[k];
+    let acc = 0;
+    for (let k = 1; k < p.length; k++) { acc += p[k]; if (acc >= tot / 2) return k * fs / N; }
+    return 0;
+  }
+
+  function outcomes(st) {
+    const raw = COL[st.muscle];
+    const filt = DSP.filtfilt(raw, st.hp, FS, true);
+    const rect = new Float64Array(filt.length);
+    for (let i = 0; i < filt.length; i++) rect[i] = Math.abs(filt[i]);
+    const env = DSP.filtfilt(st.rectify ? rect : filt, st.lp, FS, false);
+    for (let i = 0; i < env.length; i++) if (env[i] < 0) env[i] = 0;
+    const e0 = Math.round(EDGE * FS), e1 = env.length - e0;
+    const rawP = rmsOf(raw, e0, e1), filtP = rmsOf(filt, e0, e1);
+    let pk = 0; for (let i = e0; i < e1; i++) if (env[i] > pk) pk = env[i];
+    return {
+      msDrop: (1 - (filtP * filtP) / (rawP * rawP)) * 100,
+      envPeak: pk,
+      mfFilt: medianFreqIndep(filt.subarray(e0, Math.min(e1, e0 + 3072)), FS),
+    };
+  }
+
+  const PICK = [
+    { label: /Mean-square/, key: "msDrop" },
+    { label: /Median frequency filtered/, key: "mfFilt" },
+    { label: /Envelope peak/, key: "envPeak" },
+  ];
+
+  CH.filter(c => c.station === "emg").forEach((c, i) => {
+    const which = PICK.find(p => p.label.test(c.outcome.name.en));
+    if (!which) { ok(false, `wyzwanie EMG ${i + 1}: test umie policzyc ten wskaznik`, c.outcome.name.en); return; }
+    const before = outcomes(c.baseline)[which.key];
+    const after = outcomes(c.intervention)[which.key];
+    const rel = Math.abs(after - before) / Math.max(1e-12, Math.abs(before));
+    const real = rel < 0.02 ? "same" : (after > before ? "up" : "down");
+    ok(real === c.answer,
+       `wyzwanie EMG ${i + 1}: zadeklarowany kierunek zgadza sie z prawdziwym sygnalem (${which.key})`,
+       before.toFixed(4) + " -> " + after.toFixed(4) + ", policzono " + real + ", zadeklarowano " + c.answer);
+    // Zmiana ma byc widoczna golym okiem, a nie miescic sie w zaokragleniu,
+    // ktore stacja i tak wydrukuje. Cwiczenie przewidywania kierunku wymaga,
+    // zeby kierunek dalo sie zobaczyc.
+    ok(rel > 0.05, `wyzwanie EMG ${i + 1}: roznica jest widoczna, a nie w szumie zaokraglenia`,
+       "zmiana o " + (rel * 100).toFixed(1) + " %");
+  });
+
+  // ---- wpiecie i tlumaczenie
+  const eh = read("emg.html");
+  ok(/challenges\.js/.test(eh) && /predict\.js/.test(eh) && /predict\.css/.test(eh),
+     "emg.html laduje wyzwania, orkiestrator i styl");
+  ok(!/predict\.js/.test(read("index.html")),
+     "strona startowa nie jest stacja i nie dostaje tej sekcji");
+  ok(/document\.addEventListener\("i18n:changed"/.test(pj),
+     "sekcja przebudowuje sie przy zmianie jezyka, i slucha na document");
+  ok(/min-height: 44px/.test(read("predict.css")),
+     "przyciski spelniaja minimalny rozmiar celu dotykowego");
+
+  // Rama stacji obiecuje, ile jest kontrolek i ile trwa czytanie. Sekcja
+  // przewidywania jest cwiczeniem POD trescia, a liczba jej przyciskow zmienia
+  // sie w trakcie, wiec policzona sprawialaby, ze ten sam student widzi na tej
+  // samej stronie raz 30, raz 33 kontrolki.
+  const sf = read("station-frame.js");
+  ok(/\.pr-sec[^"]*script/.test(sf) || /, \.pr-sec, script/.test(sf),
+     "czas czytania nie liczy tekstu sekcji przewidywania");
+  ok(/\.bs-share, \.pr-sec/.test(sf),
+     "licznik kontrolek nie liczy przyciskow sekcji przewidywania");
+});
+
 // ------------------------------------------------------------------- summary
 console.log("\n" + "=".repeat(64));
 console.log(`  ${pass} passed, ${fail} failed`);

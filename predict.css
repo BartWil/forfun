@@ -1,0 +1,238 @@
+/* Sekcja "przewiduj, zanim spojrzysz". Dokładana na dole stacji, nie zmienia
+   niczego, co już istnieje. Wszystkie klikalne elementy mają co najmniej 44 px
+   wysokości, zgodnie z WCAG 2.5.8, bo poprzedni audyt wykazał tu suwaki
+   wysokie na 4 px. */
+
+.pr-sec {
+  margin: 4rem 0 2rem;
+  scroll-margin-top: 5rem;
+}
+
+.pr-h2 {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5rem;
+  color: var(--text, #e8ecf5);
+}
+
+.pr-intro {
+  max-width: 62ch;
+  margin: 0 0 1.6rem;
+  color: var(--text-dim, #8593b0);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.pr-host {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.pr-card {
+  --pr-c: #7c9bff;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-left: 3px solid var(--pr-c);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 1.4rem 1.5rem 1.5rem;
+}
+
+.pr-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.pr-tag {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pr-c);
+}
+
+.pr-n {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  color: var(--text-dim, #8593b0);
+}
+
+.pr-q {
+  margin: 0 0 0.9rem;
+  max-width: 66ch;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--text, #e8ecf5);
+}
+
+.pr-change {
+  display: inline-block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.82rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  background: rgba(124, 155, 255, 0.12);
+  color: var(--pr-c);
+  margin-bottom: 1rem;
+}
+
+/* --------------------------------------------------------------- wybór */
+
+.pr-opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+}
+
+.pr-opt,
+.pr-run,
+.pr-again {
+  min-height: 44px;
+  padding: 0.6rem 1.1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text, #e8ecf5);
+  font-family: inherit;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+}
+
+.pr-opt:hover,
+.pr-run:hover,
+.pr-again:hover {
+  background: rgba(124, 155, 255, 0.14);
+  border-color: rgba(124, 155, 255, 0.5);
+}
+
+.pr-opt:focus-visible,
+.pr-run:focus-visible,
+.pr-again:focus-visible {
+  outline: 2px solid var(--pr-c);
+  outline-offset: 2px;
+}
+
+.pr-run {
+  border-color: rgba(124, 155, 255, 0.55);
+  background: rgba(124, 155, 255, 0.16);
+  font-weight: 600;
+}
+
+.pr-hint,
+.pr-miss {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--text-dim, #8593b0);
+}
+
+.pr-miss {
+  margin-top: 0.7rem;
+  color: #ffd166;
+}
+
+/* --------------------------------------------------------------- wynik */
+
+.pr-locked {
+  font-size: 0.9rem;
+  color: var(--text-dim, #8593b0);
+  margin-bottom: 0.9rem;
+}
+
+.pr-locked b {
+  color: var(--text, #e8ecf5);
+}
+
+.pr-result {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1rem;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.pr-result.right { border-color: rgba(94, 234, 212, 0.45); }
+.pr-result.wrong { border-color: rgba(255, 209, 102, 0.45); }
+
+.pr-res-lab {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim, #8593b0);
+  margin-bottom: 0.5rem;
+}
+
+.pr-res-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-size: 0.95rem;
+  color: var(--text-dim, #8593b0);
+}
+
+.pr-res-row b {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1.05rem;
+  color: var(--text, #e8ecf5);
+}
+
+.pr-res-verdict {
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.pr-result.right .pr-res-verdict { color: #5eead4; }
+.pr-result.wrong .pr-res-verdict { color: #ffd166; }
+
+.pr-why,
+.pr-cannot {
+  max-width: 66ch;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text-dim, #8593b0);
+  margin-bottom: 1rem;
+}
+
+.pr-why b,
+.pr-cannot b {
+  display: block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.pr-why b { color: var(--pr-c); }
+
+/* Granica wniosku jest osobno oznaczona, bo jest osobną lekcją, a nie
+   przypisem do poprzedniego akapitu. */
+.pr-cannot {
+  border-left: 2px solid rgba(255, 111, 94, 0.5);
+  padding-left: 0.9rem;
+}
+
+.pr-cannot b { color: #ff6f5e; }
+
+@media (max-width: 560px) {
+  .pr-card { padding: 1.1rem 1rem 1.2rem; }
+  .pr-opts { flex-direction: column; }
+  .pr-opt { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-opt, .pr-run, .pr-again { transition: none; }
+}
