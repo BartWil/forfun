@@ -554,8 +554,35 @@
   };
 
   // =================================================================== rysunek
-  const C = { line: "#8593b0", grid: "rgba(255,255,255,.07)", spine: "#ffd166",
-              load: "#ff6f5e", muscle: "#5eead4", ok: "#5eead4", warn: "#ffd166", bad: "#ff6f5e" };
+  //
+  // To jest diagram sił, a nie ilustracja. Każda linia na nim coś znaczy i
+  // każda odpowiada członowi równania, które liczy panel obok:
+  //
+  //     M = W_tułów · r sinθ  +  W_ciężar · h        i potem   F = M / d
+  //
+  // Dwie linie wymiarowe pod sylwetką to te dwa ramiona. Dwie strzałki w dół
+  // to te dwa ciężary. Gruba strzałka wzdłuż pleców to siła, która musi je
+  // zrównoważyć, a mała podwójna strzałka przy miednicy to jej nieszczęsne
+  // ramię 5 cm. Student ma zobaczyć, dlaczego liczba jest duża, zanim ją
+  // przeczyta.
+  //
+  // Nogi są rysowane po to, żeby sylwetka wyglądała jak człowiek, i nie
+  // wchodzą do rachunku. Płótno mówi to wprost na dole, bo rysunek, który
+  // pokazuje więcej, niż model liczy, uczy nieprawdy o modelu.
+
+  const C = {
+    ink:   "#e8ecf5",
+    dim:   "#8593b0",
+    faint: "rgba(133,147,176,.45)",
+    body:  "rgba(232,237,247,.17)",
+    edge:  "rgba(232,237,247,.46)",
+    trunk: "#ffd166",
+    load:  "#ff6f5e",
+    muscle:"#5eead4",
+    ok:    "#5eead4",
+    warn:  "#ffd166",
+    bad:   "#ff6f5e",
+  };
 
   function figure(host) {
     const wrap = document.createElement("div");
@@ -564,112 +591,428 @@
     wrap.appendChild(cv);
     host.appendChild(wrap);
     const ctx = cv.getContext("2d");
+
     // Obserwator rozmiaru potrafi trafić w szerokość z połowy przejścia, a
-    // potem nic już nie przerysowuje, więc rysunek zostaje przycięty do
-    // nieaktualnej szerokości aż do następnego kliknięcia. Dolna granica jest
-    // tu niższa od najwęższego telefonu, żeby płótno nigdy nie było szersze od
-    // swojego kontenera, a zmiana szerokości wymusza jedno dodatkowe
-    // przerysowanie w następnej klatce. Zbiega, bo warunkiem jest różnica.
+    // potem nic już nie przerysowuje, więc rysunek zostawał przycięty do
+    // nieaktualnej szerokości aż do następnego kliknięcia. Zmiana szerokości
+    // wymusza jedno dodatkowe przerysowanie w następnej klatce, i zbiega,
+    // bo warunkiem jest różnica.
     let lastW = 0;
 
+    // ---------------------------------------------------------- narzędzia
+    const RAD = Math.PI / 180;
+
+    function rr(x, y, w, h, r) {
+      const k = Math.min(r, h / 2, w / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + k, y);
+      ctx.arcTo(x + w, y, x + w, y + h, k);
+      ctx.arcTo(x + w, y + h, x, y + h, k);
+      ctx.arcTo(x, y + h, x, y, k);
+      ctx.arcTo(x, y, x + w, y, k);
+      ctx.closePath();
+    }
+
+    function arrow(x1, y1, x2, y2, col, lw, head) {
+      const a = Math.atan2(y2 - y1, x2 - x1);
+      const hl = head || 9;
+      ctx.strokeStyle = col; ctx.fillStyle = col;
+      ctx.lineWidth = lw || 2; ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2 - Math.cos(a) * hl * 0.7, y2 - Math.sin(a) * hl * 0.7);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - Math.cos(a - 0.38) * hl, y2 - Math.sin(a - 0.38) * hl);
+      ctx.lineTo(x2 - Math.cos(a + 0.38) * hl, y2 - Math.sin(a + 0.38) * hl);
+      ctx.closePath(); ctx.fill();
+    }
+
+    // Etykieta na ciemnej plakietce. Bez niej podpisy gubią się na liniach
+    // i na sylwetce, zwłaszcza przy dużych kątach zgięcia.
+    function tag(txt, x, y, col, align) {
+      ctx.font = "600 11px 'JetBrains Mono', monospace";
+      ctx.textAlign = "left"; ctx.textBaseline = "middle";
+      const w = ctx.measureText(txt).width, padX = 5, h = 17;
+      let tx = x;
+      if (align === "center") tx = x - w / 2;
+      if (align === "right") tx = x - w;
+      ctx.fillStyle = "rgba(8,12,24,.82)";
+      rr(tx - padX, y - h / 2, w + padX * 2, h, 5); ctx.fill();
+      ctx.fillStyle = col;
+      ctx.fillText(txt, tx, y + 0.5);
+      ctx.textBaseline = "alphabetic";
+    }
+
+    function label(txt, x, y, col, align, size) {
+      ctx.font = (size || 10) + "px 'JetBrains Mono', monospace";
+      ctx.textAlign = align || "left"; ctx.textBaseline = "middle";
+      ctx.fillStyle = col;
+      ctx.fillText(txt, x, y);
+      ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+    }
+
+    // Linia wymiarowa z zasyłkami i wartością, jak na rysunku technicznym.
+    function dimLine(x1, x2, y, col, txt) {
+      const a = Math.min(x1, x2), b = Math.max(x1, x2);
+      ctx.strokeStyle = col; ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(a, y); ctx.lineTo(b, y);
+      ctx.moveTo(a, y - 4); ctx.lineTo(a, y + 4);
+      ctx.moveTo(b, y - 4); ctx.lineTo(b, y + 4);
+      ctx.stroke();
+      if (b - a > 34) tag(txt, (a + b) / 2, y, col, "center");
+      else tag(txt, b + 8, y, col, "left");
+    }
+
+    function dashed(x1, y1, x2, y2, col) {
+      ctx.setLineDash([3, 4]); ctx.strokeStyle = col; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // --------------------------------------------------------- sylwetka
+    // Wartosci sil w legendzie, nie przy strzalkach. Przy strzalkach
+    // nachodzily na tulow i na ramie przy wiekszosci katow, a kolory i tak
+    // jednoznacznie wiaza wiersz legendy ze strzalka na rysunku.
+    function drawForces(x, y, d, row) {
+      const leg = [
+        [C.muscle, fix(d.fExt, 0) + " N", T("back extensors pull", "ciąg prostowników")],
+        [C.trunk, fix(d.wUpper, 0) + " N", T("your upper body", "Twoja górna część ciała")],
+      ];
+      if (S.load > 0) leg.push([C.load, fix(d.wLoad, 0) + " N", T("the load", "ciężar w rękach")]);
+      if (row) {
+        // Waski ekran: same wartosci w jednym rzedzie. Opisy nie zmieszcza sie
+        // obok sylwetki, a kolory i tak wiaza je ze strzalkami.
+        let cx = x;
+        leg.forEach(r => {
+          ctx.fillStyle = r[0];
+          ctx.beginPath(); ctx.arc(cx + 4, y, 3.5, 0, 7); ctx.fill();
+          label(r[1], cx + 13, y, r[0], "left", 11);
+          ctx.font = "11px 'JetBrains Mono', monospace";
+          cx += 21 + ctx.measureText(r[1]).width;
+        });
+        return;
+      }
+      leg.forEach((r, i) => {
+        const ly = y - (leg.length - 1 - i) * 18;
+        ctx.fillStyle = r[0];
+        ctx.beginPath(); ctx.arc(x, ly, 3.5, 0, 7); ctx.fill();
+        label(r[1], x + 10, ly, r[0], "left", 11);
+        label(r[2], x + 66, ly, C.faint, "left", 9.5);
+      });
+    }
+
+    function drawFigure(ax, ay, aw, ah, d, wide) {
+      const th = S.flex * RAD;
+      // Wektor wzdłuż tułowia i prostopadły do niego. W układzie płótna oś y
+      // rośnie w dół, stąd minus przy cos.
+      const ux = Math.sin(th), uy = -Math.cos(th);
+      const px_ = Math.cos(th), py = Math.sin(th);   // do przodu od tułowia
+
+      // Zgięcie kolan jest wyłącznie zabiegiem rysunkowym: model nie zna kąta
+      // kolana i nie liczy go. Przy wyprostowanym tułowiu sylwetka kuca, bo
+      // inaczej wyglądałaby jak ktoś stojący i trzymający ciężar w powietrzu.
+      // Dolna granica jest tu po to, zeby kolano bylo widoczne zawsze. Bez
+      // niej przy pochyleniu noga robila sie jedna prosta kreska i sylwetka
+      // czytala sie jak slup, a nie jak czlowiek.
+      const bend = Math.max(0.12, Math.min(1, (55 - S.flex) / 55));
+      const a1 = bend * 1.0, a2 = bend * 0.55;
+      const kneeDX = Math.sin(a1) * 0.40, kneeDY = Math.cos(a1) * 0.40;
+      const ankDX = kneeDX - Math.sin(a2) * 0.40, ankDY = kneeDY + Math.cos(a2) * 0.40;
+
+      // Skala jest STALA dla calego zakresu suwakow, a nie liczona z biezacej
+      // postawy. Liczona z postawy rosla przy przysiadzie, bo biodro jest
+      // wtedy nizej, i sylwetka zmieniala rozmiar przy kazdym ruchu suwaka.
+      // Dwie postawy, ktore maja byc porownane, musza byc narysowane w tej
+      // samej skali, inaczej porownanie przestaje nim byc. 0,80 m to najnizsze
+      // mozliwe biodro, czyli noga wyprostowana.
+      const spanUp = 0.74, spanDown = 0.80;
+      const scale = Math.min((ah - 62) / (spanUp + spanDown), (aw - 104) / 0.98);
+      const px = Math.max(80, scale);
+
+      const floorY = ay + ah - 72;
+      // Sylwetka jest srodkowana wedlug swojego rzeczywistego zasiegu, a nie
+      // stawiana na sztywno w 30 % szerokosci. Przy duzym pochyleniu ciagnie
+      // sie daleko w prawo, przy wyprostowanej postawie prawie wcale, wiec
+      // stala pozycja zostawiala polowe pola pusta.
+      const extL = 0.30 * px;
+      const extR = (Math.max(S.horiz, Math.sin(th) * 0.52 + 0.19, kneeDX + 0.17) + 0.10) * px;
+      const ox = ax + Math.max(78, (aw - extL - extR) / 2 + extL);
+      const oy = floorY - ankDY * px;                 // L5-S1
+
+      const P = (bx, by, along, across) => ({
+        x: bx + ux * along * px + px_ * across * px,
+        y: by + uy * along * px + py * across * px,
+      });
+
+      const sh = P(ox, oy, 0.52, 0);                  // bark
+      const headC = P(ox, oy, 0.655, 0.01);
+      const comT = P(ox, oy, 0.32, 0);                // środek masy górnej części
+      const hx = ox + S.horiz * px, hy = sh.y + 0.08 * px;
+
+      // podłoga
+      const g = ctx.createLinearGradient(0, floorY, 0, floorY + 22);
+      g.addColorStop(0, "rgba(133,147,176,.26)");
+      g.addColorStop(1, "rgba(133,147,176,0)");
+      ctx.fillStyle = g; ctx.fillRect(ax + 8, floorY, aw - 16, 22);
+      ctx.strokeStyle = "rgba(133,147,176,.5)"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(ax + 8, floorY); ctx.lineTo(ax + aw - 16, floorY); ctx.stroke();
+
+      // ---- nogi, rysowane przed tułowiem, żeby tułów je przykrył przy biodrze
+      const knee = { x: ox + kneeDX * px, y: oy + kneeDY * px };
+      const ank = { x: ox + ankDX * px, y: oy + ankDY * px };
+      ctx.lineCap = "round"; ctx.lineJoin = "round";
+      ctx.strokeStyle = C.edge; ctx.lineWidth = Math.max(8, 0.085 * px);
+      ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(knee.x, knee.y); ctx.stroke();
+      ctx.lineWidth = Math.max(6, 0.065 * px);
+      ctx.beginPath(); ctx.moveTo(knee.x, knee.y); ctx.lineTo(ank.x, ank.y); ctx.stroke();
+      // staw kolanowy, zeby zgiecie bylo widoczne jako staw, a nie zalamanie
+      ctx.fillStyle = "rgba(11,16,32,.9)";
+      ctx.beginPath(); ctx.arc(knee.x, knee.y, Math.max(4, 0.034 * px), 0, 7); ctx.fill();
+      ctx.strokeStyle = C.edge; ctx.lineWidth = 1.5; ctx.stroke();
+      // stopa jako klin opierajacy sie o podloge
+      ctx.fillStyle = C.body; ctx.strokeStyle = C.edge; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(ank.x - 0.045 * px, ank.y - 0.03 * px);
+      ctx.lineTo(ank.x + 0.17 * px, ank.y + 0.005 * px);
+      ctx.lineTo(ank.x + 0.17 * px, ank.y + 0.035 * px);
+      ctx.lineTo(ank.x - 0.055 * px, ank.y + 0.035 * px);
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+
+      // ---- tułów jako bryła, nie kreska
+      const wP = 0.095, wS = 0.082;
+      const f1 = P(ox, oy, 0.02, wP), f2 = P(ox, oy, 0.52, wS);
+      const b1 = P(ox, oy, 0.52, -wS), b2 = P(ox, oy, 0.02, -wP * 1.15);
+      const fc = P(ox, oy, 0.27, wP * 1.15), bc = P(ox, oy, 0.27, -wS * 1.2);
+      ctx.beginPath();
+      ctx.moveTo(f1.x, f1.y);
+      ctx.quadraticCurveTo(fc.x, fc.y, f2.x, f2.y);
+      ctx.lineTo(b1.x, b1.y);
+      ctx.quadraticCurveTo(bc.x, bc.y, b2.x, b2.y);
+      ctx.closePath();
+      ctx.fillStyle = C.body; ctx.fill();
+      ctx.strokeStyle = C.edge; ctx.lineWidth = 1.5; ctx.stroke();
+
+      // ---- oś kręgosłupa, bo to ona jest tu bohaterem
+      ctx.strokeStyle = C.trunk; ctx.lineWidth = Math.max(3, 0.022 * px);
+      ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(sh.x, sh.y); ctx.stroke();
+
+      // ---- szyja i głowa
+      const neck = P(ox, oy, 0.56, 0.005);
+      ctx.strokeStyle = C.edge; ctx.lineWidth = Math.max(5, 0.045 * px);
+      ctx.beginPath(); ctx.moveTo(sh.x, sh.y); ctx.lineTo(neck.x, neck.y); ctx.stroke();
+      ctx.beginPath(); ctx.arc(headC.x, headC.y, 0.082 * px, 0, 7);
+      ctx.fillStyle = C.body; ctx.fill();
+      ctx.strokeStyle = C.edge; ctx.lineWidth = 1.5; ctx.stroke();
+
+      // ---- ramię do ciężaru, z lekkim zwisem
+      ctx.strokeStyle = C.edge; ctx.lineWidth = Math.max(5, 0.05 * px);
+      ctx.beginPath();
+      ctx.moveTo(sh.x, sh.y + 0.02 * px);
+      ctx.quadraticCurveTo((sh.x + hx) / 2, Math.max(sh.y, hy) + 0.09 * px, hx, hy);
+      ctx.stroke();
+
+      // ---- ciężar
+      const bs = Math.max(13, Math.min(0.17 * px, 9 + S.load * 1.0));
+      ctx.fillStyle = "rgba(255,111,94,.22)";
+      rr(hx - bs / 2, hy - bs / 2, bs, bs, 3); ctx.fill();
+      ctx.strokeStyle = C.load; ctx.lineWidth = 2; ctx.stroke();
+
+      // ---- siła prostowników, po tylnej stronie, na ramieniu 5 cm
+      const m0 = P(ox, oy, 0.36, -0.05), m1 = P(ox, oy, 0.04, -0.05);
+      // Ciemna obudowa pod spodem: bez niej teal na tle tulowia gubil sie,
+      // a to wlasnie ta strzalka jest odpowiedzia na pytanie "dlaczego tyle".
+      ctx.strokeStyle = "rgba(8,12,24,.85)"; ctx.lineWidth = Math.max(8, 0.055 * px);
+      ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(m0.x, m0.y); ctx.lineTo(m1.x, m1.y); ctx.stroke();
+      ctx.save();
+      ctx.shadowColor = "rgba(94,234,212,.6)"; ctx.shadowBlur = 10;
+      arrow(m0.x, m0.y, m1.x, m1.y, C.muscle, Math.max(4, 0.032 * px), 11);
+      ctx.restore();
+
+      // ---- ramię 5 cm: mała podwójna strzałka w poprzek, przy miednicy
+      const s0 = P(ox, oy, 0.14, 0), s1 = P(ox, oy, 0.14, -0.05);
+      ctx.strokeStyle = C.muscle; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(s0.x, s0.y); ctx.lineTo(s1.x, s1.y); ctx.stroke();
+      const tick = (p, dx, dy) => {
+        ctx.beginPath();
+        ctx.moveTo(p.x - dx, p.y - dy); ctx.lineTo(p.x + dx, p.y + dy); ctx.stroke();
+      };
+      tick(s0, ux * 4, uy * 4); tick(s1, ux * 4, uy * 4);
+
+      // ---- ciężary jako strzałki w dół, z długością proporcjonalną do siły
+      const vlen = v => Math.max(0.09, Math.min(0.26, v / 1400)) * px;
+      const lt = vlen(d.wUpper), ll = vlen(d.wLoad);
+      arrow(comT.x, comT.y, comT.x, comT.y + lt, C.trunk, 2.5, 9);
+      if (S.load > 0) arrow(hx, hy + bs / 2, hx, hy + bs / 2 + ll, C.load, 2.5, 9);
+
+      // ---- punkt obrotu
+      ctx.fillStyle = "#0b1020";
+      ctx.beginPath(); ctx.arc(ox, oy, 6, 0, 7); ctx.fill();
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = C.ink;
+      ctx.beginPath(); ctx.arc(ox, oy, 2.2, 0, 7); ctx.fill();
+
+      // ---- linie wymiarowe: dwa ramiona, czyli dwa człony równania
+      const armT = ox + d.armUpper * px;
+      dashed(comT.x, comT.y + lt, comT.x, floorY + 46, C.faint);
+      dashed(hx, hy + bs / 2 + (S.load > 0 ? ll : 0), hx, floorY + 24, C.faint);
+      dashed(ox, oy, ox, floorY + 46, C.faint);
+      dimLine(ox, hx, floorY + 24, C.load, fix(S.horiz * 100, 0) + " cm");
+      dimLine(ox, armT, floorY + 46, C.trunk, fix(d.armUpper * 100, 0) + " cm");
+
+      // ---- podpisy przy obiektach
+      tag("L5-S1", ox - 11, oy, C.ink, "right");
+      tag("d = 5 cm", s1.x - 9, s1.y, C.muscle, "right");
+      if (S.load > 0) tag(fix(S.load, 0) + " kg", hx + bs / 2 + 8, hy, C.load, "left");
+
+      if (wide) drawForces(ax + 16, floorY - 16, d, false);
+      // Kat zgiecia mierzony od pionu, wiec pokazujemy i pion, i luk. Sama
+      // liczba w rogu nie mowila, wzgledem czego jest mierzona.
+      const ar = 0.22 * px;
+      dashed(ox, oy, ox, oy - ar - 0.07 * px, C.faint);
+      ctx.strokeStyle = C.trunk; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(ox, oy, ar, -Math.PI / 2, -Math.PI / 2 + th, false);
+      ctx.stroke();
+      const am = -Math.PI / 2 + th / 2;
+      tag(fix(S.flex, 0) + "°", ox + Math.cos(am) * (ar + 15),
+          oy + Math.sin(am) * (ar + 15), C.trunk, "center");
+
+      // Rysunek pokazuje nogi, model ich nie liczy. Musi to powiedzieć.
+      label(wide
+              ? T("Legs drawn for readability. This model does not use them.",
+                  "Nogi narysowane dla czytelności. Ten model ich nie używa.")
+              : T("Legs are drawn, not computed.", "Nogi są rysowane, nie liczone."),
+            wide ? ax + aw - 14 : ax + 14, ay + ah - 9, C.faint, wide ? "right" : "left", 9.5);
+    }
+
+    // ------------------------------------------------------------ panel
+    function drawGauge(x, y, w, d, wide) {
+      const scale = 8000, hgt = 20;
+      label(T("Compression at L5-S1", "Ucisk na L5-S1"), x, y - 12, C.dim, "left", 10);
+
+      ctx.fillStyle = "rgba(255,255,255,.055)";
+      rr(x, y, w, hgt, 10); ctx.fill();
+      // Strefy: dwa kryteria z literatury, zaznaczone jako tło, a nie jako wyrok.
+      ctx.save();
+      rr(x, y, w, hgt, 10); ctx.clip();
+      ctx.fillStyle = "rgba(255,209,102,.10)";
+      ctx.fillRect(x + w * AL / scale, y, w * (MPL - AL) / scale, hgt);
+      ctx.fillStyle = "rgba(255,111,94,.12)";
+      ctx.fillRect(x + w * MPL / scale, y, w, hgt);
+      ctx.restore();
+
+      const frac = Math.min(1, d.comp / scale);
+      const gg = ctx.createLinearGradient(x, 0, x + w * frac, 0);
+      gg.addColorStop(0, "rgba(94,234,212,.75)");
+      gg.addColorStop(1, C[d.zone]);
+      ctx.fillStyle = gg;
+      rr(x, y, Math.max(hgt, w * frac), hgt, 10); ctx.fill();
+
+      [[AL, "3400"], [MPL, "6400"]].forEach(([v, t]) => {
+        const tx = x + w * v / scale;
+        ctx.strokeStyle = "rgba(255,255,255,.6)"; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(tx, y - 4); ctx.lineTo(tx, y + hgt + 4); ctx.stroke();
+        label(t, tx, y + hgt + 13, C.dim, "center", 9.5);
+      });
+
+      ctx.font = "600 26px 'JetBrains Mono', monospace";
+      ctx.textAlign = "left"; ctx.textBaseline = "alphabetic";
+      ctx.fillStyle = C[d.zone];
+      ctx.fillText(fix(d.comp, 0), x, y + hgt + 42);
+      const nw = ctx.measureText(fix(d.comp, 0)).width;
+      label("N", x + nw + 7, y + hgt + 36, C.dim, "left", 12);
+      if (S.load > 0)
+        label("= " + fix(d.ratio, 0) + " × " + T("the weight you hold", "trzymany ciężar"),
+              x + nw + 26, y + hgt + 36, C.dim, "left", 11);
+      // Stoi dokladnie tam, gdzie kusi, zeby odczytac te dwie linie jak wyrok.
+      const note = wide
+        ? [T("3400 N and 6400 N are population design criteria, not thresholds for you.",
+             "3400 N i 6400 N to kryteria projektowe dla populacji, nie progi dla Ciebie.")]
+        : [T("3400 N and 6400 N are population design", "3400 N i 6400 N to kryteria projektowe"),
+           T("criteria, not thresholds for you.", "dla populacji, nie progi dla Ciebie.")];
+      note.forEach((t, i) => label(t, x, y + hgt + 62 + i * 13, C.faint, "left", 9.5));
+    }
+
+    // Budżet momentu. Najszybszy sposób, żeby zobaczyć, że to zwykle własny
+    // tułów, a nie niesiony przedmiot, jest tu głównym obciążeniem.
+    function drawBudget(x, y, w, d) {
+      const hgt = 14, tot = d.mTotal || 1;
+      const wT = w * d.mUpper / tot, wL = w - wT;
+      label(T("Where the moment comes from", "Skąd bierze się moment"), x, y - 11, C.dim, "left", 10);
+
+      ctx.save();
+      rr(x, y, w, hgt, 7); ctx.clip();
+      ctx.fillStyle = C.trunk; ctx.fillRect(x, y, wT, hgt);
+      ctx.fillStyle = C.load; ctx.fillRect(x + wT, y, wL, hgt);
+      ctx.restore();
+
+      const rows = [
+        [C.trunk, T("your own upper body", "Twoja górna część ciała"), d.mUpper],
+        [C.load, T("the load in your hands", "ciężar w rękach"), d.mLoad],
+      ];
+      rows.forEach((r, i) => {
+        const ry = y + hgt + 17 + i * 17;
+        ctx.fillStyle = r[0];
+        ctx.beginPath(); ctx.arc(x + 4, ry, 3.5, 0, 7); ctx.fill();
+        label(r[1], x + 14, ry, C.dim, "left", 10.5);
+        label(fix(r[2], 0) + " N·m", x + w, ry, C.ink, "right", 10.5);
+        label(fix(r[2] / tot * 100, 0) + " %", x + w - 54, ry, r[0], "right", 10.5);
+      });
+    }
+
+    function drawChain(x, y, w, d) {
+      label(T("and what it costs the muscle", "i ile to kosztuje mięsień"), x, y, C.dim, "left", 10);
+      const parts = [
+        [fix(d.mTotal, 0) + " N·m", C.ink, T("moment", "moment")],
+        ["÷ 0.05 m", C.muscle, T("lever", "dźwignia")],
+        [fix(d.fExt, 0) + " N", C.muscle, T("muscle pull", "ciąg mięśnia")],
+      ];
+      let cx = x;
+      parts.forEach((p, i) => {
+        ctx.font = "600 12px 'JetBrains Mono', monospace";
+        const tw = ctx.measureText(p[0]).width;
+        if (i) { label("→", cx + 5, y + 20, C.faint, "left", 12); cx += 20; }
+        label(p[0], cx, y + 20, p[1], "left", 12);
+        label(p[2], cx, y + 35, C.faint, "left", 9);
+        cx += Math.max(tw, ctx.measureText(p[2]).width * 0.82);
+      });
+    }
+
+    // ------------------------------------------------------------ montaż
     function paint() {
       const r = wrap.getBoundingClientRect();
-      const w = Math.max(240, r.width || 320), h = 320;
+      const w = Math.max(240, r.width || 320);
+      const wide = w >= 760;
+      const h = wide ? 440 : 560;
       const dpr = window.devicePixelRatio || 1;
       cv.width = w * dpr; cv.height = h * dpr;
       cv.style.width = w + "px"; cv.style.height = h + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, w, h);
+      ctx.lineJoin = "round";
 
       const d = spine(S);
-      // Metry na piksele. Skala dobrana tak, by sylwetka wypełniała rysunek:
-      // tułów ma 0,52 m, nogi 0,42 m, więc przy 0,62 wysokości na metr całość
-      // mieści się pod paskiem ucisku i nad dolną krawędzią.
-      const px = h * 0.62;
-      const ox = Math.max(0.30 * px, w * 0.30), oy = h * 0.72;   // L5-S1 na rysunku
-      const rad = S.flex * Math.PI / 180;
-      ctx.textBaseline = "alphabetic";
 
-      // podłoga
-      ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(10, oy + 0.42 * px); ctx.lineTo(w - 10, oy + 0.42 * px); ctx.stroke();
-
-      // nogi, uproszczone: od L5-S1 w dół
-      ctx.strokeStyle = C.line; ctx.lineWidth = 3; ctx.lineCap = "round";
-      ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ox - 0.04 * px, oy + 0.42 * px); ctx.stroke();
-
-      // tułów pod kątem flex od pionu
-      const tx = ox + Math.sin(rad) * 0.52 * px;
-      const ty = oy - Math.cos(rad) * 0.52 * px;
-      ctx.strokeStyle = C.spine; ctx.lineWidth = 7;
-      ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(tx, ty); ctx.stroke();
-
-      // głowa
-      ctx.fillStyle = C.spine;
-      ctx.beginPath();
-      ctx.arc(ox + Math.sin(rad) * 0.62 * px, oy - Math.cos(rad) * 0.62 * px, 0.055 * px, 0, 7); ctx.fill();
-
-      // ramię do ciężaru: od barku poziomo na odległość horiz od L5-S1
-      const hx = ox + S.horiz * px, hy = ty + 0.06 * px;
-      ctx.strokeStyle = C.line; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(tx, ty + 0.04 * px); ctx.lineTo(hx, hy); ctx.stroke();
-
-      // ciężar
-      const box = Math.max(10, Math.min(30, 8 + S.load * 0.9));
-      ctx.fillStyle = C.load;
-      ctx.fillRect(hx - box / 2, hy, box, box);
-      ctx.font = "11px 'JetBrains Mono', monospace";
-      // Na prawo od ciężaru, nie nad nim: nad nim wpadał pod głowę przy
-      // średnich kątach zgięcia i znikał.
-      ctx.fillText(fix(S.load, 0) + " kg", hx + box / 2 + 6, hy + box / 2 + 4);
-
-      // ramię poziome ciężaru
-      ctx.setLineDash([4, 4]); ctx.strokeStyle = C.load; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(ox, oy + 0.1 * px); ctx.lineTo(hx, oy + 0.1 * px); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(hx, hy + box); ctx.lineTo(hx, oy + 0.1 * px); ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = C.load; ctx.font = "11px 'JetBrains Mono', monospace";
-      ctx.fillText(fix(S.horiz, 2) + " m", (ox + hx) / 2 - 16, oy + 0.1 * px - 5);
-
-      // ramię prostowników, 5 cm za osią
-      ctx.strokeStyle = C.muscle; ctx.lineWidth = 4;
-      const mx = ox - Math.cos(rad) * 0.05 * px, my = oy - Math.sin(rad) * 0.05 * px;
-      ctx.beginPath();
-      ctx.moveTo(mx, my);
-      ctx.lineTo(mx + Math.sin(rad) * 0.34 * px, my - Math.cos(rad) * 0.34 * px);
-      ctx.stroke();
-
-      // znacznik L5-S1
-      ctx.fillStyle = "#fff";
-      ctx.beginPath(); ctx.arc(ox, oy, 4, 0, 7); ctx.fill();
-
-      // Podpisy po lewej, w kolumnie poza sylwetką. Rysowane wcześniej wprost
-      // przy liniach nachodziły na tułów przy małych kątach zgięcia.
-      ctx.font = "11px 'JetBrains Mono', monospace";
-      const lx = Math.max(8, ox - 0.46 * px);
-      ctx.fillStyle = C.muscle;
-      ctx.fillText("d = 5 cm", lx, oy - 0.16 * px);
-      ctx.fillStyle = C.line;
-      ctx.fillText("L5-S1", lx, oy + 4);
-      ctx.fillStyle = C.spine;
-      ctx.fillText(fix(S.flex, 0) + "°", lx, oy - 0.30 * px);
-
-      // pasek ucisku
-      const bx = 14, by = 18, bw = w - 28, bh = 16;
-      const scale = 8000;
-      ctx.fillStyle = "rgba(255,255,255,.05)";
-      ctx.fillRect(bx, by, bw, bh);
-      ctx.fillStyle = C[d.zone];
-      ctx.fillRect(bx, by, Math.min(bw, bw * d.comp / scale), bh);
-      [[AL, "3400"], [MPL, "6400"]].forEach(([v, lab]) => {
-        const x = bx + bw * v / scale;
-        ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(x, by - 3); ctx.lineTo(x, by + bh + 3); ctx.stroke();
-        ctx.fillStyle = C.line; ctx.font = "10px 'JetBrains Mono', monospace";
-        ctx.fillText(lab, x - 10, by - 6);
-      });
-      ctx.fillStyle = "#e8ecf5"; ctx.font = "600 13px 'JetBrains Mono', monospace";
-      ctx.fillText(fix(d.comp, 0) + " N", bx + 4, by + bh + 18);
+      if (wide) {
+        const figW = Math.round(w * 0.56);
+        drawFigure(0, 0, figW, h, d, true);
+        // pionowa linia działowa, żeby panel nie zlewał się z rysunkiem
+        ctx.strokeStyle = "rgba(255,255,255,.07)"; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(figW, 26); ctx.lineTo(figW, h - 26); ctx.stroke();
+        const px0 = figW + 28, pw = w - figW - 56;
+        drawGauge(px0, 62, pw, d, true);
+        drawBudget(px0, 204, pw, d);
+        drawChain(px0, 300, pw, d);
+      } else {
+        drawGauge(20, 44, w - 40, d, false);
+        drawForces(22, 152, d, true);
+        drawFigure(0, 172, w, h - 318, d, false);
+        drawBudget(20, h - 118, w - 40, d);
+      }
 
       if (Math.abs(w - lastW) > 1) { lastW = w; requestAnimationFrame(paint); }
     }
