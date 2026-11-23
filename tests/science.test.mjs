@@ -1928,6 +1928,78 @@ group("Ergonomia", () => {
      "stacja mowi, ze H w rownaniu NIOSH mierzy sie od kostek, a nie od kregoslupa");
 });
 
+// ======================================== Ilustracje akapitow stacji ergonomii
+//
+// Rysunek pod akapitem jest obietnica: ze pokazuje to samo, co akapit obok,
+// i ze liczby na nim pochodza stad, co liczby w panelu. Gdyby ergo-art.js mial
+// wlasna fizyke, strona mialaby dwie wersje tej samej odpowiedzi, a rysunek
+// klamalby ladniej niz tekst. Dlatego sprawdzamy nie wyglad, tylko zrodlo.
+group("Ilustracje ergonomii", () => {
+  const art = read("ergo-art.js"), eh = read("ergonomics.html");
+
+  ok(/ergo-art\.js/.test(eh), "ergonomics.html laduje ilustracje");
+  ok(eh.indexOf("ergonomics.js") < eh.indexOf("ergo-art.js"),
+     "ilustracje laduja sie PO stacji, bo czytaja jej model");
+
+  // ---- rysunki biora liczby z modelu stacji, a nie z wlasnego
+  for (const call of ["E.spine(", "E.niosh(", "E.apron(", "E.push("])
+    ok(art.includes(call), `ilustracje wolaja model stacji: ${call}`);
+  ok(/window\.__ergo/.test(art), "ilustracje czytaja model przez window.__ergo");
+
+  // Zadnej kopii wzorow NIOSH. Druga kopia rozjechalaby sie z pierwsza, a
+  // rozjazd bylby widoczny dopiero jako rysunek niezgodny z panelem obok.
+  const noComments = art.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/(^|[^:])\/\/[^\n]*/g, "$1");
+  for (const forbidden of ["0.003", "0.0032", "25 / H", "0.82 + 4.5"])
+    ok(!noComments.includes(forbidden),
+       `ilustracje nie powtarzaja wzoru NIOSH: brak ${forbidden}`);
+
+  // ---- kazdy akapit, ktory ma dostac rysunek, naprawde go dostaje
+  const KEYS = ["er.s1.h", "er.s2.h", "er.s3.h", "er.s4.h", "er.s5.h", "er.s6.h"];
+  for (const k of KEYS) {
+    ok(art.includes('"' + k + '"'), `rysunek przypisany do naglowka ${k}`);
+    ok(eh.includes('data-i18n="' + k + '"'), `naglowek ${k} istnieje w ergonomics.html`);
+  }
+  // Wszystkie sekcje prozy maja ilustracje: gdyby ktos dopisal siodma, ten
+  // test przypomni, ze zostala bez rysunku.
+  const sectionKeys = (eh.match(/data-i18n="er\.s\d+\.h"/g) || [])
+    .map(m => m.replace(/.*"(.*)"/, "$1"));
+  ok(sectionKeys.length === KEYS.length,
+     "kazda sekcja prozy ma swoj rysunek", sectionKeys.length + " sekcji, " + KEYS.length + " rysunkow");
+
+  // ---- podpisy w obu jezykach
+  const caps = art.match(/cap: \{[\s\S]*?\} \}/g) || [];
+  ok(caps.length === KEYS.length, `kazdy rysunek ma podpis (${caps.length})`);
+  caps.forEach((c, i) => {
+    ok(/en:/.test(c) && /pl:/.test(c), `podpis rysunku ${i + 1} jest w obu jezykach`);
+  });
+
+  // ---- prawo dzwigni z pierwszego rysunku zgadza sie z jego wlasnym podpisem
+  //
+  // To jedyne miejsce, gdzie ilustracja liczy sama, bo porownuje dwie zwykle
+  // dzwignie, a nie kregoslup. Podpis mowi "osiemdziesiat razy", wiec ta
+  // liczba musi wynikac z rysowanej geometrii, a nie byc okraglym zwrotem.
+  const W = 147, LONG = 0.45, SHORT = 0.05;
+  const weak = W * SHORT / LONG, strong = W * LONG / SHORT;
+  ok(Math.abs(weak - 16) < 1, "krotkie ramie ciezaru daje okolo 16 N", weak.toFixed(1) + " N");
+  ok(Math.abs(strong - 1323) < 2, "dlugie ramie ciezaru daje okolo 1323 N", strong.toFixed(0) + " N");
+  ok(Math.abs(strong / weak - 81) < 1,
+     "stosunek obu ukladow to 81, czyli podpisowe osiemdziesiat razy",
+     (strong / weak).toFixed(1) + " x");
+  ok(/eighty times/.test(art) && /osiemdziesiąt razy/.test(art),
+     "podpis podaje ten stosunek slowami w obu jezykach");
+
+  // ---- rysunek nie moze pokazywac wiecej, niz model liczy
+  ok(/Legs drawn for readability|nie liczone|nie używa/.test(read("ergonomics.js")),
+     "glowny rysunek mowi, ze nogi sa rysowane, a nie liczone");
+
+  // ---- styl i dostepnosc
+  const css = read("ergonomics.css");
+  ok(/\.er-art\b/.test(css) && /\.er-art figcaption/.test(css),
+     "ilustracje maja swoj styl razem z podpisem");
+  ok(/i18n:changed/.test(art), "rysunki przerysowuja sie przy zmianie jezyka");
+  ok(/ResizeObserver/.test(art), "rysunki reaguja na zmiane szerokosci");
+});
+
 // ------------------------------------------------------------------- summary
 console.log("\n" + "=".repeat(64));
 console.log(`  ${pass} passed, ${fail} failed`);

@@ -136,3 +136,21 @@
 @media (prefers-reduced-motion: reduce) {
   .er-stage, .er-chip, .er-card { transition: none; }
 }
+
+/* ---- ilustracje pod akapitami ----
+   Rysunek ma stać tam, gdzie akapit stawia tezę, i czytać się jak jego ciąg
+   dalszy, a nie jak ozdoba doklejona na koniec sekcji. */
+.er-art {
+  margin: 20px 0 0; padding: 0;
+  max-width: 78ch;
+  border: 1px solid var(--border); border-radius: 14px;
+  background: radial-gradient(120% 100% at 50% 0%, #121a2c 0%, #0b1020 100%);
+  overflow: hidden;
+}
+.er-art canvas { display: block; width: 100%; }
+.er-art figcaption {
+  padding: 9px 16px 11px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  background: rgba(0,0,0,.25);
+  color: var(--text-muted); font-size: .76rem; line-height: 1.55;
+}
