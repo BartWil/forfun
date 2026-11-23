@@ -141,6 +141,113 @@
     },
   });
 
+  // ------------------------------------------------------------- ergonomics
+  // Cztery moduły, cztery zestawy decyzji, jeden stan. Udostępniony odnośnik
+  // ma odtworzyć dokładnie to zadanie, o którym ktoś mówi, bo zdanie "u mnie
+  // wyszło 2800 N" bez geometrii nie znaczy niczego.
+  const ERGO_TASKS = ["box", "detector", "patient"];
+  const ERGO_COUP = ["good", "fair", "poor"];
+
+  B.define("ergonomics", {
+    tasks: ERGO_TASKS,
+
+    validate(raw) {
+      const out = {};
+      if (raw.stage !== undefined) out.stage = num(Math.round(raw.stage), 1, 4, 1);
+      // dźwignia
+      if (raw.mass !== undefined) out.mass = num(Math.round(raw.mass), 45, 120, 70);
+      if (raw.load !== undefined) out.load = num(Math.round(raw.load), 0, 30, 15);
+      if (raw.horiz !== undefined) out.horiz = num(raw.horiz, 0.15, 0.65, 0.45);
+      if (raw.flex !== undefined) out.flex = num(Math.round(raw.flex), 0, 90, 60);
+      // NIOSH
+      if (ERGO_TASKS.indexOf(raw.task) >= 0) out.task = raw.task;
+      if (raw.nLoad !== undefined) out.nLoad = num(Math.round(raw.nLoad), 1, 40, 12);
+      if (raw.H !== undefined) out.H = num(Math.round(raw.H), 25, 63, 30);
+      if (raw.V !== undefined) out.V = num(Math.round(raw.V), 0, 175, 75);
+      if (raw.D !== undefined) out.D = num(Math.round(raw.D), 25, 175, 50);
+      if (raw.A !== undefined) out.A = num(Math.round(raw.A), 0, 135, 0);
+      if (raw.freq !== undefined) out.freq = num(Math.round(raw.freq), 0, 6, 1);
+      if (raw.dur !== undefined) out.dur = num(Math.round(raw.dur), 0, 1, 0);
+      if (ERGO_COUP.indexOf(raw.coup) >= 0) out.coup = raw.coup;
+      // fartuch
+      if (raw.aMass !== undefined) out.aMass = num(raw.aMass, 3, 9, 6);
+      if (raw.aType !== undefined) out.aType = raw.aType === "two" ? "two" : "one";
+      if (raw.aHours !== undefined) out.aHours = num(raw.aHours, 0.5, 8, 4);
+      if (raw.lifts !== undefined) out.lifts = num(Math.round(raw.lifts), 0, 60, 20);
+      // aparat
+      if (raw.pMass !== undefined) out.pMass = num(Math.round(raw.pMass), 50, 600, 450);
+      if (raw.floor !== undefined) out.floor = num(Math.round(raw.floor), 0, 2, 0);
+      if (raw.pSpeed !== undefined) out.pSpeed = num(raw.pSpeed, 0.2, 1.4, 0.6);
+      return out;
+    },
+
+    // Tabela pokazywana przed skopiowaniem odnośnika. Opisuje tylko ten modul,
+    // w ktorym student faktycznie jest: pelna lista dwudziestu pol nie byłaby
+    // opisem eksperymentu, tylko zrzutem pamięci.
+    describe(st) {
+      const rows = [];
+      const stage = Number(st.stage) || 1;
+      if (stage === 1) {
+        if (st.load !== undefined) rows.push({ label: T("Load in hands", "Ciężar w rękach"), value: fmt(st.load, 0) + " kg" });
+        if (st.horiz !== undefined) rows.push({ label: T("Horizontal distance", "Odległość pozioma"), value: fmt(st.horiz * 100, 0) + " cm" });
+        if (st.flex !== undefined) rows.push({ label: T("Trunk flexion", "Zgięcie tułowia"), value: fmt(st.flex, 0) + "°" });
+        if (st.mass !== undefined) rows.push({ label: T("Body mass", "Masa ciała"), value: fmt(st.mass, 0) + " kg" });
+      }
+      if (stage === 2) {
+        if (st.task) rows.push({ label: T("Task", "Zadanie"),
+          value: st.task === "box" ? T("box of contrast media", "pudełko kontrastu")
+               : st.task === "detector" ? T("detector under a bed", "detektor pod łóżkiem")
+               : T("moving a patient", "przesuwanie pacjenta") });
+        if (st.nLoad !== undefined) rows.push({ label: T("Actual weight", "Masa rzeczywista"), value: fmt(st.nLoad, 0) + " kg" });
+        if (st.H !== undefined) rows.push({ label: "H", value: fmt(st.H, 0) + " cm" });
+        if (st.V !== undefined) rows.push({ label: "V", value: fmt(st.V, 0) + " cm" });
+        if (st.D !== undefined) rows.push({ label: "D", value: fmt(st.D, 0) + " cm" });
+        if (st.A !== undefined) rows.push({ label: "A", value: fmt(st.A, 0) + "°" });
+        if (st.coup) rows.push({ label: T("Grip", "Chwyt"),
+          value: st.coup === "good" ? T("good", "dobry") : st.coup === "fair" ? T("fair", "przeciętny") : T("poor", "słaby") });
+      }
+      if (stage === 3) {
+        if (st.aMass !== undefined) rows.push({ label: T("Apron mass", "Masa fartucha"), value: fmt(st.aMass, 1) + " kg" });
+        if (st.aType) rows.push({ label: T("Apron design", "Krój fartucha"),
+          value: st.aType === "two" ? T("two piece, belted", "dwuczęściowy, na pasie") : T("one piece", "jednoczęściowy") });
+        if (st.aHours !== undefined) rows.push({ label: T("Hours worn", "Godziny noszenia"), value: fmt(st.aHours, 1) + " h" });
+        if (st.lifts !== undefined) rows.push({ label: T("Lifts today", "Podniesień dziś"), value: fmt(st.lifts, 0) });
+      }
+      if (stage === 4) {
+        if (st.pMass !== undefined) rows.push({ label: T("Machine mass", "Masa aparatu"), value: fmt(st.pMass, 0) + " kg" });
+        if (st.floor !== undefined) rows.push({ label: T("Surface", "Podłoże"),
+          value: st.floor === 0 ? T("smooth, good casters", "gładko, dobre koła")
+               : st.floor === 1 ? T("vinyl, worn casters", "wykładzina, zużyte koła")
+               : T("thresholds and cables", "progi i kable") });
+        if (st.pSpeed !== undefined) rows.push({ label: T("Target speed", "Prędkość docelowa"), value: fmt(st.pSpeed, 1) + " m/s" });
+      }
+      return rows;
+    },
+
+    summary(st) {
+      const bits = [];
+      const stage = Number(st.stage) || 1;
+      if (stage === 1) {
+        if (st.load !== undefined) bits.push(fmt(st.load, 0) + " kg");
+        if (st.horiz !== undefined) bits.push(fmt(st.horiz * 100, 0) + " cm");
+        if (st.flex !== undefined) bits.push(fmt(st.flex, 0) + "°");
+      } else if (stage === 2) {
+        if (st.task) bits.push(st.task === "patient" ? T("patient", "pacjent")
+                             : st.task === "detector" ? T("detector", "detektor") : T("box", "pudełko"));
+        if (st.nLoad !== undefined) bits.push(fmt(st.nLoad, 0) + " kg");
+        if (st.H !== undefined) bits.push("H " + fmt(st.H, 0) + " cm");
+      } else if (stage === 3) {
+        if (st.aMass !== undefined) bits.push(fmt(st.aMass, 1) + " kg");
+        if (st.aType) bits.push(st.aType === "two" ? T("two piece", "dwuczęściowy") : T("one piece", "jednoczęściowy"));
+        if (st.aHours !== undefined) bits.push(fmt(st.aHours, 1) + " h");
+      } else {
+        if (st.pMass !== undefined) bits.push(fmt(st.pMass, 0) + " kg");
+        if (st.pSpeed !== undefined) bits.push(fmt(st.pSpeed, 1) + " m/s");
+      }
+      return bits.join(" · ");
+    },
+  });
+
   // --------------------------------------------------------------- physics
   // Registered now, with nothing bound to it yet, precisely to prove the split
   // works: Continue can already describe a physics state it has never run.

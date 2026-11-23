@@ -1,0 +1,138 @@
+/* Ergonomia. Rytm wspólny z Laboratorium platformy, bo to ta sama idea: kilka
+   decyzji i zupełnie inny wynik. Akcent z toru "Siły i mechanika". */
+
+.er-title { background: linear-gradient(96deg, #e8edf7 6%, #ff9384 52%, #ffd166 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.er-prov { margin-top: 12px; padding: 10px 14px; border-radius: 10px;
+  border-left: 3px solid #ffd166; background: rgba(255,209,102,.08);
+  font-size: .82rem; color: var(--text-dim); max-width: 74ch; }
+.er-prov b { color: #ffd166; }
+
+.er-sec { margin: 54px 0; }
+.er-h2 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.25rem, 2.5vw, 1.8rem);
+  font-weight: 600; color: var(--text); margin: 6px 0 16px; letter-spacing: -.01em; }
+.er-p { max-width: 74ch; color: var(--text-dim); line-height: 1.78; margin-bottom: 14px; }
+.er-p b { color: var(--text); font-weight: 600; }
+.er-warn { padding: 18px 22px; border-radius: 14px; max-width: 78ch;
+  border: 1px solid rgba(255,111,94,.34); background: rgba(255,111,94,.055);
+  color: var(--text-dim); line-height: 1.75; font-size: .93rem; }
+.er-warn b { color: #ff9384; }
+
+/* ---- laboratorium ---- */
+.er-lab { margin: 30px 0 8px; }
+.er-stages { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.er-stage { display: flex; align-items: center; gap: 7px; padding: 8px 13px; border-radius: 10px;
+  min-height: 44px;
+  border: 1px solid var(--border); background: rgba(255,255,255,.03); color: var(--text-dim);
+  font-family: 'Space Grotesk', sans-serif; font-size: .8rem; cursor: pointer;
+  transition: all .15s ease; }
+.er-stage:hover { color: var(--text); border-color: var(--text-muted); }
+.er-stage.on { background: rgba(255,111,94,.14); border-color: #ff6f5e; color: #ff9384; }
+.er-stage-n { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,.08);
+  display: grid; place-items: center; font-size: .66rem; font-weight: 700; flex: none; }
+.er-stage.on .er-stage-n { background: #ff6f5e; color: #180605; }
+
+.er-fig { background: radial-gradient(130% 100% at 50% 0%, #121a2c 0%, #0b1020 100%);
+  border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.er-fig canvas { display: block; }
+
+.er-controls { margin-top: 14px; display: flex; flex-direction: column; gap: 13px; }
+.er-block { border: 1px solid var(--border); border-radius: 13px; background: rgba(0,0,0,.24);
+  padding: 14px 16px; }
+.er-block-h { font-family: 'Space Grotesk', sans-serif; font-size: .68rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-muted); margin-bottom: 9px; }
+.er-note { color: var(--text-dim); font-size: .85rem; line-height: 1.65; margin-bottom: 11px; max-width: 72ch; }
+.er-note-sm { font-size: .79rem; margin-top: 11px; margin-bottom: 0; }
+.er-why { margin: 0 0 11px; padding: 9px 13px; border-radius: 9px; max-width: 72ch;
+  border-left: 2px solid rgba(255,255,255,.18); background: rgba(255,255,255,.03);
+  color: var(--text-dim); font-size: .82rem; line-height: 1.6; }
+
+.er-chips { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 11px; }
+.er-chip { padding: 8px 15px; border-radius: 999px; min-height: 44px;
+  border: 1px solid var(--border); background: rgba(255,255,255,.03); color: var(--text-dim);
+  cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: .78rem;
+  transition: all .15s ease; }
+.er-chip:hover { border-color: var(--text-muted); color: var(--text); }
+.er-chip.on { background: rgba(255,111,94,.14); border-color: #ff6f5e; color: #ff9384; }
+
+.er-slider { display: grid; grid-template-columns: 1.2fr 2fr auto; align-items: center; gap: 13px;
+  margin: 10px 0; font-size: .84rem; color: var(--text-dim); }
+.er-slider b { font-family: 'JetBrains Mono', monospace; color: #ff9384; min-width: 76px; text-align: right; }
+.er-slider input[type=range] { width: 100%; }
+
+.er-row { display: grid; grid-template-columns: 1.2fr 2fr; align-items: center; gap: 13px;
+  margin: 10px 0; font-size: .84rem; }
+.er-row-lab { color: var(--text-dim); }
+.er-row select { min-height: 44px; padding: 8px 11px; border-radius: 9px;
+  border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text);
+  font-family: inherit; font-size: .83rem; width: 100%; }
+.er-row select:focus-visible { outline: 2px solid #ff6f5e; outline-offset: 2px; }
+
+.er-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.er-metric { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border);
+  background: rgba(0,0,0,.28); display: flex; flex-direction: column; gap: 3px; }
+.er-metric span { font-size: .67rem; color: var(--text-muted); }
+.er-metric b { font-family: 'JetBrains Mono', monospace; font-size: .98rem; color: var(--text); font-weight: 500; }
+.er-metric.ok b { color: #5eead4; }
+.er-metric.warn b { color: #ffd166; }
+.er-metric.bad b { color: #ff6f5e; }
+
+.er-mults { display: grid; grid-template-columns: repeat(auto-fit, minmax(86px, 1fr)); gap: 7px;
+  margin: 11px 0; }
+.er-mult { padding: 8px 10px; border-radius: 9px; border: 1px solid var(--border);
+  background: rgba(0,0,0,.3); display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
+.er-mult b { font-family: 'JetBrains Mono', monospace; font-size: .95rem; color: #ffd166; font-weight: 500; }
+
+.er-formula { font-family: 'JetBrains Mono', monospace; font-size: .92rem; color: var(--text);
+  padding: 11px 14px; margin-bottom: 11px; border-radius: 9px; background: rgba(0,0,0,.3);
+  border: 1px solid rgba(255,111,94,.26); line-height: 1.7; }
+
+.er-alarm { margin-top: 11px; padding: 12px 15px; border-radius: 10px;
+  border-left: 3px solid #ffd166; background: rgba(255,209,102,.08);
+  color: var(--text-dim); font-size: .85rem; line-height: 1.65; }
+.er-alarm b { color: #ffd166; }
+
+/* Równanie nie daje tu złego wyniku, ono nie daje żadnego. To najważniejszy
+   komunikat na stronie, więc wygląda inaczej niż zwykłe ostrzeżenie. */
+.er-undef { margin: 11px 0; padding: 15px 18px; border-radius: 12px;
+  border: 1px solid rgba(255,111,94,.45); background: rgba(255,111,94,.07);
+  color: var(--text-dim); font-size: .86rem; line-height: 1.68; }
+.er-undef > b { display: block; color: #ff9384; font-size: .95rem; margin-bottom: 7px; }
+.er-undef p { margin: 0 0 8px; max-width: 72ch; }
+.er-undef ul { margin: 0 0 10px; padding-left: 20px; }
+.er-undef li { margin-bottom: 5px; }
+
+/* ---- symbole z wyjaśnieniem ---- */
+.er-sym { color: #ffd166; border-bottom: 1px dotted rgba(255,209,102,.6); cursor: help;
+  font-style: normal; }
+.er-sym:hover, .er-sym:focus-visible { color: #fff; border-bottom-color: #fff; outline: none; }
+.er-sym:focus-visible { background: rgba(255,209,102,.16); border-radius: 3px; }
+
+.er-card { position: fixed; z-index: 120; max-width: 360px; pointer-events: none;
+  padding: 14px 16px; border-radius: 13px; opacity: 0; transform: translateY(5px);
+  transition: opacity .13s ease, transform .13s ease;
+  border: 1px solid rgba(255,209,102,.34); background: rgba(11,16,32,.985);
+  box-shadow: 0 18px 44px rgba(0,0,0,.6); }
+.er-card.in { opacity: 1; transform: translateY(0); }
+.er-card-head { display: flex; align-items: baseline; gap: 9px; margin-bottom: 8px;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.er-card-head b { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; color: #ffd166; }
+.er-card-head span { font-family: 'Space Grotesk', sans-serif; font-size: .88rem; color: var(--text); }
+.er-card-what { color: var(--text); font-size: .85rem; line-height: 1.6; margin-bottom: 9px; }
+.er-card-row { display: grid; grid-template-columns: 74px 1fr; gap: 9px; margin-bottom: 7px; }
+.er-card-row > span:first-child { font-size: .64rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text-muted); padding-top: 2px; }
+.er-card-row > span:last-child { font-size: .8rem; line-height: 1.55; color: var(--text-dim); }
+.er-card-unit > span:last-child { font-family: 'JetBrains Mono', monospace; color: #5eead4; }
+.er-card-warn > span:first-child { color: #ff9384; }
+.er-card-warn > span:last-child { color: #ffc9c2; }
+
+@media (max-width: 640px) {
+  .er-slider, .er-row { grid-template-columns: 1fr; gap: 5px; }
+  .er-slider b { text-align: left; }
+  .er-card { max-width: calc(100vw - 24px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .er-stage, .er-chip, .er-card { transition: none; }
+}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ergonomics Lab · BioLab Play</title>
+<meta name="description" content="Four calculations that decide what your spine carries at work: the lever, the NIOSH equation, the lead apron and the portable unit. Built for radiographers, computed live, with the limits stated." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css?v=83" />
+<link rel="stylesheet" href="biolab-state.css?v=83" />
+<link rel="stylesheet" href="station-frame.css?v=83" />
+<link rel="stylesheet" href="feedback.css?v=83" />
+<link rel="stylesheet" href="ergonomics.css?v=83" />
+<link rel="stylesheet" href="predict.css?v=83" />
+</head>
+<body>
+
+<a class="skip-link" href="#main-content" data-i18n="a11y.skip">Przejdź do treści</a>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">BioLab<span>Play</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks"></ul>
+  </div>
+</nav>
+
+<header class="lab-header">
+  <div class="container">
+    <div class="section-label" data-i18n="er.label">Four calculations, one spine</div>
+    <h1 class="lab-title er-title" data-i18n="er.title">Ergonomics Lab</h1>
+    <p class="lab-sub" data-i18n-html="er.sub">
+      Nobody hurts their back because a cassette is heavy. They hurt it because of
+      <b>where the cassette was</b>, how long the apron stayed on, and how many times
+      the same reach happened before the shift ended. All four of those are numbers,
+      and all four are numbers you can change. Here you change them and watch what
+      your lumbar spine is asked to carry.
+    </p>
+    <p class="er-prov" id="erProv" data-i18n-html="er.prov">
+      <b>Every number on this page is computed, not measured.</b> Nobody was recorded
+      for this station. Two of the four modules run a textbook mechanical model and two
+      apply published tables, and each one says which it is.
+    </p>
+  </div>
+</header>
+
+<main id="main-content" class="container">
+
+  <section class="er-sec">
+    <div class="er-warn" data-i18n-html="er.honest">
+      <b>What a model buys you, and what it cannot.</b>
+      There is no way to measure the force inside your own disc at work. It has been done,
+      with pressure needles and with instrumented implants, in a handful of volunteers,
+      and those studies are the reason we can calibrate models at all. What everyone else
+      uses, including every ergonomics report you will ever read, is a calculation: take
+      the geometry, take the weights, balance the moments, and out comes a force. That
+      calculation is only as good as its assumptions, and this station puts its assumptions
+      on the screen rather than in a footnote. The payoff is that the <b>differences</b> it
+      shows you are robust even when the absolute numbers are not. Halving your reach
+      roughly halves the moment no matter which segment table you believe, and that is the
+      part you can act on tomorrow.
+    </div>
+  </section>
+
+  <div id="erLab" class="er-lab"></div>
+
+  <section class="er-sec">
+    <h2 class="er-h2" data-i18n="er.s1.h">Your spine is a lever built the wrong way round</h2>
+    <p class="er-p" data-i18n-html="er.s1.p">
+      The muscles that stop your trunk folding forwards run close to the bone, which means
+      they pull on a lever roughly <b>five centimetres</b> long. Whatever is in your hands
+      pulls on a lever of thirty, forty, fifty. To balance a moment the short lever must
+      supply a correspondingly larger force, and that force then presses down on the disc
+      along with everything else. This is why the numbers on this page are not the kilograms
+      you expected: a 15 kg cassette held at arm's length puts something near twenty times
+      its own weight through L5-S1. Nothing about that ratio is fixable. The distance is.
+    </p>
+  </section>
+
+  <section class="er-sec">
+    <h2 class="er-h2" data-i18n="er.s2.h">The same cassette, twice, with very different answers</h2>
+    <p class="er-p" data-i18n-html="er.s2.p">
+      Press the two cassette buttons in the first panel one after the other. Same 6 kg plate,
+      same person, same department. Bent over at eighty-five degrees with the plate half a
+      metre out, the model returns about <b>2800 N</b>. Squatted, holding the same plate
+      twenty centimetres from your spine, it returns about <b>1500 N</b>. Nobody got stronger
+      and the plate did not get lighter. Notice also what the panel reports as the moment
+      from your own trunk: in the bent-over case your upper body contributes almost four
+      times as much as the plate does. The thing you are carrying is usually not the thing
+      loading your back.
+    </p>
+  </section>
+
+  <section class="er-sec">
+    <h2 class="er-h2" data-i18n="er.s3.h">The equation everyone cites, and the one task it refuses</h2>
+    <p class="er-p" data-i18n-html="er.s3.p">
+      The revised NIOSH lifting equation starts from 23 kg, a weight chosen as acceptable
+      under ideal conditions for about 75 percent of women and 90 percent of men, and then
+      applies six penalties: how far out the load is, how high the lift starts, how far it
+      travels, how much you twist, how often you repeat it, and how well you can grip it.
+      Four of those are formulas and two are table lookups, and the panel shows all six so
+      you can see which one is actually costing you. Twisting ninety degrees costs 29 percent
+      of the whole limit and is the cheapest to fix in the department: you move your feet.
+    </p>
+    <p class="er-p" data-i18n-html="er.s3.p2">
+      Then press the third task button. <b>The equation has no answer for a patient</b>, and
+      the panel says so instead of printing a number. It was written for a stable load of
+      known weight, lifted with two hands, with something designed to be gripped, in a
+      posture you are free to choose. A patient has an unknown weight of which only part
+      passes through your hands, can tense or go limp halfway, offers nothing to grip, and
+      is reached across a bed rail. That is not a hard case for the equation. It is outside
+      its domain, and a number produced anyway would be worse than no number, because it
+      would look like an assessment. Patient handling has its own methods and its own
+      answer, which is equipment: slide sheets, a transfer board, a hoist, and a second pair
+      of hands.
+    </p>
+  </section>
+
+  <section class="er-sec">
+    <h2 class="er-h2" data-i18n="er.s4.h">The apron adds a force you would laugh at, and still wins the day</h2>
+    <p class="er-p" data-i18n-html="er.s4.p">
+      A six kilogram one-piece apron adds roughly <b>130 N</b> of compression. Against a
+      lift that adds three thousand, that is nothing, and if you compare them by peak force
+      you will conclude the apron is irrelevant. That conclusion is an artefact of comparing
+      the wrong quantity. A lift lasts three seconds; the apron lasts four hours. Multiply
+      each force by the time it actually acts and the apron accounts for around ninety
+      percent of the day's cumulative compressive load. Switch the panel to a two-piece
+      apron with the skirt belted onto the pelvis and watch that figure fall, because the
+      load now travels to the floor through your hips instead of down your spine. This is
+      the one change on this page that costs money rather than habit, and it is also the
+      one with the largest effect on what your back carries over a career.
+    </p>
+  </section>
+
+  <section class="er-sec">
+    <h2 class="er-h2" data-i18n="er.s5.h">The floor matters more than the machine</h2>
+    <p class="er-p" data-i18n-html="er.s5.p">
+      A 450 kg portable unit sounds like the problem until you compute what you actually
+      feel, which is rolling resistance: the mass multiplied by a coefficient that depends
+      on the casters and the floor. On smooth vinyl with good wheels that is about 66 N,
+      less than carrying a full kettle. Add thresholds, cable covers and a strip of carpet
+      and the same machine needs over 350 N. A 450 kg unit on good casters is easier to move
+      than a 150 kg one parked on a cable. Getting it started costs more again, because you
+      also have to accelerate the mass, which is why the <b>first</b> shove is the one people
+      injure themselves on and why a running start down a corridor is worth more than
+      strength. The station computes the force and then stops: whether a given hand force is
+      acceptable depends on hand height, distance and who is pushing, and that is answered
+      by psychophysical tables rather than by mechanics.
+    </p>
+  </section>
+
+  <section class="er-sec">
+    <h2 class="er-h2" data-i18n="er.s6.h">What none of this tells you</h2>
+    <p class="er-p" data-i18n-html="er.s6.p">
+      It does not tell you whether your back will hurt. Compression is a mechanical load,
+      and the strength of a lumbar segment varies from roughly two kilonewtons to over ten
+      depending on age, sex and bone density, so the same force is comfortably safe for one
+      person and not for another. It does not tell you that staying under the lines is safe
+      or that crossing them causes damage; those lines are population design criteria, and
+      the people who wrote them said as much. It does not tell you that a lifting index of
+      two means twice the injuries. And it says nothing at all about the things that show up
+      in every study of back pain in healthcare workers alongside the mechanics: how much
+      control you have over your own schedule, whether there is a second person available,
+      and whether the equipment that would solve the problem is in the room or three floors
+      away. <b>Cannot be determined</b> is a complete answer, and knowing when to give it is
+      the skill this whole site is built around.
+    </p>
+  </section>
+
+</main>
+
+<footer id="footer">
+  <div class="container footer-inner">
+    <p data-i18n="footer.tagline">BioLab Play · bioscience for fun and craft. A teaching site about how bodies move. It does not give medical advice.</p>
+  </div>
+</footer>
+
+<script src="i18n.js?v=83"></script>
+<script src="stations.js?v=83"></script>
+<script src="biolab-state.js?v=83"></script>
+<script src="state-codecs.js?v=83"></script>
+<script src="station-frame.js?v=83"></script>
+<script src="feedback.js?v=83"></script>
+<script src="nav.js?v=83"></script>
+<script src="ergonomics.js?v=83"></script>
+<script src="challenges.js?v=83"></script>
+<script src="predict.js?v=83"></script>
+<script src="contract-panel.js?v=83"></script>
+<script src="abbr.js?v=83"></script>
+</body>
+</html>

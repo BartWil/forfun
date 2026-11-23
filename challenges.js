@@ -201,5 +201,92 @@
       },
     },
 
+
+    // ------------------------------------------------------ ergonomia 1
+    // Jedyna rzecz na całej stacji, którą student może zmienić natychmiast
+    // i bez niczyjej zgody. Niech najpierw obstawi, ile to warte.
+    {
+      station: "ergonomics",
+      question: {
+        en: "You are holding 15 kg with your hands 45 cm in front of your lower back. Without putting it down, without getting stronger and without changing your posture, you pull it in to 25 cm. What happens to the compression at L5-S1?",
+        pl: "Trzymasz 15 kg z rękami 45 cm przed dolnym odcinkiem kręgosłupa. Bez odkładania, bez stawania się silniejszym i bez zmiany postawy przyciągasz ciężar do 25 cm. Co stanie się z uciskiem na L5-S1?",
+      },
+      change: { en: "Horizontal distance 45 cm → 25 cm", pl: "Odległość pozioma 45 cm → 25 cm" },
+      baseline:     { stage: 1, mass: 70, load: 15, horiz: 0.45, flex: 60 },
+      intervention: { stage: 1, mass: 70, load: 15, horiz: 0.25, flex: 60 },
+      outcome: {
+        name: { en: "Compression at L5-S1", pl: "Ucisk na L5-S1" },
+        selector: ".er-metric",
+        label: /Compression at L5-S1|Ucisk na L5-S1/i,
+        decimals: 0,
+      },
+      answer: "down",
+      why: {
+        en: "Moment is force times perpendicular distance, so halving the distance halves the load's contribution to the moment the extensors must balance. Because those extensors work on a lever of only five centimetres, every newton metre you remove from the moment removes twenty newtons from the force they need, and their force is most of what presses on the disc. Around 600 N disappear, and nothing about you or the object changed.",
+        pl: "Moment to siła razy odległość prostopadła, więc zmniejszenie odległości o połowę zmniejsza o połowę wkład ciężaru do momentu, który muszą zrównoważyć prostowniki. Ponieważ te prostowniki pracują na dźwigni zaledwie pięciu centymetrów, każdy niutonometr zdjęty z momentu zabiera dwadzieścia niutonów z potrzebnej im siły, a ich siła stanowi większość tego, co dociska krążek. Znika około 600 N, a nie zmieniło się nic ani w Tobie, ani w przedmiocie.",
+      },
+      cannotConclude: {
+        en: "That the remaining load is safe, or that the first one was not. Both numbers are mechanical loads from a model, and the strength of a lumbar segment ranges from about 2 kN to over 10 kN between people. What this does tell you is the direction and roughly the size of the effect, which is what you can act on.",
+        pl: "Że pozostałe obciążenie jest bezpieczne albo że pierwsze nie było. Oba to obciążenia mechaniczne z modelu, a wytrzymałość segmentu lędźwiowego waha się między ludźmi od około 2 kN do ponad 10 kN. To, co ta zmiana naprawdę mówi, to kierunek i z grubsza rozmiar efektu, i właśnie to można wykorzystać.",
+      },
+    },
+
+    // ------------------------------------------------------ ergonomia 2
+    // Ta sama geometria, ale widziana przez wskaźnik regulacyjny. Dwie liczby
+    // idą w przeciwne strony, i to jest tu cała lekcja.
+    {
+      station: "ergonomics",
+      question: {
+        en: "Now the same geometric fact inside the NIOSH equation. The load starts 25 cm from the midpoint between your ankles and you move it out to 50 cm, keeping the weight and everything else identical. What happens to the lifting index, the number you would actually write in a report?",
+        pl: "Teraz ten sam fakt geometryczny wewnątrz równania NIOSH. Ciężar startuje 25 cm od środka między kostkami, a Ty odsuwasz go na 50 cm, zachowując masę i wszystko inne identyczne. Co stanie się ze wskaźnikiem podnoszenia, czyli z liczbą, którą naprawdę wpisałbyś do raportu?",
+      },
+      change: { en: "H 25 cm → 50 cm", pl: "H 25 cm → 50 cm" },
+      baseline:     { stage: 2, task: "box", nLoad: 12, H: 25, V: 75, D: 50, A: 0, freq: 1, dur: 0, coup: "good" },
+      intervention: { stage: 2, task: "box", nLoad: 12, H: 50, V: 75, D: 50, A: 0, freq: 1, dur: 0, coup: "good" },
+      outcome: {
+        name: { en: "Lifting index", pl: "Wskaźnik podnoszenia" },
+        selector: ".er-metric",
+        label: /Lifting index|Wskaźnik podnoszenia/i,
+        decimals: 2,
+      },
+      answer: "up",
+      why: {
+        en: "The horizontal multiplier is 25 divided by H, so doubling H halves it, which halves the recommended weight limit. The lifting index is the actual weight divided by that limit, so it doubles. Watch both numbers in the panel: the limit went down while the index went up, and they are describing the same event. Confusing which direction is the bad one is a reliable way to misread an ergonomics report.",
+        pl: "Mnożnik poziomy to 25 podzielone przez H, więc podwojenie H zmniejsza go o połowę, co o połowę zmniejsza zalecaną masę graniczną. Wskaźnik podnoszenia to masa rzeczywista podzielona przez tę granicę, więc się podwaja. Patrz w panelu na obie liczby: granica spadła, a wskaźnik wzrósł, i opisują to samo zdarzenie. Pomylenie, który kierunek jest zły, to niezawodny sposób na błędne odczytanie raportu ergonomicznego.",
+      },
+      cannotConclude: {
+        en: "That an index above one means somebody will be hurt, or that doubling it doubles any risk. It is a ratio against a design limit, and the method's own authors present it for designing and evaluating tasks, not for predicting individuals. Note also that the H here is measured from the midpoint between the ankles, not from the spine as in the lever panel, so the two distances on this page are not the same quantity.",
+        pl: "Że wskaźnik powyżej jedynki znaczy, że ktoś zostanie poszkodowany, albo że jego podwojenie podwaja jakiekolwiek ryzyko. To stosunek do granicy projektowej, a autorzy metody przedstawiają go do projektowania i oceny zadań, a nie do przewidywania losu jednostek. Zauważ też, że H mierzy się tu od środka między kostkami, a nie od kręgosłupa jak w panelu dźwigni, więc dwie odległości na tej stronie nie są tą samą wielkością.",
+      },
+    },
+
+    // ------------------------------------------------------ ergonomia 3
+    // Jedyna zmiana na tej stacji, która kosztuje pieniądze, a nie nawyk.
+    {
+      station: "ergonomics",
+      question: {
+        en: "A 6 kg lead apron, worn for four hours. You swap the one-piece version hanging off your shoulders for a two-piece one whose skirt is belted onto your pelvis. The apron weighs exactly the same. What happens to the cumulative compressive load it puts through your spine over those four hours?",
+        pl: "Fartuch ołowiowy 6 kg, noszony cztery godziny. Wymieniasz wersję jednoczęściową zwisającą z barków na dwuczęściową, której spódnica jest zapięta pasem na miednicy. Fartuch waży dokładnie tyle samo. Co stanie się z kumulacyjnym obciążeniem uciskowym, które przepuszcza przez Twój kręgosłup w ciągu tych czterech godzin?",
+      },
+      change: { en: "One piece → two piece, belted on the pelvis", pl: "Jednoczęściowy → dwuczęściowy, na pasie biodrowym" },
+      baseline:     { stage: 3, aMass: 6, aType: "one", aHours: 4, lifts: 20 },
+      intervention: { stage: 3, aMass: 6, aType: "two", aHours: 4, lifts: 20 },
+      outcome: {
+        name: { en: "Cumulative load, the apron", pl: "Obciążenie kumulacyjne, fartuch" },
+        selector: ".er-metric",
+        label: /Cumulative load, the apron|kumulacyjne, fartuch/i,
+        decimals: 0,
+      },
+      answer: "down",
+      why: {
+        en: "Weight has to reach the floor somehow. In the one-piece version the whole apron hangs from your shoulders, so all of it travels down the spine. Belt the skirt onto the pelvis and that part of the weight goes to the floor through your hips and legs, bypassing the lumbar discs entirely. The force is smaller and it acts for the same four hours, so the integral falls with it. The model routes 0.4 of the weight through the spine in the two-piece case, which is an assumption, and the panel says so.",
+        pl: "Ciężar musi jakoś dotrzeć do podłogi. W wersji jednoczęściowej cały fartuch wisi na barkach, więc całość podróżuje w dół przez kręgosłup. Zapnij spódnicę pasem na miednicy i ta część ciężaru idzie do podłogi przez biodra i nogi, omijając krążki lędźwiowe całkowicie. Siła jest mniejsza i działa przez te same cztery godziny, więc całka spada razem z nią. Model prowadzi w wersji dwuczęściowej 0,4 ciężaru przez kręgosłup, co jest założeniem, i panel to podaje.",
+      },
+      cannotConclude: {
+        en: "That a two-piece apron prevents back pain. The direction of the mechanical effect is solid; the step from cumulative load to a person's symptoms is not. Studies of interventional staff report back pain alongside apron hours, but they cannot separate the apron from standing still, awkward posture and case volume, and cumulative load has no validated dose or threshold.",
+        pl: "Że fartuch dwuczęściowy zapobiega bólowi pleców. Kierunek efektu mechanicznego jest pewny; przejście od obciążenia kumulacyjnego do objawów konkretnej osoby nie jest. Badania personelu pracowni zabiegowych raportują ból pleców obok godzin w fartuchu, ale nie potrafią oddzielić fartucha od stania bez ruchu, wymuszonej postawy i liczby zabiegów, a obciążenie kumulacyjne nie ma zwalidowanej dawki ani progu.",
+      },
+    },
+
   ];
 })();

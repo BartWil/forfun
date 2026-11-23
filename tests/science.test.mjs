@@ -1372,7 +1372,14 @@ group("Przewiduj, zanim zobaczysz", () => {
   // etykiete inaczej, sekcja przestanie znajdowac liczbe i pokaze pusto,
   // zamiast pokazac zla. Ale lepiej dowiedziec sie o tym tutaj.
   const emgSrc = read("emg.js"), fpSrc = read("forceplate.js");
-  const SRC = { emg: emgSrc, forceplate: fpSrc };
+  // Zrodlo bierzemy z katalogu, a nie z listy wpisanej tutaj. Lista wpisana
+  // recznie juz raz sie rozjechala: dolozenie stacji z wyzwaniami przewracalo
+  // test na etykietach, ktore w pliku stacji byly obecne.
+  const SRC = {};
+  STATIONS.list.forEach(st => {
+    const f = st.page.replace(/\.html$/, ".js");
+    if (existsSync(join(ROOT, f))) SRC[st.id] = read(f);
+  });
   CH.forEach((c, i) => {
     ok(c.outcome.label.test(c.outcome.name.en) && c.outcome.label.test(c.outcome.name.pl),
        `wyzwanie ${i + 1}: wzorzec pasuje do etykiety w obu jezykach`);
@@ -1602,6 +1609,70 @@ group("Przewiduj, zanim zobaczysz", () => {
   ok(/challenges\.js/.test(fph) && /predict\.js/.test(fph) && /predict\.css/.test(fph),
      "forceplate.html laduje wyzwania, orkiestrator i styl");
 
+  // ---- TO SAMO DLA ERGONOMII
+  //
+  // Trzy wyzwania, trzy rozne moduly, i kazdy kierunek przeliczony modelem
+  // samej stacji. Wyzwanie o fartuchu jest tu najwazniejsze do przypiecia,
+  // bo jego odpowiedz zalezy od zalozenia o drodze obciazenia, a zalozenie
+  // da sie kiedys zmienic bez zauwazenia, ze odwrocilo werdykt.
+  const ERGM = new Function(`
+    const noop = () => {};
+    const el = { style:{}, classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},
+                 appendChild:noop, remove:noop, addEventListener:noop, setAttribute:noop,
+                 querySelector:()=>null, querySelectorAll:()=>[], innerHTML:"", textContent:"",
+                 dataset:{}, getContext:()=>new Proxy({},{get:()=>noop}),
+                 getBoundingClientRect:()=>({left:0,top:0,width:800,height:320,bottom:0}) };
+    const document = { readyState:"complete", addEventListener:noop, getElementById:()=>null,
+                       querySelector:()=>null, querySelectorAll:()=>[], createElement:()=>el, body:el };
+    const window = { addEventListener:noop, devicePixelRatio:1, innerWidth:1280, innerHeight:800 };
+    const location = { pathname:"/ergonomics.html" };
+    ${read("ergonomics.js")}
+    return window.__ergo;
+  `)();
+
+  function ergOutcomes(st) {
+    // liftComp bierze sie na stronie z panelu dzwigni. Dla wyzwania o fartuchu
+    // nie ma znaczenia, bo kumulacja fartucha od niego nie zalezy, ale musi byc
+    // jakas liczba, zeby rachunek byl deterministyczny.
+    const full = { mass: 70, load: 15, horiz: 0.45, flex: 60, liftComp: 3473, ...st };
+    const out = {};
+    out["Compression at L5-S1"] = ERGM.spine(full).comp;
+    if (st.task) {
+      const n = ERGM.niosh(full);
+      out["Lifting index"] = n.li;
+      out["Recommended weight limit"] = n.rwl;
+    }
+    if (st.aType) out["Cumulative load, the apron"] = ERGM.apron(full).cumApron / 1000;
+    return out;
+  }
+
+  CH.filter(c => c.station === "ergonomics").forEach((c, i) => {
+    const key = c.outcome.name.en;
+    const before = ergOutcomes(c.baseline)[key];
+    const after = ergOutcomes(c.intervention)[key];
+    if (before === undefined || before === null || after === undefined || after === null) {
+      ok(false, `wyzwanie ergonomii ${i + 1}: test umie policzyc ten wskaznik`, key);
+      return;
+    }
+    const real = visible(before, after, c.outcome.decimals)
+      ? (after > before ? "up" : "down") : "same";
+    ok(real === c.answer,
+       `wyzwanie ergonomii ${i + 1}: zadeklarowany kierunek zgadza sie z modelem stacji (${key})`,
+       before.toFixed(3) + " -> " + after.toFixed(3) + ", policzono " + real + ", zadeklarowano " + c.answer);
+    ok(visible(before, after, c.outcome.decimals),
+       `wyzwanie ergonomii ${i + 1}: roznica jest widoczna przy precyzji, ktora stacja drukuje`,
+       "zmiana o " + Math.abs(after - before).toFixed(4));
+  });
+
+  // Wyzwanie o NIOSH musi trzymac sie zadania, dla ktorego rownanie ma wynik.
+  // Przy zadaniu "pacjent" panel nie drukuje zadnej liczby i wyzwanie nie
+  // mialoby czego porownac, co wygladaloby jak zepsuty przycisk.
+  CH.filter(c => c.station === "ergonomics" && c.baseline.task).forEach((c, i) => {
+    ok(c.baseline.task === "box" && c.intervention.task === "box",
+       `wyzwanie ergonomii o rownaniu ${i + 1}: uzywa zadania, dla ktorego rownanie jest zdefiniowane`,
+       c.baseline.task);
+  });
+
   // ---- wpiecie i tlumaczenie
   const eh = read("emg.html");
   ok(/challenges\.js/.test(eh) && /predict\.js/.test(eh) && /predict\.css/.test(eh),
@@ -1622,6 +1693,239 @@ group("Przewiduj, zanim zobaczysz", () => {
      "czas czytania nie liczy tekstu sekcji przewidywania");
   ok(/\.bs-share, \.pr-sec/.test(sf),
      "licznik kontrolek nie liczy przyciskow sekcji przewidywania");
+});
+
+// ============================================ Ergonomia: model i tabele NIOSH
+//
+// Dwie zupelnie rozne rzeczy do sprawdzenia, i obie trzeba.
+//
+//   A. MNOZNIKI NIOSH KONTRA OPUBLIKOWANA TABELA
+//      Stacja twierdzi, ze liczy zrewidowanym rownaniem NIOSH. To twierdzenie
+//      faktyczne o kodzie, wiec jest testowane jak twierdzenie faktyczne.
+//      Podrecznik podaje mnozniki tabelami; stacja uzywa postaci zamknietych.
+//      Kazdy punkt tabeli, ktory udalo sie odczytac u zrodla, jest tu
+//      porownany z wzorem z dokladnoscia zapisu tabeli, czyli do polowy
+//      ostatniej drukowanej cyfry. To jest test, ktory wychwycilby pomylke
+//      0,003 na 0,03 w mnozniku pionowym, a taka pomylka nie zmienia niczego
+//      w wygladzie strony: dalej zwracalaby ladne liczby.
+//
+//   B. DZWIGNIA JAKO FIZYKA, A NIE JAKO RYSUNEK
+//      Model kregoslupa musi spelniac rownowage momentow, a nie tylko dawac
+//      liczby rosnace w dobra strone. Sprawdzamy to wprost: moment zewnetrzny
+//      podzielony przez ramie dzwigni MUSI dac sile prostownikow, a ucisk
+//      MUSI byc ich suma ze skladowa osiowa ciezaru. Jesli ktos kiedys
+//      "poprawi" te stacje, dopisujac wspolczynnik, zeby liczby lepiej
+//      wygladaly, padnie ten test.
+group("Ergonomia", () => {
+  const ERG = new Function(`
+    const noop = () => {};
+    const el = { style:{}, classList:{add:noop,remove:noop,toggle:noop,contains:()=>false},
+                 appendChild:noop, remove:noop, addEventListener:noop, setAttribute:noop,
+                 querySelector:()=>null, querySelectorAll:()=>[], innerHTML:"", textContent:"",
+                 dataset:{}, getContext:()=>new Proxy({},{get:()=>noop}),
+                 getBoundingClientRect:()=>({left:0,top:0,width:800,height:320,bottom:0}) };
+    const document = { readyState:"complete", addEventListener:noop, getElementById:()=>null,
+                       querySelector:()=>null, querySelectorAll:()=>[], createElement:()=>el, body:el };
+    const window = { addEventListener:noop, devicePixelRatio:1, innerWidth:1280, innerHeight:800 };
+    const location = { pathname:"/ergonomics.html" };
+    ${read("ergonomics.js")}
+    return window.__ergo;
+  `)();
+
+  ok(!!ERG && typeof ERG.spine === "function", "ergonomics.js wystawia swoj model do testow");
+  if (!ERG) return;
+
+  const { spine, niosh, apron, push, NIOSH, FM_ROWS, CM_TABLE, TASKS, AL, MPL, D_EXT } = ERG;
+
+  // ---- A. oracle: postac zamknieta kontra tabela opublikowana
+  //
+  // Wartosci z tabeli CCOHS dla zrewidowanego rownania NIOSH, podane z
+  // dokladnoscia dwoch miejsc po przecinku. Tolerancja to polowa ostatniej
+  // drukowanej cyfry, bo tabela zaokragla, a wzor nie.
+  const TABLE = [
+    ["HM", 25, 1.00], ["HM", 30, 0.83], ["HM", 40, 0.63], ["HM", 50, 0.50], ["HM", 60, 0.42],
+    ["VM", 0, 0.78], ["VM", 30, 0.87], ["VM", 50, 0.93], ["VM", 70, 0.99],
+    ["VM", 100, 0.93], ["VM", 150, 0.78], ["VM", 175, 0.70],
+    ["DM", 25, 1.00], ["DM", 40, 0.93], ["DM", 55, 0.90], ["DM", 100, 0.87],
+    ["DM", 145, 0.85], ["DM", 175, 0.85],
+    ["AM", 0, 1.00], ["AM", 30, 0.90], ["AM", 45, 0.86], ["AM", 60, 0.81], ["AM", 90, 0.71],
+  ];
+  const TOL = 0.0051;
+  let agree = 0;
+  for (const [f, x, want] of TABLE) {
+    const got = NIOSH[f](x);
+    const hit = Math.abs(got - want) <= TOL;
+    if (hit) agree++;
+    ok(hit, `mnoznik ${f}(${x}) zgadza sie z opublikowana tabela`,
+       got.toFixed(4) + " wobec " + want.toFixed(2));
+  }
+  ok(agree === TABLE.length,
+     `wszystkie ${TABLE.length} punkty tabeli NIOSH odtworzone postacia zamknieta`,
+     agree + "/" + TABLE.length);
+
+  // Poza zakresem stosowalnosci rownanie nie ma dopuszczalnej masy, a nie ma
+  // masy duzej. Zwrocenie tu czegokolwiek dodatniego byloby wymysleniem wyniku.
+  ok(NIOSH.HM(70) === 0, "poza 63 cm mnoznik poziomy wynosi zero");
+  ok(NIOSH.VM(200) === 0, "powyzej 175 cm mnoznik pionowy wynosi zero");
+  ok(NIOSH.DM(200) === 0, "powyzej 175 cm mnoznik drogi wynosi zero");
+  ok(NIOSH.AM(150) === 0, "powyzej 135 stopni mnoznik skretu wynosi zero");
+  ok(NIOSH.LC === 23, "stala obciazenia to 23 kg", String(NIOSH.LC));
+
+  // FM jest odczytem z tabeli. Brak interpolacji jest tu cecha, nie brakiem:
+  // kazdy wiersz, ktory student moze wybrac, istnieje w zrodle.
+  ok(FM_ROWS.length >= 6, `tabela czestosci ma ${FM_ROWS.length} wierszy ze zrodla`);
+  for (const r of FM_ROWS) {
+    ok(r.v.length === 2 && r.lab && r.lab.en && r.lab.pl,
+       `wiersz czestosci ${r.s} s ma dwie kolumny czasu pracy i opis w obu jezykach`);
+    for (const v of r.v)
+      ok(v === null || (v > 0 && v <= 1), `wiersz ${r.s} s: mnoznik jest ulamkiem albo pusta komorka`);
+  }
+  // Czestsze podnoszenie nie moze byc korzystniejsze. Monotonicznosc jest
+  // najprostszym sprawdzeniem, ze tabela nie zostala przepisana z pomylka.
+  for (let i = 1; i < FM_ROWS.length; i++)
+    for (let c = 0; c < 2; c++) {
+      const a = FM_ROWS[i - 1].v[c], b = FM_ROWS[i].v[c];
+      if (a === null || b === null) continue;
+      ok(b <= a, `czestosc rosnie, wiec mnoznik nie rosnie (kolumna ${c}, wiersz ${i})`,
+         a + " -> " + b);
+    }
+  // Dluzsza zmiana nie moze byc korzystniejsza od krotszej.
+  for (const r of FM_ROWS)
+    if (r.v[1] !== null) ok(r.v[1] <= r.v[0], `dluzsza praca nie podnosi mnoznika (${r.s} s)`);
+
+  ok(CM_TABLE.good.stand === 1 && CM_TABLE.poor.stoop === 0.90 && CM_TABLE.fair.stoop === 0.95,
+     "tabela chwytu zgadza sie ze zrodlem w trzech punktach");
+
+  // ---- B. dzwignia spelnia rownowage momentow, a nie tylko wyglada sensownie
+  const base = { mass: 70, load: 15, horiz: 0.45, flex: 60 };
+  const d = spine(base);
+  ok(Math.abs(d.fExt - d.mTotal / D_EXT) < 1e-9,
+     "sila prostownikow to moment zewnetrzny podzielony przez ramie dzwigni");
+  ok(Math.abs(d.mTotal - (d.mUpper + d.mLoad)) < 1e-9,
+     "moment zewnetrzny to suma udzialu tulowia i udzialu ciezaru");
+  ok(Math.abs(d.comp - (d.fExt + d.fAxial)) < 1e-9,
+     "ucisk to sila miesnia plus skladowa osiowa ciezaru");
+  ok(d.ratio > 15 && d.ratio < 30,
+     "ucisk jest wielokrotnoscia trzymanego ciezaru, a nie rowny mu",
+     d.ratio.toFixed(1) + " x");
+
+  // Proporcjonalnosc momentu. To wlasnie ta czesc jest odporna na to, ktorej
+  // tabeli segmentow sie wierzy, i wlasnie na niej opiera sie cala porada.
+  const h1 = spine({ ...base, horiz: 0.40 }), h2 = spine({ ...base, horiz: 0.20 });
+  ok(Math.abs(h2.mLoad - h1.mLoad / 2) < 1e-9,
+     "polowa odleglosci to dokladnie polowa momentu od ciezaru");
+  ok(h2.comp < h1.comp, "blizej ciala znaczy mniejszy ucisk",
+     h1.comp.toFixed(0) + " -> " + h2.comp.toFixed(0) + " N");
+
+  // W pionie i bez ciezaru zostaje sam ciezar wlasny wzdluz osi, bez momentu.
+  const up = spine({ mass: 70, load: 0, horiz: 0.2, flex: 0 });
+  ok(Math.abs(up.mUpper) < 1e-9 && Math.abs(up.fExt) < 1e-9,
+     "w pionie i z pustymi rekami moment zewnetrzny znika");
+  ok(up.comp > 300 && up.comp < 400,
+     "zostaje wtedy sama skladowa osiowa gornej czesci ciala", up.comp.toFixed(0) + " N");
+
+  // Twierdzenie ze strony: ta sama kaseta 6 kg, dwie postawy, okolo 2800 i 1500 N.
+  const bent = spine({ mass: 70, load: 6, horiz: 0.50, flex: 85 });
+  const squat = spine({ mass: 70, load: 6, horiz: 0.20, flex: 25 });
+  ok(Math.abs(bent.comp - 2800) < 150,
+     "pochylona kaseta daje okolo 2800 N, jak mowi tekst", bent.comp.toFixed(0) + " N");
+  ok(Math.abs(squat.comp - 1500) < 150,
+     "ta sama kaseta w przysiadzie daje okolo 1500 N, jak mowi tekst", squat.comp.toFixed(0) + " N");
+  ok(bent.mUpper > 3 * bent.mLoad,
+     "w pozycji pochylonej wlasny tulow wnosi wielokrotnie wiecej niz plyta",
+     (bent.mUpper / bent.mLoad).toFixed(1) + " x");
+  ok(AL === 3400 && MPL === 6400, "obie linie odniesienia to kryteria z literatury NIOSH");
+
+  // ---- C. rownanie odmawia zadania, dla ktorego nie bylo pisane
+  //
+  // To najwazniejsza rzecz na stacji. Liczba wyprodukowana dla pacjenta
+  // wygladalaby jak ocena, a nie byloby za nia nic.
+  const nb = { task: "box", nLoad: 12, H: 30, V: 75, D: 50, A: 0, freq: 1, dur: 0, coup: "good" };
+  const nBox = niosh(nb);
+  ok(nBox.applies && nBox.rwl !== null && nBox.li !== null,
+     "dla pudelka o znanej masie rownanie ma wynik", nBox.rwl.toFixed(1) + " kg");
+  for (const t of ["detector", "patient"]) {
+    const n = niosh({ ...nb, task: t });
+    ok(!n.applies && n.rwl === null && n.li === null,
+       `dla zadania "${t}" rownanie nie zwraca liczby, bo nie ma jej zwracac`);
+    ok(n.violations.length > 0 && n.violations.every(v => v && v.en && v.pl),
+       `dla zadania "${t}" podane sa naruszone warunki, w obu jezykach`,
+       n.violations.length + " powodow");
+  }
+  ok(TASKS.patient.violations.length >= 3,
+     "pacjent narusza kilka warunkow stosowalnosci naraz, nie jeden");
+  // Pusta komorka tabeli to brak dopuszczalnej masy, a nie masa zero.
+  const noTab = niosh({ ...nb, freq: 6, dur: 1 });
+  ok(noTab.noTable && noTab.rwl === null,
+     "tam, gdzie tabela nie podaje mnoznika, stacja nie podaje wyniku");
+
+  // Twierdzenie ze strony: skret o 90 stopni kosztuje 29 procent granicy.
+  const straight = niosh(nb), twisted = niosh({ ...nb, A: 90 });
+  const cost = 1 - twisted.rwl / straight.rwl;
+  ok(Math.abs(cost - 0.288) < 0.005,
+     "skret o 90 stopni zabiera 29 procent granicy, jak mowi tekst",
+     (cost * 100).toFixed(1) + " %");
+
+  // ---- D. fartuch: szczyt jest maly, calka jest duza
+  const ab = { aMass: 6, aType: "one", aHours: 4, lifts: 20, liftComp: 3473 };
+  const a1 = apron(ab), a2 = apron({ ...ab, aType: "two" });
+  ok(Math.abs(a1.extra - 130) < 12,
+     "fartuch jednoczesciowy 6 kg dodaje okolo 130 N, jak mowi tekst", a1.extra.toFixed(0) + " N");
+  ok(a1.extra < ab.liftComp / 10,
+     "szczytowo fartuch jest o rzad wielkosci mniejszy od podniesienia");
+  ok(a1.cumApron > a1.cumLift,
+     "a w calce dnia i tak dominuje, bo trwa godzinami, a nie sekundy",
+     (a1.cumApron / 1000).toFixed(0) + " wobec " + (a1.cumLift / 1000).toFixed(0) + " kNs");
+  ok(Math.abs(a1.share - 0.90) < 0.03,
+     "udzial fartucha w dniu to okolo 90 procent, jak mowi tekst",
+     (a1.share * 100).toFixed(0) + " %");
+  ok(a2.cumApron < a1.cumApron,
+     "wersja dwuczesciowa prowadzi czesc ciezaru przez miednice i obniza calke",
+     (a1.cumApron / 1000).toFixed(0) + " -> " + (a2.cumApron / 1000).toFixed(0) + " kNs");
+  // Masa fartucha sie nie zmienila, wiec zmiana moze wyniknac tylko z drogi obciazenia.
+  ok(Math.abs(a1.wTotal - a2.wTotal) < 1e-9,
+     "oba kroje waza tyle samo, rozni je tylko droga obciazenia do podlogi");
+
+  // ---- E. aparat: podloga wazniejsza od masy
+  const p450 = push({ pMass: 450, floor: 0, pSpeed: 0.6 });
+  const p450bad = push({ pMass: 450, floor: 2, pSpeed: 0.6 });
+  const p150bad = push({ pMass: 150, floor: 2, pSpeed: 0.6 });
+  ok(Math.abs(p450.roll - 66) < 6,
+     "450 kg na dobrych kolach to okolo 66 N, jak mowi tekst", p450.roll.toFixed(0) + " N");
+  ok(p450bad.roll > 350,
+     "ten sam aparat na progach przekracza 350 N, jak mowi tekst", p450bad.roll.toFixed(0) + " N");
+  ok(p450.roll < p150bad.roll,
+     "ciezszy aparat na dobrych kolach jest lzejszy w pchaniu niz lzejszy na kablu",
+     p450.roll.toFixed(0) + " wobec " + p150bad.roll.toFixed(0) + " N");
+  ok(p450.start > p450.roll,
+     "ruszenie kosztuje wiecej niz utrzymanie ruchu, bo dochodzi rozpedzenie masy");
+
+  // ---- F. uczciwosc pochodzenia i rozdzial warstw
+  const st = STATIONS.byId.ergonomics;
+  ok(!!st, "ergonomia jest w katalogu");
+  if (st) {
+    ok(st.contract.measured.length === 0,
+       "stacja nie deklaruje niczego jako zmierzone, bo nikogo nie zarejestrowano");
+    ok(st.status === "synthetic", "katalog oznacza stacje jako model dydaktyczny", st.status);
+    ok(st.prerequisites.includes("physics"),
+       "stacja wskazuje fizyke jako wymagana wczesniej, bo cala opiera sie na momencie");
+    ok(/2 kN|dwoch kiloniutonow|dwóch kiloniutonów/.test(JSON.stringify(st.contract.cannotConclude)),
+       "kontrakt mowi, ze wytrzymalosc kregoslupa rozni sie miedzy ludzmi o rzad wielkosci");
+    ok(/radiation|promieniowani/i.test(JSON.stringify(st.contract.cannotConclude)),
+       "kontrakt mowi wprost, ze stacja nie mowi niczego o promieniowaniu");
+  }
+  const ergSrc = read("ergonomics.js");
+  ok(/B\.bind\("ergonomics"/.test(ergSrc) && !/B\.define\("ergonomics"/.test(ergSrc),
+     "ergonomics.js podpina runtime i nie definiuje znaczenia");
+  ok(/B\.define\("ergonomics"/.test(read("state-codecs.js")),
+     "znaczenie stanu ergonomii mieszka w kodeku, nie w stacji");
+  const eh = read("ergonomics.html");
+  ok(/challenges\.js/.test(eh) && /predict\.js/.test(eh),
+     "ergonomics.html laduje wyzwania i orkiestrator");
+  // Ta sama nazwa, dwa rozne pomiary. Strona musi o tym powiedziec, bo
+  // podstawienie jednego w miejsce drugiego jest bledem, ktory ludzie popelniaja.
+  ok(/midpoint between the ankles/.test(ergSrc) || /midpoint between the ankles/.test(eh),
+     "stacja mowi, ze H w rownaniu NIOSH mierzy sie od kostek, a nie od kregoslupa");
 });
 
 // ------------------------------------------------------------------- summary
